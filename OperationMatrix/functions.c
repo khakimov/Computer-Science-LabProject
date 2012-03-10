@@ -130,6 +130,7 @@ float *leggi_riga( string s, int n )
             printf("Valore inserito errato!!\nReinserisci riga : ");
             fgets(s, MAXLEN, stdin);
             chomp(s);
+            i=0;
 
         }
     }

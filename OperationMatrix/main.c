@@ -13,7 +13,7 @@ int main()
   float **mam=NULL;
   float **man=NULL;
   float **MpvN=NULL;
-  char matchose;
+  char matchoice;
 
 
   while(scelta)
@@ -27,11 +27,11 @@ int main()
                 do
                 {
                   printf("\nScegli Matrice M/N: ");   
-                  scanf("%c",&matchose);
+                  scanf("%c",&matchoice);
                 } 
-                  while(matchose!='m' && matchose!='n');
+                  while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
            
-                if(matchose=='m')
+                if(matchoice=='m' || matchoice=='M')
                 {
                    r=inizializzazione("righe");
                    c=inizializzazione("colonne");
@@ -66,11 +66,11 @@ int main()
            do
            {
              printf("\nScegli Matrice M/N: ");   
-             scanf("%c",&matchose);
+             scanf("%c",&matchoice);
             } 
-             while(matchose!='m' && matchose!='n');
+             while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
            
-           if(matchose=='m')
+           if(matchoice=='m' || matchoice=='M')
            {   
              if(matx_tm==NULL)   
                matx_tm=trasposta(m,r,c);
@@ -166,11 +166,11 @@ int main()
            do
            {
              printf("\nScegli Matrice M/N: ");   
-             scanf("%c",&matchose);
+             scanf("%c",&matchoice);
             } 
-             while(matchose!='m' && matchose!='n');
+             while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
            
-           if(matchose=='m')
+           if(matchoice=='m' || matchoice=='M')
            {      
                    if(mam==NULL)
                       mam=prodScalareMatrice(m,r,c);
