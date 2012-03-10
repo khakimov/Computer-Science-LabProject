@@ -112,6 +112,10 @@ int main()
            else
             {
                 printf("Le colonne di m devono essere uguale a quelle di n per poter fare il prodotto vettoriale!\nReinserisci una delle due matrici!\n");
+                if ( m )
+                    free_matrix(m, c);
+                if ( n )
+                    free_matrix(n, c1);
                 r = c = c1 = r1 = 0;
                 getch();
             }
