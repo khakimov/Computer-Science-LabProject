@@ -5,7 +5,7 @@ int main()
   float **m=NULL;
   float **n=NULL;
   float **matx_t;
-  int r,c, r1, c1;
+  int r = 0,c = 0, r1 = 0, c1 = 0;
   int scelta=1;
   float **mpn;
   float **md;
@@ -112,21 +112,27 @@ int main()
            else
             {
                 printf("Le colonne di m devono essere uguale a quelle di n per poter fare il prodotto vettoriale!\nReinserisci una delle due matrici!\n");
-                r = c = r = r1 = 0;
+                r = c = c1 = r1 = 0;
                 getch();
             }
         break;
 
         case 7 :
                 printf("Matrici Inizializzate nuovamente!\nScegli 1 e ricomincia\n");
-                r = c = r = r1 = 0;
+                if ( m )
+                    free_matrix(m, c);
+                if ( n )
+                    free_matrix(n, c1);
+                r = c = c1 = r1 = 0;
                 getch();
         break;
 
         case 0:
+            if ( m )
+                free_matrix(m, c);
+            if ( n )
+                free_matrix(n, c1);
 
-            free_matrix( m, c);
-            free_matrix(n, c1);
             scelta=0;
         break;
         default :
