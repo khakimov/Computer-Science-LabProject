@@ -1,3 +1,16 @@
+/*
+    ****************************************
+    ****************************************
+    ********    MATRIX OPERATION ***********
+    ****************************************
+    ****************************************
+
+    @authors : Alessandro Suglia & Nazar Chekalin
+    @date : 15:23 PM 10/03/2012
+
+*/
+
+
 #include "header.h"
 
 int main()
@@ -22,25 +35,17 @@ int main()
     switch(scelta)
     {
         case 1:
-            if(!m || !n)
+            /* Matrici entrambe non ancora inizializzate */
+            if(!m && !n)
             {
                 do
                 {
-<<<<<<< HEAD
                   printf("\nScegli Matrice M/N: ");
                   scanf("%c",&matchoice);
                 }
                   while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
 
-                if(matchoice=='m')
-=======
-                  printf("\nScegli Matrice M/N: ");   
-                  scanf("%c",&matchoice);
-                } 
-                  while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
-           
                 if(matchoice=='m' || matchoice=='M')
->>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
                 {
                    r=inizializzazione("righe");
                    c=inizializzazione("colonne");
@@ -60,39 +65,51 @@ int main()
                     getch();
                  }
              }
-               else
-               {
-                    printf("Le Matrici sono già state inizializzate");
-                    getch();
+             else
+                if ( !m ) /* M not initialized, create it! */
+                {
+                    r=inizializzazione("righe");
+                   c=inizializzazione("colonne");
+                   cleanBuffer();
+                   m = inserisciMatrice(r,c);
+                   stampa(m,r,c,"M");
+                   getch();
+
                 }
+            else
+                if ( !n ) /* N not initialized, create it */
+                 {
+                    r1 = inizializzazione("righe");
+                    c1 = inizializzazione("colonne");
+                    cleanBuffer();
+                    n = inserisciMatrice(r1,c1);
+                    stampa(n, r1, c1, "N");
+                    getch();
+                 }
+
+            else /* They're already initialzed, nothing to be done */
+
+            {
+                printf("Le Matrici sono già state inizializzate");
+                getch();
+             }
         break;
 
         case 2:
 
-        if(m && n)
+        if(m && n) /* Both correctly create, now can I do something with them */
         {
 
            do
            {
-<<<<<<< HEAD
              printf("\nScegli Matrice M/N: ");
              scanf("%c",&matchoice);
             }
              while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
 
-           if( matchoice!='m' || matchoice != 'M')
+           if(matchoice=='m' || matchoice=='M')
            {
              if(matx_tm==NULL)
-=======
-             printf("\nScegli Matrice M/N: ");   
-             scanf("%c",&matchoice);
-            } 
-             while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
-           
-           if(matchoice=='m' || matchoice=='M')
-           {   
-             if(matx_tm==NULL)   
->>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
                matx_tm=trasposta(m,r,c);
 
                stampa(matx_tm,c,r,"Trasposta M");
@@ -109,7 +126,7 @@ int main()
         }
          else
          {
-              if(m)
+              if(m) /* It's defined only m, so make the trasposition with it */
               {
                    if(matx_tm==NULL)
                       matx_tm=trasposta(m,r,c);
@@ -117,7 +134,7 @@ int main()
                    stampa(matx_tm,c,r,"Trasposta M");
                    getch();
                }
-                else if(n)
+                else if(n) /* It's defined only n, so make the trasposition with it */
                      {
                       if(matx_tn==NULL)
                          matx_tn=trasposta(n,r1,c1);
@@ -134,7 +151,7 @@ int main()
         break;
 
         case 3:
-            if  ( (r != r1 && c != c1) || (!m && !n))
+            if  ( (r != r1 && c != c1) || (!m && !n)) /* The matrixs must have the same dimensions to make the sum */
             {
                 printf("Matrici nulle oppure di dimensioni differenti!!!");
                 if ( m )
@@ -157,7 +174,7 @@ int main()
         break;
 
         case 4:
-            if  ( (r != r1 && c != c1) || (!m && !n))
+            if  ( (r != r1 && c != c1) || (!m && !n)) /* The matrixs must have the same dimensions */
             {
                 printf("Matrici nulle oppure di dimensioni differenti!!!");
                   if ( m )
@@ -185,23 +202,13 @@ int main()
         {
            do
            {
-<<<<<<< HEAD
              printf("\nScegli Matrice M/N: ");
              scanf("%c",&matchoice);
             }
              while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
 
-           if( matchoice!='m' || matchoice != 'M')
-           {
-=======
-             printf("\nScegli Matrice M/N: ");   
-             scanf("%c",&matchoice);
-            } 
-             while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
-           
            if(matchoice=='m' || matchoice=='M')
-           {      
->>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
+           {
                    if(mam==NULL)
                       mam=prodScalareMatrice(m,r,c);
 

@@ -1,5 +1,6 @@
 #include "header.h"
 
+/* Useful funtion used to get the option choosen by the user from the command line and print the menu */
 int intestazione()
 {
    int scelta;
@@ -24,6 +25,7 @@ int intestazione()
    return scelta;
 }
 
+/* Deallocate memory dinamically from the specific double pointer passed to the function */
 void free_matrix( float **mat, int n )
 {
     int i;
@@ -33,6 +35,7 @@ void free_matrix( float **mat, int n )
     free(mat);
 }
 
+/* It gets the value of a specific integer data that could be the row number or the column number */
 int inizializzazione(string a)
 {
   int val;
@@ -50,19 +53,30 @@ int inizializzazione(string a)
 
 
 }
+
+/*
+    Function that receives the number of colomn and the number of row of the matrix,
+    and create it asking to the user to fill it inserting each row.
+*/
 float ** inserisciMatrice(int r, int c)
 {
     float **array;
     int i,j;
-    string buffer;
-    float *line;
+    string buffer; /* Temporary buffer needed to get the line inserted by the user*/
+    float *line; /* It was used to save the values inserted by the user */
 
+    /* Dynamic allocation of a matrix of (r,c) */
     array = (float**)malloc(r*sizeof(float*));
-    for ( i = 0; i < r; i++ )
-        array[i] = (float*)malloc( c * sizeof(float));
-
-    if(array==NULL)
+     if(array==NULL)
        printf("\n**Memoria Esaurita**");
+
+    for ( i = 0; i < r; i++ )
+    {
+        array[i] = (float*)malloc( c * sizeof(float));
+        if( array[i] == NULL)
+            printf("\n**Memoria Esaurita**");
+    }
+
     printf("\n---Inserisci la matrice---\n");
     for(i=0;i<r;i++)
     {
@@ -75,12 +89,14 @@ float ** inserisciMatrice(int r, int c)
     }
 
 
-    controllaMatrice(array, r,c);
+    controllaDati(array, r,c);
 
 
 
     return array;
 }
+
+/* Print to video the values present in the matrix passed as a parameter */
 void stampa(float **array,int r,int c,string a)
 {
   int i,j;
@@ -91,12 +107,21 @@ void stampa(float **array,int r,int c,string a)
 
 }
 
+/*
+    Function which make the transposition operation of a
+    matrix passed as a parameter.
+    It returns a double pointer which points to the current location
+    in which the new trasposed matrix will be.
+*/
 float ** trasposta(float **matx,int r, int c)
 {
   int i,j;
   float **matx_t;
 
   matx_t = (float**)malloc( c * sizeof(float*));
+  if ( matx_t == NULL )
+    printf("ERRORE: MEMORIA INSUFFICIENTE!\n");
+
   for ( i = 0; i < c; i++ )
   {
     matx_t[i] = (float*)malloc( r * sizeof(float));
@@ -112,20 +137,37 @@ float ** trasposta(float **matx,int r, int c)
 
 }
 
+/*
+    Simple function used to parse the string
+    read from the stdin, in which there will be
+    the value that must be put in the matrix.
+    It returns a float pointer which points to the
+    current location in which there is an array of float
+    that contains the number present in the row.
+*/
 float *leggi_riga( string s, int n )
 {
 
     int i = 0;
     float *line;
+    int res;
     int n_char;
-
+    string buffer;
 
     line = (float*)malloc( n * sizeof(float));
+    if ( !line )
+        printf("ERRORE : MEMORIA INSUFFICIENTE!!\n");
 
-    while( i < n ) {
+    /* Loop until the number of element of the row was filled*/
+    while( i < n )
+    {
+        /* If the sscanf() correctly parse the string, go ahead in it of n_char location of memory */
         if ( sscanf(s,"%f%n ", &line[i], &n_char) ) {
             i++, s += n_char;
-        } else {
+
+        } else
+        {
+            /* Some wrong values are present in the line, insert it again*/
             printf("Valore inserito errato!!\nReinserisci riga : ");
             fgets(s, MAXLEN, stdin);
             chomp(s);
@@ -136,11 +178,16 @@ float *leggi_riga( string s, int n )
     return line;
 }
 
+/* Useful function used in order to remove some useless characters present in the buffer */
 void cleanBuffer()
 {
     while ( getchar() != '\n');
 }
 
+/*
+    Function that makes some specific control on a float value inserted,
+    and only if it is correct, it stores it in a specific location pointed by f.
+*/
 void salvaValore( float *f )
 {
     int res;
@@ -156,7 +203,9 @@ void salvaValore( float *f )
     }while ( res == 0);
 
 }
-void controllaMatrice( float **mat, int r, int c)
+
+/* Useful function which control if there are some wrong values in the */
+void controllaDati( float **mat, int r, int c)
 {
     int i,j;
 
@@ -168,6 +217,7 @@ void controllaMatrice( float **mat, int r, int c)
                 salvaValore(&mat[i][j]);
             }
 }
+
 
 
 float **sommaMatrici( float **m, int r, int c, float **n )
@@ -192,6 +242,7 @@ float **sommaMatrici( float **m, int r, int c, float **n )
 
     return mpn;
 }
+
 float **prodScalareMatrice( float **m, int r, int c )
 {
     float **ma;

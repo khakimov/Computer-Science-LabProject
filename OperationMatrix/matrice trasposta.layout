@@ -2,39 +2,12 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="default" />
 	<File name="functions.c" open="1" top="0" tabpos="1">
-		<Cursor position="2417" topLine="30" />
+		<Cursor position="6189" topLine="220" />
 	</File>
 	<File name="header.h" open="1" top="0" tabpos="3">
-		<Cursor position="808" topLine="0" />
+		<Cursor position="794" topLine="7" />
 	</File>
 	<File name="main.c" open="1" top="1" tabpos="2">
-		<Cursor position="4628" topLine="154" />
+		<Cursor position="324" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>
-<<<<<<< HEAD
-=======
-[Editors]
-Focused=0
-Order=2,1,0
-[Editor_0]
-Open=1
-Top=1
-CursorCol=48
-CursorRow=173
-TopLine=137
-LeftChar=1
-[Editor_1]
-Open=1
-Top=0
-CursorCol=1
-CursorRow=1
-TopLine=1
-LeftChar=1
-[Editor_2]
-Open=1
-Top=0
-CursorCol=13
-CursorRow=133
-TopLine=97
-LeftChar=1
->>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
