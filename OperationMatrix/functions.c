@@ -96,7 +96,7 @@ float ** inserisciMatrice(int r, int c)
     return array;
 }
 
-/* Print to video the values present in the matrix passed as a parameter */
+/* Prints to video the values present in the matrix passed as a parameter */
 void stampa(float **array,int r,int c,string a)
 {
   int i,j;
