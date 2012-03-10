@@ -15,6 +15,7 @@
 
 int main()
 {
+
   float **m=NULL;
   float **n=NULL;
   float **matx_tm=NULL;
@@ -51,6 +52,7 @@ int main()
                    c=inizializzazione("colonne");
                    cleanBuffer();
                    m = inserisciMatrice(r,c);
+                   printFile(m, r, c, "M");
                    stampa(m,r,c,"M");
                    getch();
                  }
@@ -263,6 +265,7 @@ int main()
                 MpvN=NULL;
                 getch();
         break;
+
 
         case 0:
             if(m)

@@ -150,9 +150,8 @@ float *leggi_riga( string s, int n )
 
     int i = 0;
     float *line;
-    int res;
     int n_char;
-    string buffer;
+
 
     line = (float*)malloc( n * sizeof(float));
     if ( !line )
@@ -314,4 +313,26 @@ float **prodvetMatrice(float **m,int r, int c, float **n)
              MpvN[i][j]+=m[i][k]*n[k][j];
 
     return MpvN;
+}
+
+void printFile( float **mat, int r, int c, string type )
+{
+    int i,j;
+    FILE *fp;
+
+    if ( ( fp = fopen(FILENAME,"w") ) == NULL )
+    {
+        perror("ERROR:> ");
+        getch();
+        exit(-1);
+    }
+
+    fprintf(fp,"Matrice %s\n", type);
+    for ( i = 0; i < r; fprintf(fp,"\n"),i++ )
+        for ( j = 0; j < c; j++ )
+            fprintf(fp,"%.3f ", mat[i][j]);
+
+
+
+    fclose(fp);
 }

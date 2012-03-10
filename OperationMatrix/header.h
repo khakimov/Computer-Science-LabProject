@@ -7,14 +7,14 @@
 #include <stdlib.h>
 #include <float.h>
 #include <string.h>
-
+#include <ctype.h>
 
 /* <------------- Macro and costant definition ----------------- > */
 #define chomp(x) x[strlen(x)-1] = '\0'
 
 #define MAXR 100
 #define MAXC 100
-
+#define FILENAME "result.txt"
 #define MAXLEN 512
 
 typedef char string[MAXLEN];
@@ -34,6 +34,8 @@ float **sommaMatrici( float **, int, int, float ** );
 float **prodScalareMatrice( float **, int, int );
 float **diffMatrice(float **, int , int , float **);
 float **prodvetMatrice(float **,int , int , float **);
+void printFile( float **, int, int, string );
+
 /* < -------------------------------------------------------------------- > */
 
 #endif
