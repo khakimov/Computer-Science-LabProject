@@ -26,12 +26,21 @@ int main()
             {
                 do
                 {
+<<<<<<< HEAD
                   printf("\nScegli Matrice M/N: ");
                   scanf("%c",&matchoice);
                 }
                   while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
 
                 if(matchoice=='m')
+=======
+                  printf("\nScegli Matrice M/N: ");   
+                  scanf("%c",&matchoice);
+                } 
+                  while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
+           
+                if(matchoice=='m' || matchoice=='M')
+>>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
                 {
                    r=inizializzazione("righe");
                    c=inizializzazione("colonne");
@@ -65,6 +74,7 @@ int main()
 
            do
            {
+<<<<<<< HEAD
              printf("\nScegli Matrice M/N: ");
              scanf("%c",&matchoice);
             }
@@ -73,6 +83,16 @@ int main()
            if( matchoice!='m' || matchoice != 'M')
            {
              if(matx_tm==NULL)
+=======
+             printf("\nScegli Matrice M/N: ");   
+             scanf("%c",&matchoice);
+            } 
+             while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
+           
+           if(matchoice=='m' || matchoice=='M')
+           {   
+             if(matx_tm==NULL)   
+>>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
                matx_tm=trasposta(m,r,c);
 
                stampa(matx_tm,c,r,"Trasposta M");
@@ -165,6 +185,7 @@ int main()
         {
            do
            {
+<<<<<<< HEAD
              printf("\nScegli Matrice M/N: ");
              scanf("%c",&matchoice);
             }
@@ -172,6 +193,15 @@ int main()
 
            if( matchoice!='m' || matchoice != 'M')
            {
+=======
+             printf("\nScegli Matrice M/N: ");   
+             scanf("%c",&matchoice);
+            } 
+             while( (matchoice!='m' || matchoice != 'M') && ( matchoice != 'N' || matchoice!='n' ));
+           
+           if(matchoice=='m' || matchoice=='M')
+           {      
+>>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
                    if(mam==NULL)
                       mam=prodScalareMatrice(m,r,c);
 

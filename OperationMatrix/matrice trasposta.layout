@@ -11,3 +11,30 @@
 		<Cursor position="4628" topLine="154" />
 	</File>
 </CodeBlocks_layout_file>
+<<<<<<< HEAD
+=======
+[Editors]
+Focused=0
+Order=2,1,0
+[Editor_0]
+Open=1
+Top=1
+CursorCol=48
+CursorRow=173
+TopLine=137
+LeftChar=1
+[Editor_1]
+Open=1
+Top=0
+CursorCol=1
+CursorRow=1
+TopLine=1
+LeftChar=1
+[Editor_2]
+Open=1
+Top=0
+CursorCol=13
+CursorRow=133
+TopLine=97
+LeftChar=1
+>>>>>>> 1877b25432a33fb70136fb7fb644658f49e056a2
