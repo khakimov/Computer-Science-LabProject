@@ -13,7 +13,7 @@ int main()
   float **mam=NULL;
   float **man=NULL;
   float **MpvN=NULL;
-  char matchose;
+  char matchoice;
 
 
   while(scelta)
@@ -26,12 +26,12 @@ int main()
             {
                 do
                 {
-                  printf("\nScegli Matrice M/N: ");   
-                  scanf("%c",&matchose);
-                } 
-                  while(matchose!='m' && matchose!='n');
-           
-                if(matchose=='m')
+                  printf("\nScegli Matrice M/N: ");
+                  scanf("%c",&matchoice);
+                }
+                  while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
+
+                if(matchoice=='m')
                 {
                    r=inizializzazione("righe");
                    c=inizializzazione("colonne");
@@ -40,7 +40,7 @@ int main()
                    stampa(m,r,c,"M");
                    getch();
                  }
-                    
+
                 else
                 {
                     r1 = inizializzazione("righe");
@@ -50,7 +50,7 @@ int main()
                     stampa(n, r1, c1, "N");
                     getch();
                  }
-             }    
+             }
                else
                {
                     printf("Le Matrici sono già state inizializzate");
@@ -59,58 +59,58 @@ int main()
         break;
 
         case 2:
-            
+
         if(m && n)
-        {    
-            
+        {
+
            do
            {
-             printf("\nScegli Matrice M/N: ");   
-             scanf("%c",&matchose);
-            } 
-             while(matchose!='m' && matchose!='n');
-           
-           if(matchose=='m')
-           {   
-             if(matx_tm==NULL)   
+             printf("\nScegli Matrice M/N: ");
+             scanf("%c",&matchoice);
+            }
+             while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
+
+           if( matchoice!='m' || matchoice != 'M')
+           {
+             if(matx_tm==NULL)
                matx_tm=trasposta(m,r,c);
-               
+
                stampa(matx_tm,c,r,"Trasposta M");
                getch();
-           } 
+           }
              else
              {
-               if(matx_tn==NULL)  
+               if(matx_tn==NULL)
                   matx_tn=trasposta(n,r1,c1);
-                  
+
                stampa(matx_tn,c1,r1,"Trasposta N");
                getch();
-             } 
+             }
         }
-         else 
+         else
          {
               if(m)
-              {   
-                   if(matx_tm==NULL)  
+              {
+                   if(matx_tm==NULL)
                       matx_tm=trasposta(m,r,c);
-                   
+
                    stampa(matx_tm,c,r,"Trasposta M");
                    getch();
                }
                 else if(n)
                      {
-                      if(matx_tn==NULL)    
+                      if(matx_tn==NULL)
                          matx_tn=trasposta(n,r1,c1);
-                         
+
                       stampa(matx_tn,c1,r1,"Trasposta N");
                       getch();
                       }
                        else
-                       {      
-                            printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");   
+                       {
+                            printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
                             getch();
-                       }       
-          }            
+                       }
+          }
         break;
 
         case 3:
@@ -122,7 +122,7 @@ int main()
                 if ( n )
                     free_matrix(n, c1);
                 m=NULL;
-                n=NULL;    
+                n=NULL;
                 r = c = c1 = r1 = 0;
                 getch();
             }
@@ -130,7 +130,7 @@ int main()
             {
                 if(mpn==NULL)
                    mpn = sommaMatrici( m, r, c, n);
-                   
+
                 stampa( mpn, r, c, "Somma M+N");
                 getch();
             }
@@ -153,54 +153,54 @@ int main()
             {
                 if(md==NULL)
                    md=diffMatrice(m, r, c, n);
-                   
+
                 stampa(md, r, c, "Differenza M-N");
                 getch();
             }
         break;
 
         case 5:
-        
+
         if(m && n)
-        {  
+        {
            do
            {
-             printf("\nScegli Matrice M/N: ");   
-             scanf("%c",&matchose);
-            } 
-             while(matchose!='m' && matchose!='n');
-           
-           if(matchose=='m')
-           {      
+             printf("\nScegli Matrice M/N: ");
+             scanf("%c",&matchoice);
+            }
+             while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
+
+           if( matchoice!='m' || matchoice != 'M')
+           {
                    if(mam==NULL)
                       mam=prodScalareMatrice(m,r,c);
-                      
+
                    stampa(mam,r,c,"Prodotto Scalare M");
                    getch();
            }
-            else 
+            else
             {
                    if(man==NULL)
                       man=prodScalareMatrice(n,r1,c1);
-                      
+
                    stampa(man,r1,c1,"Prodotto Scalare N");
-                   getch();  
-                 
-            }            
-        }  
-        else 
+                   getch();
+
+            }
+        }
+        else
          {
-              printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");   
+              printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
               getch();
-         } 
+         }
         break;
 
         case 6:
            if ( (c == r1) && (m && n) )
            {
-            if(MpvN==NULL)    
+            if(MpvN==NULL)
               MpvN=prodvetMatrice(m,r,c1,n);
-              
+
             stampa(MpvN,r,c,"Prodotto Vettoriale MxN");
             getch();
            }
@@ -230,27 +230,27 @@ int main()
         case 0:
             if(m)
                free_matrix(m, c);
-            if(n)   
+            if(n)
                free_matrix(n, c1);
-            
+
             if(matx_tm)
                free_matrix(matx_tm,r);
             if(matx_tn)
-               free_matrix(matx_tn,r1);  
-            if(mpn)   
+               free_matrix(matx_tn,r1);
+            if(mpn)
                free_matrix(mpn, c);
             if(md)
                free_matrix(md, c);
             if(mam)
-               free_matrix(mam, c); 
+               free_matrix(mam, c);
             if(man)
-               free_matrix(man, c1); 
+               free_matrix(man, c1);
             if(MpvN)
-               free_matrix(MpvN, c1);       
-            
-               
+               free_matrix(MpvN, c1);
+
+
             scelta=0;
-            
+
         break;
         default :
             printf("Scelta immessa non valida!");

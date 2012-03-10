@@ -117,9 +117,8 @@ float *leggi_riga( string s, int n )
 
     int i = 0;
     float *line;
-    int res;
     int n_char;
-    string buffer;
+
 
     line = (float*)malloc( n * sizeof(float));
 
@@ -256,7 +255,7 @@ float **prodvetMatrice(float **m,int r, int c, float **n)
           printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
     }
 
-    
+
     for(i=0;i<r;i++)
        for(j=0;j<c;j++)
           for(k=0;k<c;k++)
