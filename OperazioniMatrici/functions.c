@@ -52,9 +52,10 @@ int inizializzazione(string a)
      ris=scanf("%d",&val);
      cleanBuffer();
      if(ris==0)
-        printf("\n**Il numero di %s e' errato**",a);
+        printf("\n**Assegnazione valore errata!**\n\n",a);
+        else if(val<1 || val>MAXR) printf("\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
       
-  }while(ris==0 || (val<0 || val>MAXR));
+  }while(ris==0 || (val<1 || val>MAXR));
 
 
   return val;
