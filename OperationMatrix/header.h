@@ -16,6 +16,7 @@
 #define MAXC 100
 #define FILENAME "result.txt"
 #define MAXLEN 512
+#define LARGEST 100000000
 
 typedef char string[MAXLEN];
 

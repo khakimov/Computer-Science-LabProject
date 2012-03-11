@@ -22,6 +22,7 @@ int main()
   float **matx_tn=NULL;
   int r,c, r1, c1;
   int scelta=1;
+  int res;
   float **mpn=NULL;
   float **md=NULL;
   float **mam=NULL;
@@ -39,12 +40,15 @@ int main()
             /* Matrici entrambe non ancora inizializzate */
             if(!m && !n)
             {
+
                 do
                 {
                   printf("\nScegli Matrice M/N: ");
-                  scanf("%c",&matchoice);
+                  res = scanf("%c",&matchoice);
+                  cleanBuffer();
+
                 }
-                  while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
+                  while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ) && res == 1 );
 
                 if(matchoice=='m' || matchoice=='M')
                 {
@@ -103,11 +107,12 @@ int main()
         {
 
            do
-           {
-             printf("\nScegli Matrice M/N: ");
-             scanf("%c",&matchoice);
-            }
-             while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
+            {
+                printf("\nScegli Matrice M/N: ");
+                res = scanf("%c",&matchoice);
+                cleanBuffer();
+
+            }while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ) && res == 1 );
 
            if(matchoice=='m' || matchoice=='M')
            {
@@ -204,26 +209,27 @@ int main()
         {
            do
            {
-             printf("\nScegli Matrice M/N: ");
-             scanf("%c",&matchoice);
-            }
-             while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ));
+                printf("\nScegli Matrice M/N: ");
+                res = scanf("%c",&matchoice);
+                cleanBuffer();
+
+          }while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ) && res == 1 );
 
            if(matchoice=='m' || matchoice=='M')
            {
-                   if(mam==NULL)
-                      mam=prodScalareMatrice(m,r,c);
+                if(mam==NULL)
+                    mam=prodScalareMatrice(m,r,c);
 
-                   stampa(mam,r,c,"Prodotto Scalare M");
-                   getch();
+                stampa(mam,r,c,"Prodotto Scalare M");
+                getch();
            }
             else
             {
-                   if(man==NULL)
-                      man=prodScalareMatrice(n,r1,c1);
+                if(man==NULL)
+                    man=prodScalareMatrice(n,r1,c1);
 
-                   stampa(man,r1,c1,"Prodotto Scalare N");
-                   getch();
+                stampa(man,r1,c1,"Prodotto Scalare N");
+                getch();
 
             }
         }
@@ -237,11 +243,11 @@ int main()
         case 6:
            if ( (c == r1) && (m && n) )
            {
-            if(MpvN==NULL)
-              MpvN=prodvetMatrice(m,r,c1,n);
+                if(MpvN==NULL)
+                    MpvN=prodvetMatrice(m,r,c1,n);
 
-            stampa(MpvN,r,c,"Prodotto Vettoriale MxN");
-            getch();
+                stampa(MpvN,r,c,"Prodotto Vettoriale MxN");
+                getch();
            }
            else
             {

@@ -162,7 +162,10 @@ float *leggi_riga( string s, int n )
     {
         /* If the sscanf() correctly parse the string, go ahead in it of n_char location of memory */
         if ( sscanf(s,"%f%n ", &line[i], &n_char) ) {
+            if ( line[i] > LARGEST )
+                line[i] = 0;
             i++, s += n_char;
+
 
         } else
         {
