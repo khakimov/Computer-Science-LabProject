@@ -43,14 +43,19 @@ void free_matrix( float **mat, int n )
 int inizializzazione(string a)
 {
   int val;
-  printf("Inserisci %s matrice: ",a);
+  int ris;
 
-  while(scanf("%d",&val)==0)
+
+  do
   {
+     printf("Inserisci %s matrice: ",a);
+     ris=scanf("%d",&val);
      cleanBuffer();
-     printf("\n**Il numero di %s e' errato**",a);
-     printf("\nInserisci %s matrice: ",a);
-  }
+     if(ris==0)
+        printf("\n**Assegnazione valore errata!**\n\n",a);
+        else if(val<1 || val>MAXR) printf("\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
+
+  }while(ris==0 || (val<1 || val>MAXR));
 
 
   return val;
@@ -85,11 +90,16 @@ float ** inserisciMatrice(int r, int c)
            "INSERISCI GLI ELEMENTI DI UNA RIGA SEPARANDOLI CON UNO SPAZIO!");
     for(i=0;i<r;i++)
     {
-        printf("Riga %d: (%d elementi) : ",i+1,c);
+        printf("\nRiga %d: (%d elementi) : ",i+1,c);
         fgets(buffer, MAXLEN, stdin);
         chomp(buffer);
-        line = leggi_riga(buffer,c);
-        memcpy(array[i], line, sizeof(line)*c);
+
+        if(strlen(buffer)!=0)
+        {
+            line = leggi_riga(buffer,c);
+            memcpy(array[i], line, sizeof(line)*c);
+        }
+         else printf("\nATTENZIONE RIGA VUOTA! VALORI AZZERATI\n");
 
     }
 
