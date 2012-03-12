@@ -50,12 +50,12 @@ int inizializzazione(string a)
   {
      printf("Inserisci %s matrice: ",a);
      ris=scanf("%d",&val);
-
+     scanf("%[^\n]");
      if(ris==0)
         fprintf(stderr,"\n**Assegnazione valore errata!**\n\n",a);
         else if(val<1 || val>MAXR) fprintf(stderr,"\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
 
-  }while(ris==0 || (val<1 || val>MAXR));
+  }while(ris == 0 || (val<1 || val>MAXR));
 
 
 
