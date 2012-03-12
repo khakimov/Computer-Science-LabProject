@@ -28,7 +28,6 @@ void stampa(float **,int ,int, string);
 float ** trasposta(float **,int, int);
 void free_matrix( float **, int );
 void salvaValore( float *);
-void controllaDati( float **, int , int );
 void cleanBuffer();
 float *leggi_riga( string, int );
 float **sommaMatrici( float **, int, int, float ** );

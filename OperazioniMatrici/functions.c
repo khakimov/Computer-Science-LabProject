@@ -112,7 +112,8 @@ void stampa(float **array,int r,int c,string a)
   int i,j;
   printf("\n---Matrice %s---\n",a);
   for(i=0;i < r; printf("\n"),i++)
-       for(j=0;j<c;j++)printf("%.3f ",array[i][j]);
+       for(j=0;j<c;j++)
+            printf("%.3f ",array[i][j]);
 
 
 }
@@ -224,21 +225,6 @@ void salvaValore( float *f )
 
 }
 
-/* Useful function which control if there are some wrong values in the */
-void controllaDati( float **mat, int r, int c)
-{
-    int i,j;
-
-    for ( i = 0; i < r; i++ )
-        for ( j = 0; j < c; j++ )
-            if( isalpha(mat[i][j]) || !isdigit(mat[i][j]) || mat[i][j] > FLT_MAX )
-            {
-                printf("ERRORE: valore errato!!\nReinserisci il valore : ");
-                salvaValore(&mat[i][j]);
-            }
-}
-
-
 
 float **sommaMatrici( float **m, int r, int c, float **n )
 {
@@ -280,7 +266,7 @@ float **prodScalareMatrice( float **m, int r, int c )
             printf("ERRORE : MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
     }
 
-    printf("Inserisci valore scalare : ");
+    printf("Inserisci valore scalare di tipo reale : ");
     salvaValore(&a);
     for( i = 0; i < r; i++ )
         for ( j = 0; j < c; j++ )
