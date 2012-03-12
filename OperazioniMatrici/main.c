@@ -52,6 +52,7 @@ int main()
 
                 if(matchoice=='m' || matchoice=='M')
                 {
+
                    r=inizializzazione("righe");
                    c=inizializzazione("colonne");
                    cleanBuffer();

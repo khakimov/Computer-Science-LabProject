@@ -53,9 +53,10 @@ int inizializzazione(string a)
      cleanBuffer();
      if(ris==0)
         printf("\n**Assegnazione valore errata!**\n\n",a);
-        else if(val<1 || val>MAXR) printf("\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
+        else if(val<1 || val>MAXR) fprintf(stderr,"\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
 
   }while(ris==0 || (val<1 || val>MAXR));
+
 
 
   return val;
@@ -99,7 +100,11 @@ float ** inserisciMatrice(int r, int c)
             line = leggi_riga(buffer,c);
             memcpy(array[i], line, sizeof(line)*c);
         }
-         else printf("\nATTENZIONE RIGA VUOTA! VALORI AZZERATI\n");
+         else
+         {
+             printf("\nATTENZIONE RIGA VUOTA! VALORI AZZERATI\n");
+             memset(array[i], 0, c);
+         }
 
     }
 
