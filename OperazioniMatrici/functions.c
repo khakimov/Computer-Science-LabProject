@@ -50,9 +50,9 @@ int inizializzazione(string a)
   {
      printf("Inserisci %s matrice: ",a);
      ris=scanf("%d",&val);
-     cleanBuffer();
+
      if(ris==0)
-        printf("\n**Assegnazione valore errata!**\n\n",a);
+        fprintf(stderr,"\n**Assegnazione valore errata!**\n\n",a);
         else if(val<1 || val>MAXR) fprintf(stderr,"\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
 
   }while(ris==0 || (val<1 || val>MAXR));
@@ -78,7 +78,7 @@ float ** inserisciMatrice(int r, int c)
     /* Dynamic allocation of a matrix of (r,c) */
     array = (float**)malloc(r*sizeof(float*));
      if(array==NULL)
-       printf("\n**Memoria Esaurita**");
+       fprintf(stderr,"\n**Memoria Esaurita**");
 
     for ( i = 0; i < r; i++ )
     {
@@ -102,7 +102,7 @@ float ** inserisciMatrice(int r, int c)
         }
          else
          {
-             printf("\nATTENZIONE RIGA VUOTA! VALORI AZZERATI\n");
+             fprintf(stderr,"\nATTENZIONE RIGA VUOTA! VALORI AZZERATI\n");
              memset(array[i], 0, c);
          }
 
@@ -142,7 +142,7 @@ float ** trasposta(float **matx,int r, int c)
   {
     matx_t[i] = (float*)malloc( r * sizeof(float));
     if ( !matx_t[i] )
-        printf("ERRORE MEMORIA!!!\n");
+        fprintf(stderr,"ERRORE MEMORIA!!!\n");
   }
 
   for ( i=0; i < c; i++ )
@@ -180,8 +180,8 @@ float *leggi_riga( string s, int n )
         if ( sscanf(s,"%f%n ", &line[i], &n_char) ) {
             if ( line[i] > LARGEST )
             {
-                printf("%s\n%s\n",
-                       "E' stato inserito un valore che supera il massimo consentito!",
+                fprintf(stderr, "%s\n%s\n",
+                       "E' stato inserito un valore che supera il massimo consentito oppure un valore nullo",
                        "Reinserisci il valore : ");
                 salvaValore(&line[i]);
                 cleanBuffer();
@@ -192,7 +192,7 @@ float *leggi_riga( string s, int n )
         } else
         {
             /* Some wrong values are present in the line, insert it again*/
-            printf("Valore inserito errato!!\nReinserisci riga : ");
+            fprintf(stderr,"Valore inserito errato!!\nReinserisci riga : ");
             fgets(s, MAXLEN, stdin);
             chomp(s);
             for(i=0;i<n;i++) line[i]=0;
@@ -222,8 +222,8 @@ void salvaValore( float *f )
         res = scanf("%f", f);
         if ( res == 0 )
         {
-            printf("ERRORE: valore errato!!\n");
-            printf("Reinserisci il valore : ");
+            fprintf(stderr,"ERRORE: valore errato!!\n%s",
+                   "Reinserisci il valore : ");
         }
     }while ( res == 0);
 
@@ -238,13 +238,13 @@ float **sommaMatrici( float **m, int r, int c, float **n )
 
     mpn = (float**)malloc( r * sizeof(float*));
     if ( !mpn )
-        printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+        fprintf(stderr,"ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
 
     for ( i = 0; i < r; i++ )
     {
         mpn[i] = (float*)malloc( c * sizeof(float));
         if ( !mpn[i] )
-            printf("ERRORE : MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+            fprintf(stderr,"ERRORE : MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
     }
 
     for ( i = 0; i < r; i++ )
@@ -262,13 +262,13 @@ float **prodScalareMatrice( float **m, int r, int c )
 
     ma = (float**)malloc( r * sizeof(float*));
     if ( !ma )
-        printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+        fprintf(stderr,"ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
 
     for ( i = 0; i < r; i++ )
     {
         ma[i] = (float*)malloc( c * sizeof(float));
         if ( !ma[i] )
-            printf("ERRORE : MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+            fprintf(stderr,"ERRORE : MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
     }
 
     printf("Inserisci valore scalare di tipo reale : ");
@@ -286,13 +286,13 @@ float **diffMatrice(float **m, int r, int c, float **n)
 
     md=(float**)malloc(r*sizeof(float*));
     if(!md)
-       printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+       fprintf(stderr,"ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
 
     for(i=0;i<r;i++)
     {
        md[i]=(float*)malloc(c*sizeof(float));
        if(!md[i])
-          printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+          fprintf(stderr,"ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
     }
 
     for(i=0;i<r;i++)
@@ -309,13 +309,13 @@ float **prodvetMatrice(float **m,int r, int c, float **n)
 
     MpvN=(float**)calloc(r,sizeof(float*));
     if(!MpvN)
-       printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+       fprintf(stderr,"ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
 
     for(i=0;i<r;i++)
     {
        MpvN[i]=(float*)calloc(c,sizeof(float));
        if(!MpvN[i])
-          printf("ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
+          fprintf(stderr,"ERRORE: MEMORIA NON ALLOCATA CORRETTAMENTE!!\n");
     }
 
 

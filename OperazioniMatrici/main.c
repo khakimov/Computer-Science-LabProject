@@ -152,7 +152,7 @@ int main()
                       }
                        else
                        {
-                            printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
+                            fprintf(stderr,"\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
                             getch();
                        }
           }
@@ -161,7 +161,7 @@ int main()
         case 3:
             if  ( (r != r1 && c != c1) || (!m && !n)) /* The matrixs must have the same dimensions to make the sum */
             {
-                printf("Matrici nulle oppure di dimensioni differenti!!!");
+                fprintf(stderr,"Matrici nulle oppure di dimensioni differenti!!!");
                 if ( m )
                     free_matrix(m, c);
                 if ( n )
@@ -184,7 +184,7 @@ int main()
         case 4:
             if  ( (r != r1 && c != c1) || (!m && !n)) /* The matrixs must have the same dimensions */
             {
-                printf("Matrici nulle oppure di dimensioni differenti!!!");
+                fprintf(stderr,"Matrici nulle oppure di dimensioni differenti!!!");
                   if ( m )
                     free_matrix(m, c);
                 if ( n )
@@ -236,7 +236,7 @@ int main()
         }
         else
          {
-              printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
+              fprintf(stderr,"\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
               getch();
          }
         break;
@@ -252,7 +252,7 @@ int main()
            }
            else
             {
-                printf("Colonne diverse tra M e N, oppure Matrici Nulle!!!\n");
+                fprintf(stderr,"Colonne diverse tra M e N, oppure Matrici Nulle!!!\n");
                 r = c = r = r1 = 0;
                 getch();
             }
