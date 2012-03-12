@@ -43,7 +43,7 @@ int main()
 
                 do
                 {
-                  printf("\nScegli Matrice M/N: ");
+                  printf("\nScegli quale matrice inserire ( M/N ) : ");
                   res = scanf("%c",&matchoice);
                   cleanBuffer();
 
@@ -108,7 +108,7 @@ int main()
 
            do
             {
-                printf("\nScegli Matrice M/N: ");
+                printf("\nScegli su quale matrice operare ( M/N ) ");
                 res = scanf("%c",&matchoice);
                 cleanBuffer();
 
@@ -209,7 +209,7 @@ int main()
         {
            do
            {
-                printf("\nScegli Matrice M/N: ");
+                printf("\nScegli matrice sulla quale operare ( M/N ) ");
                 res = scanf("%c",&matchoice);
                 cleanBuffer();
 

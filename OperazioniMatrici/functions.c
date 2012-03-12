@@ -5,8 +5,8 @@ int intestazione()
 {
    int scelta;
    int ris;
-   
-   
+
+
    do
    {
      system("cls");
@@ -19,13 +19,13 @@ int intestazione()
           "6 - Prodotto Vettoriale Matrici\n",
           "7 - Inserisci nuove matrici\n",
           "0 - Esci\n\n");
-     printf("Scelta-> ");               
+     printf("Scelta-> ");
      ris=scanf("%d",&scelta);
      cleanBuffer();
-     
+
    }while(ris==0);
-   
-   
+
+
    return scelta;
 }
 
@@ -81,7 +81,8 @@ float ** inserisciMatrice(int r, int c)
             printf("\n**Memoria Esaurita**");
     }
 
-    printf("\n---Inserisci la matrice---\n");
+    printf("\n---Inserisci la matrice---\n%s\n",
+           "INSERISCI GLI ELEMENTI DI UNA RIGA SEPARANDOLI CON UNO SPAZIO!");
     for(i=0;i<r;i++)
     {
         printf("Riga %d: (%d elementi) : ",i+1,c);
@@ -91,11 +92,6 @@ float ** inserisciMatrice(int r, int c)
         memcpy(array[i], line, sizeof(line)*c);
 
     }
-
-
-    controllaDati(array, r,c);
-
-
 
     return array;
 }
@@ -167,7 +163,13 @@ float *leggi_riga( string s, int n )
         /* If the sscanf() correctly parse the string, go ahead in it of n_char location of memory */
         if ( sscanf(s,"%f%n ", &line[i], &n_char) ) {
             if ( line[i] > LARGEST )
-                line[i] = 0;
+            {
+                printf("%s\n%s\n",
+                       "E' stato inserito un valore che supera il massimo consentito!",
+                       "Reinserisci il valore : ");
+                salvaValore(&line[i]);
+                cleanBuffer();
+            }
             i++, s += n_char;
 
 
@@ -209,6 +211,7 @@ void salvaValore( float *f )
         }
     }while ( res == 0);
 
+
 }
 
 /* Useful function which control if there are some wrong values in the */
@@ -218,7 +221,7 @@ void controllaDati( float **mat, int r, int c)
 
     for ( i = 0; i < r; i++ )
         for ( j = 0; j < c; j++ )
-            if( isalpha(mat[i][j]) && !isdigit(mat[i][j]) && mat[i][j] > FLT_MAX )
+            if( isalpha(mat[i][j]) || !isdigit(mat[i][j]) || mat[i][j] > FLT_MAX )
             {
                 printf("ERRORE: valore errato!!\nReinserisci il valore : ");
                 salvaValore(&mat[i][j]);
