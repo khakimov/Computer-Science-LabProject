@@ -43,7 +43,7 @@ int main()
 
                 do
                 {
-                  printf("\nScegli Matrice M/N: ");
+                  printf("\nScegli quale matrice inserire ( M/N ) : ");
                   res = scanf("%c",&matchoice);
                   cleanBuffer();
 
@@ -52,6 +52,7 @@ int main()
 
                 if(matchoice=='m' || matchoice=='M')
                 {
+                   printf("\n----Matrice M----\n");
                    r=inizializzazione("righe");
                    c=inizializzazione("colonne");
                    cleanBuffer();
@@ -63,6 +64,7 @@ int main()
 
                 else
                 {
+                    printf("\n----Matrice N----\n");
                     r1 = inizializzazione("righe");
                     c1 = inizializzazione("colonne");
                     cleanBuffer();
@@ -74,7 +76,8 @@ int main()
              else
                 if ( !m ) /* M not initialized, create it! */
                 {
-                    r=inizializzazione("righe");
+                   printf("\n----Matrice M----\n");
+                   r=inizializzazione("righe");
                    c=inizializzazione("colonne");
                    cleanBuffer();
                    m = inserisciMatrice(r,c);
@@ -85,6 +88,7 @@ int main()
             else
                 if ( !n ) /* N not initialized, create it */
                  {
+                    printf("\n----Matrice N----\n");
                     r1 = inizializzazione("righe");
                     c1 = inizializzazione("colonne");
                     cleanBuffer();
@@ -108,7 +112,7 @@ int main()
 
            do
             {
-                printf("\nScegli Matrice M/N: ");
+                printf("\nScegli su quale matrice operare ( M/N ) ");
                 res = scanf("%c",&matchoice);
                 cleanBuffer();
 
@@ -151,7 +155,7 @@ int main()
                       }
                        else
                        {
-                            printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
+                            fprintf(stderr,"\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
                             getch();
                        }
           }
@@ -160,7 +164,7 @@ int main()
         case 3:
             if  ( (r != r1 && c != c1) || (!m && !n)) /* The matrixs must have the same dimensions to make the sum */
             {
-                printf("Matrici nulle oppure di dimensioni differenti!!!");
+                fprintf(stderr,"Attenzione!!! Matrici NULLE oppure di dimensioni DIFFERENTI!");
                 if ( m )
                     free_matrix(m, c);
                 if ( n )
@@ -183,7 +187,7 @@ int main()
         case 4:
             if  ( (r != r1 && c != c1) || (!m && !n)) /* The matrixs must have the same dimensions */
             {
-                printf("Matrici nulle oppure di dimensioni differenti!!!");
+                fprintf(stderr,"Attenzione!!! Matrici NULLE oppure di dimensioni DIFFERENTI!");
                   if ( m )
                     free_matrix(m, c);
                 if ( n )
@@ -209,11 +213,11 @@ int main()
         {
            do
            {
-                printf("\nScegli Matrice M/N: ");
+                printf("\nScegli matrice sulla quale operare ( M/N ) ");
                 res = scanf("%c",&matchoice);
                 cleanBuffer();
 
-          }while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ) && res == 1 );
+           }while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ) && res == 1 );
 
            if(matchoice=='m' || matchoice=='M')
            {
@@ -234,10 +238,26 @@ int main()
             }
         }
         else
-         {
-              printf("\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
-              getch();
-         }
+            if(m)
+            {
+                 if(mam==NULL)
+                    mam=prodScalareMatrice(m,r,c);
+
+                stampa(mam,r,c,"Prodotto Scalare M");
+                getch();
+            }
+             else if(n)
+                  {
+                   if(man==NULL)
+                    man=prodScalareMatrice(n,r1,c1);
+
+                    stampa(man,r1,c1,"Prodotto Scalare N");
+                    getch();
+                   }         
+                    else{
+                          fprintf(stderr,"\nERROR: LE MATRICI NON SONO INIZIALIZZATE!!!");
+                          getch();
+                          }
         break;
 
         case 6:
@@ -251,7 +271,7 @@ int main()
            }
            else
             {
-                printf("Colonne diverse tra M e N, oppure Matrici Nulle!!!\n");
+                fprintf(stderr,"Attenzione!!! Matrici NULLE oppure di dimensioni INCOMPATIBILI !");
                 r = c = r = r1 = 0;
                 getch();
             }
