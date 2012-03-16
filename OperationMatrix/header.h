@@ -34,7 +34,7 @@ float *leggi_riga( string, int );
 float **sommaMatrici( float **, int, int, float ** );
 float **prodScalareMatrice( float **, int, int );
 float **diffMatrice(float **, int , int , float **);
-float **prodvetMatrice(float **,int , int , float **);
+float **prodvetMatrice(float **,int , int , int,  float **);
 void printFile( float **, int, int, string );
 
 /* < -------------------------------------------------------------------- > */

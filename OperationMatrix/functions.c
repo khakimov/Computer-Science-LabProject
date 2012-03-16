@@ -3,11 +3,13 @@
 void cleanLine( float *line, int start, int end )
 {
  int i;
- 
- for( i = start; i < end; line[i] = 0,i++ );      
-     
-     
+
+ for( i = start; i < end; line[i] = 0,i++ );
+
+
 }
+
+
 /* Useful funtion used to get the option choosen by the user from the command line and print the menu */
 int intestazione()
 {
@@ -17,7 +19,15 @@ int intestazione()
 
    do
    {
-     system("cls");
+     /*
+       Macro preprocessor used in order to 
+       check the system on which the program was executed
+     */  
+     #if defined _WIN32
+            system("cls");
+     #elif  defined __unix__
+            system("clear");
+     #endif
      printf("----------OPERAZIONI MATRICI----------\nPowered by A. Suglia & N. Chekalin\n\n%s%s%s%s%s%s%s%s%s\n",
           "-----------------MENU'----------------\n\n",
           "1 - Inserire Matrice \n",
@@ -53,21 +63,21 @@ int inizializzazione(string a)
 {
   int val;
   int ris;
+  string buffer;
 
 
   do
   {
      printf("Inserisci %s matrice: ",a);
      ris=scanf("%d",&val);
-     scanf("%[^\n]");
+     scanf("%[^\n]", buffer);
      if(ris==0)
         fprintf(stderr,"\n**Assegnazione valore errata!**\n\n",a);
         else if(val<1 || val>MAXR) fprintf(stderr,"\n**Il numero di %s e' errato (1< %s <100)**\n\n",a,a);
 
   }while(ris == 0 || (val<1 || val>MAXR));
 
-
-
+  scanf("%[^\n]", buffer);
   return val;
 
 
@@ -83,7 +93,7 @@ float ** inserisciMatrice(int r, int c)
     int i,j;
     string buffer; /* Temporary buffer needed to get the line inserted by the user*/
     float *line; /* It was used to save the values inserted by the user */
-    
+
     /* Dynamic allocation of a matrix of (r,c) */
     array = (float**)malloc(r*sizeof(float*));
      if(array==NULL)
@@ -107,7 +117,7 @@ float ** inserisciMatrice(int r, int c)
         if(strlen(buffer)!=0)
         {
             line = leggi_riga(buffer,c);
-            memcpy(array[i], line, sizeof(line)*c);
+            memcpy(array[i], line, sizeof(float)*c);
         }
          else
          {
@@ -124,7 +134,7 @@ float ** inserisciMatrice(int r, int c)
 void stampa(float **array,int r,int c,string a)
 {
   int i,j;
-  printf("\n---Matrice %s---\n",a);
+  printf("\n\t\t ---  Matrice %s  ---\n",a);
   for(i=0;i < r; printf("\n"),i++)
        for(j=0;j<c;j++)
             printf("%15.3f ",array[i][j]);
@@ -195,21 +205,21 @@ float *leggi_riga( string s, int n )
                 salvaValore(&line[i]);
                 cleanBuffer();
             }
-            
-                
+
+
             i++, s += n_char;
-            
+
 
         } else
         {
             /* Some wrong values are present in the line, insert it again*/
             fprintf(stderr,"Valore inserito errato!!\nReinserisci riga : ");
-            
+
             fgets(s, MAXLEN, stdin);
             chomp(s);
             cleanLine(line,0,n);
             i=0;
-            
+
         }
     }
     return line;
@@ -314,7 +324,7 @@ float **diffMatrice(float **m, int r, int c, float **n)
     return md;
 
 }
-float **prodvetMatrice(float **m,int r, int c, float **n)
+float **prodvetMatrice(float **m,int r, int c, int rc, float **n)
 {
     float **MpvN;
     int i,j,k;
@@ -333,7 +343,7 @@ float **prodvetMatrice(float **m,int r, int c, float **n)
 
     for(i=0;i<r;i++)
        for(j=0;j<c;j++)
-          for(k=0;k<c;k++)
+          for(k=0;k<rc;k++)
              MpvN[i][j]+=m[i][k]*n[k][j];
 
     return MpvN;
@@ -347,7 +357,7 @@ void printFile( float **mat, int r, int c, string type )
     if ( ( fp = fopen(FILENAME,"w") ) == NULL )
     {
         perror("ERROR:> ");
-        getch();
+        getchar();
         exit(-1);
     }
 

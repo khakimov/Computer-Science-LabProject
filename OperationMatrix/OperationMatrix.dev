@@ -1,6 +1,6 @@
 [Project]
-FileName=OperazioniMatrix.dev
-Name=OperazioniMatrix
+FileName=OperationMatrix.dev
+Name=OperationMatrix
 UnitCount=3
 Type=1
 Ver=1
@@ -29,10 +29,20 @@ SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=
 
+[Unit1]
+FileName=functions.c
+CompileCpp=0
+Folder=OperationMatrix
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit2]
 FileName=header.h
 CompileCpp=0
-Folder=
+Folder=OperationMatrix
 Compile=1
 Link=1
 Priority=1000
@@ -40,19 +50,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=functions.c
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit1]
 FileName=main.c
 CompileCpp=0
-Folder=
+Folder=OperationMatrix
 Compile=1
 Link=1
 Priority=1000
