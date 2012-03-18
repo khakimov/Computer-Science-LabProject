@@ -303,6 +303,7 @@ void cleanBuffer()
 void salvaValore( float *f )
 {
     int res;
+    string buffer;
 
     do
     {
@@ -312,6 +313,7 @@ void salvaValore( float *f )
             fprintf(stderr,"ERRORE: valore errato!!\n%s",
                    "Reinserisci il valore : ");
         }
+        scanf("[^\n]", buffer);
     }while ( res == 0);
 
 

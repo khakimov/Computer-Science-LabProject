@@ -208,6 +208,7 @@ int main()
 
       case 5:
         checkStatus(&m, &n);
+        cleanBuffer();
 
         if( useMatrix(m,n) == MN )
 	    {
@@ -215,13 +216,14 @@ int main()
 		   {
 		      printf("\nScegli matrice sulla quale operare ( M/N ) ");
 		      res = scanf("%c",&matchoice);
+
 		      cleanBuffer();
 
            }while( (matchoice!='m' && matchoice != 'M') && ( matchoice != 'N' && matchoice!='n' ) && res == 1 );
 
 	      if(matchoice=='m' || matchoice=='M')
 		  {
-		     cleanBuffer();
+
 		     if( mam.status == FALSE )
 		       mam=prodScalareMatrice(m);
 
@@ -230,7 +232,7 @@ int main()
 		  }
 	      else
 		  {
-		      cleanBuffer();
+
 		     if( man.status == FALSE )
                man=prodScalareMatrice(n);
 
