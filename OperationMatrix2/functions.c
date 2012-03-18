@@ -67,25 +67,25 @@ void checkStatus( matrix *m, matrix *n )
         if ( m->matx == NULL )
             m->status = FALSE;
         else
-            n->status = TRUE;
+            m->status = TRUE;
 
         if ( n->matx == NULL )
-            m->status = FALSE;
+            n->status = FALSE;
           else
-            m->status = TRUE;
+            n->status = TRUE;
     }
 
 }
 
 selected selectMatrix( matrix m, matrix n )
 {
-    if ( m.status == TRUE && n.status == TRUE )
+    if ( m.status == FALSE && n.status == FALSE )
         return MN;
     else
-        if ( m.status == TRUE )
+        if ( m.status == FALSE )
             return M;
     else
-        if ( n.status == TRUE )
+        if ( n.status == FALSE )
             return N;
     else
         return NOTMN;

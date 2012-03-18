@@ -38,13 +38,14 @@ int main()
   while(scelta)
   {
       scelta=intestazione();
+
       switch(scelta)
 	  {
         case 1:
 	  /* Matrici entrambe non ancora inizializzate */
          checkStatus(&m, &n);
 
-	     if(  selectMatrix(m,n) == NOTMN )
+	     if(  selectMatrix(m,n) == MN )
          {
            do
 		   {
@@ -207,6 +208,7 @@ int main()
 
       case 5:
         checkStatus(&m, &n);
+
         if( selectMatrix(m,n) == MN )
 	    {
 	       do
