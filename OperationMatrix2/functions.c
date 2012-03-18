@@ -91,6 +91,19 @@ selected selectMatrix( matrix m, matrix n )
         return NOTMN;
 }
 
+selected useMatrix( matrix m, matrix n )
+{
+    if ( m.status == TRUE && n.status == TRUE )
+        return MN;
+    else
+        if ( m.status == TRUE )
+            return M;
+    else
+        if ( n.status == TRUE )
+            return N;
+    else
+        return NOTMN;
+}
 void initDim( matrix *dest, matrix src )
 {
   dest->row = src.row;
@@ -352,6 +365,7 @@ matrix prodScalareMatrice( matrix m )
 
     printf("Inserisci valore scalare di tipo reale : ");
     salvaValore(&a);
+
     for( i = 0; i < ma.row; i++ )
         for ( j = 0; j < ma.col; j++ )
             ma.matx[i][j] = a*m.matx[i][j];

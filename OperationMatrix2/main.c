@@ -209,7 +209,7 @@ int main()
       case 5:
         checkStatus(&m, &n);
 
-        if( selectMatrix(m,n) == MN )
+        if( useMatrix(m,n) == MN )
 	    {
 	       do
 		   {
@@ -221,6 +221,7 @@ int main()
 
 	      if(matchoice=='m' || matchoice=='M')
 		  {
+		     cleanBuffer();
 		     if( mam.status == FALSE )
 		       mam=prodScalareMatrice(m);
 
@@ -229,6 +230,7 @@ int main()
 		  }
 	      else
 		  {
+		      cleanBuffer();
 		     if( man.status == FALSE )
                man=prodScalareMatrice(n);
 
@@ -238,7 +240,7 @@ int main()
 		  }
 	    }
 	  else
-        if( selectMatrix(m,n) == M )
+        if( useMatrix(m,n) == M )
 	    {
             if( mam.status==FALSE)
                 mam=prodScalareMatrice(m);
@@ -247,7 +249,7 @@ int main()
             wait();
 
         }
-	    else if( selectMatrix(m, n) == N )
+	    else if( useMatrix(m, n) == N )
 	    {
             if( man.status == FALSE)
                 man=prodScalareMatrice(n);

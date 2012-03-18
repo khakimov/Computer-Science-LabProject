@@ -39,6 +39,7 @@ typedef struct
 
 selected selectMatrix( matrix, matrix );
 void checkStatus( matrix *, matrix *);
+selected useMatrix( matrix, matrix );
 int intestazione();
 int inizializzazione(string);
 matrix inserisciMatrice();
