@@ -18,7 +18,7 @@
 #define MAXLEN 512
 #define LARGEST 100000000
 
-typedef char string[MAXLEN+1];
+typedef char string[MAXLEN];
 
 /* <------------- Functions' prototype declaration -------------- > */
 int intestazione();
