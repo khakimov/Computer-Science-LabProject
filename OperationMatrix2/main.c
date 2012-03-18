@@ -22,16 +22,16 @@ int main()
 
   matrix m = { NULL, 0, 0, FALSE}; /* First matrix */
   matrix n = { NULL, 0, 0, FALSE }; /* Secondo matrix */
-  matrix matx_tm; /* M's transposed matrix */
-  matrix matx_tn; /* N's transposed matrix */
+  matrix matx_tm = { NULL, 0, 0, FALSE }; /* M's transposed matrix */
+  matrix matx_tn = { NULL, 0, 0, FALSE }; /* N's transposed matrix */
 
   int scelta=1;
   int res;
-  matrix mpn; /* Matrix resulting from the sum of the M matrix and the N matrix */
-  matrix md;  /* Matrix resulting from the difference between the two matrix */
-  matrix mam; /* Matrix create for the scalar product of each M's value and a scalar value */
-  matrix man; /* Matrix create for the scalar product of each N's value and a scalar value */
-  matrix MpvN; /* Vectorial product between the two matrix */
+  matrix mpn = { NULL, 0, 0, FALSE }; /* Matrix resulting from the sum of the M matrix and the N matrix */
+  matrix md = { NULL, 0, 0, FALSE };  /* Matrix resulting from the difference between the two matrix */
+  matrix mam = { NULL, 0, 0, FALSE }; /* Matrix create for the scalar product of each M's value and a scalar value */
+  matrix man = { NULL, 0, 0, FALSE }; /* Matrix create for the scalar product of each N's value and a scalar value */
+  matrix MpvN = { NULL, 0, 0, FALSE }; /* Vectorial product between the two matrix */
   char matchoice; /* variable used in order to get the choice inserted by the user */
 
 
@@ -101,7 +101,7 @@ int main()
         case 2:
         checkStatus(&m, &n);
 
-	  if( selectMatrix(m,n) == MN) /* Both correctly create, now can I do something with them */
+	  if( useMatrix(m,n) == MN) /* Both correctly create, now can I do something with them */
       {
 
 	      do
@@ -208,7 +208,7 @@ int main()
 
       case 5:
         checkStatus(&m, &n);
-        cleanBuffer();
+
 
         if( useMatrix(m,n) == MN )
 	    {
@@ -228,7 +228,7 @@ int main()
 		       mam=prodScalareMatrice(m);
 
 		     stampa(mam,"Prodotto Scalare M");
-		     wait();
+		     cleanBuffer();
 		  }
 	      else
 		  {
@@ -269,7 +269,7 @@ int main()
 
 	case 6:
 	  checkStatus(&m, &n);
-	  if ( ( m.col == n.row) && ( selectMatrix(m,n) == MN ) )
+	  if ( ( m.col == n.row) && ( useMatrix(m,n) == MN ) )
 	  {
 	      if( MpvN.status == FALSE)
 		    MpvN=prodvetMatrice(m,n);
