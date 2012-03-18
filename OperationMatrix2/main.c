@@ -43,6 +43,7 @@ int main()
         case 1:
 	  /* Matrici entrambe non ancora inizializzate */
          checkStatus(&m, &n);
+
 	     if(  selectMatrix(m,n) == NOTMN )
          {
            do
@@ -97,8 +98,9 @@ int main()
 	  break;
 
         case 2:
+        checkStatus(&m, &n);
 
-	  if(selectMatrix(m,n) == MN) /* Both correctly create, now can I do something with them */
+	  if( selectMatrix(m,n) == MN) /* Both correctly create, now can I do something with them */
       {
 
 	      do
@@ -129,6 +131,7 @@ int main()
      }
 	 else
 	 {
+	     checkStatus(&m, &n);
         if(m.status == TRUE) /* It's defined only m, so make the trasposition with it */
 		{
 		  if( matx_tm.status == FALSE )
@@ -154,6 +157,7 @@ int main()
 	 break;
 
      case 3:
+      checkStatus(&m, &n);
 	  if  ( (m.row != n.row || m.col != n.col) || ( m.status == FALSE && n.status == FALSE )) /* The matrixs must have the same dimensions to make the sum */
       {
 	     fprintf(stderr,"Attenzione!!! Matrici NULLE oppure di dimensioni DIFFERENTI!\nReinserisci le matrici!!\n");
@@ -177,6 +181,7 @@ int main()
      break;
 
      case 4:
+	  checkStatus(&m, &n);
 	  if  ( (m.row != n.row || m.col != n.col) || ( m.status == FALSE && n.status == FALSE ) ) /* The matrixs must have the same dimensions */
       {
 	      fprintf(stderr,"Attenzione!!! Matrici NULLE oppure di dimensioni DIFFERENTI!\nReinserisci le matrici!!\n");
@@ -201,7 +206,7 @@ int main()
       break;
 
       case 5:
-
+        checkStatus(&m, &n);
         if( selectMatrix(m,n) == MN )
 	    {
 	       do
@@ -257,6 +262,7 @@ int main()
 	  break;
 
 	case 6:
+	  checkStatus(&m, &n);
 	  if ( ( m.col == n.row) && ( selectMatrix(m,n) == MN ) )
 	  {
 	      if( MpvN.status == FALSE)

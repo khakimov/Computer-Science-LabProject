@@ -63,17 +63,17 @@ void checkStatus( matrix *m, matrix *n )
     if( m->matx == NULL && n->matx == NULL )
         m->status = FALSE, n->status = FALSE;
     else
+    {
         if ( m->matx == NULL )
             m->status = FALSE;
+        else
+            n->status = TRUE;
 
-    else
         if ( n->matx == NULL )
             m->status = FALSE;
-
-
-    else
-        n->status = TRUE, m->status = TRUE;
-
+          else
+            m->status = TRUE;
+    }
 
 }
 
@@ -218,6 +218,8 @@ matrix trasposta( matrix mat )
     for ( j = 0; j < matx_t.col; j++ )
         matx_t.matx[i][j] = mat.matx[j][i];
 
+   matx_t.status = TRUE;
+
   return matx_t;
 
 }
@@ -325,6 +327,7 @@ matrix sommaMatrici( matrix m, matrix n )
         for ( j = 0; j < mpn.col; j++ )
             mpn.matx[i][j] = m.matx[i][j] + n.matx[i][j];
 
+    mpn.status = TRUE;
     return mpn;
 }
 
@@ -353,6 +356,7 @@ matrix prodScalareMatrice( matrix m )
         for ( j = 0; j < ma.col; j++ )
             ma.matx[i][j] = a*m.matx[i][j];
 
+    ma.status = TRUE;
     return ma;
 }
 
@@ -377,6 +381,7 @@ matrix diffMatrice( matrix m, matrix n )
        for(j=0;j< md.col; j++)
            md.matx[i][j]=m.matx[i][j]-n.matx[i][j];
 
+    md.status = TRUE;
     return md;
 
 }
@@ -406,6 +411,8 @@ matrix prodvetMatrice( matrix m, matrix n )
           for(k=0;k< m.col;k++)
 	    MpvN.matx[i][j]+=m.matx[i][k]*n.matx[k][j];
 
+
+    MpvN.status = TRUE;
     return MpvN;
 }
 
