@@ -6,56 +6,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
-#include <string.h>
-#include <ctype.h>
-
-/* <------------- Macro and costant definition ----------------- > */
-#define chomp(x) x[strlen(x)-1] = '\0'
-
-#define MAXR 100
-#define MAXC 100
-#define FILENAME "result.txt"
-#define MAXLEN 512
-#define LARGEST 100000000
-
-typedef enum { FALSE, TRUE }boolean;
-
-typedef enum { NOTMN,M, N, MN }selected;
-
-typedef char string[MAXLEN-1];
-
-typedef struct
-{
-  float **matx;
-  int row;
-  int col;
-  boolean status;
-
-}matrix;
-
+#include "ReadWriteFoo.h"
 
 
 /* <------------- Functions' prototype declaration -------------- > */
 
-selected selectMatrix( matrix, matrix );
-void checkStatus( matrix *, matrix *);
-selected useMatrix( matrix, matrix );
+matrice* initElenco( void );
+matrice *reallocMat( matrice *, int );
+void overwriteMatrix( matrice *, int );
 int intestazione();
-int inizializzazione(string);
-matrix inserisciMatrice();
-void stampa(matrix, string);
-matrix trasposta(matrix);
-void free_matrix( matrix );
+matrice inserisciMatrice( int );
+void stampaMatrice(matrice, int );
+void free_matrix( matrice );
 void salvaValore( float *);
-void cleanLine( float *, int, int );
 void cleanBuffer();
-float *leggi_riga( string, int );
-matrix sommaMatrici( matrix, matrix );
-matrix prodScalareMatrice( matrix );
-matrix diffMatrice( matrix, matrix );
-matrix prodvetMatrice(matrix, matrix );
-void printFile( matrix, string );
-void initDim( matrix *, matrix );
+matrice trasposta(matrice);
+matrice sommaMatrici( matrice, matrice );
+matrice prodScalareMatrice( matrice );
+matrice diffMatrice( matrice, matrice );
+matrice prodvetMatrice(matrice, matrice );
+void initDim( matrice *, matrice );
+void allocMatrix( matrice * );
+int checkDim( matrice, matrice );
+int checkRowCol( matrice  );
+void sceltaMatrici(matrice *, int *, int *, int);
+int leggiIntero();
+
 
 /* < -------------------------------------------------------------------- > */
 
