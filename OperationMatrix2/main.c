@@ -22,9 +22,8 @@
 int main()
 {
   matrice *elenco = initElenco();
-  matrice matx_t;
-  matrice matx_s;
-  
+
+
   int cont_t = 0;
   int cont = 0;
   int scelta=1;
@@ -40,16 +39,16 @@ int main()
       switch(scelta)
 	  {
         case 1:
-             
+
                if ( cont > 0 )
                 elenco = reallocMat( elenco,cont+1 );
-                
+
                printf("Inserisci matrice - ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRALO\n", cont);
                elenco[cont] = inserisciMatrice(cont);
                cont++;
-             
+
 	  break;
-	        
+
       case 2:
            do
             {
@@ -58,70 +57,72 @@ int main()
                    "MATRICI CARICATE", cont);
                res = scanf("%d", &matchoice);
                scanf("%*[^\n]");
-               if ( res == 0 ) 
+               if ( res == 0 )
                   printf("Valore inserito errato, riprovare!\n");
                else
                    if ( matchoice < 0 || matchoice > cont )
-                      printf("Valore inserito non fa riferimento a matrici inizializzate!!\n");                 
-                   
+                      printf("Valore inserito non fa riferimento a matrici inizializzate!!\n");
+
             }while( res == 0 || matchoice > cont);
-            
-            stampaMatrice(elenco[matchoice], matchoice);  
+
+            stampaMatrice(elenco[matchoice], matchoice);
             wait();
-            
+
       break;
 
      case 3:
-      //overwrite this dick stupid duck
+      /*overwrite this dick stupid duck*/
       break;
-     
+
      case 4:
           do
           {
              printf("%s%s %d\n",
                     "Inserisci l'ID della matrice sulla quale si intende operare la TRASPOSTA\n",
                     "MATRICI CARICATE", cont);
-             res = scanf("%d", &matchoice);  
+             res = scanf("%d", &matchoice);
              scanf("%*[^\n]");
              if ( res == 0 )
                 printf("ID inserito errato, riprovare!\n");
-             else 
+             else
                 if (matchoice < 0 || matchoice > cont)
                    printf("ID inserito non fa riferimento a matrici inizializzate!\n");
              }while ( res == 0 || matchoice > cont);
-             
-          matx_t = trasposta(elenco[matchoice]);
-          stampaMatrice(matx_t, matchoice);  
-          wait();  
-                              
-      
-      break; 
+
+          elenco[++cont] = trasposta(elenco[matchoice]);
+          stampaMatrice(elenco[matchoice], matchoice);
+          wait();
+
+
+      break;
 
       case 5:
            sceltaMatrici(elenco,&scelta1, &scelta2, cont);
-           sommaMatrici(elenco[scelta1],elenco[scelta2]);
-           stampaMatrice(matx_s, 0);
-        
+           reallocMat(elenco, cont);
+           elenco[++cont] = sommaMatrici(elenco[scelta1],elenco[scelta2]);
+           stampaMatrice(elenco[cont], cont);
+           wait();
+
 	  break;
 
 	case 6:
-	  
+
 	  break;
 
 	case 7 :
-	  
+
 	break;
 
 	case 8 :
-	  
+
 	break;
-	
+
 	case 9 :
-	  
+
 	break;
 
    case 0:
-	  
+
 
 	  scelta=0;
 
