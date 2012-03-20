@@ -87,9 +87,10 @@ int main()
                    printf("ID inserito non fa riferimento a matrici inizializzate!\n");
              }while ( res == 0 || matchoice > cont);
           
-          reallocMat(elenco, cont);  
-          elenco[++cont] = trasposta(elenco[matchoice]);
-          stampaMatrice(elenco[cont], cont);  
+          elenco = reallocMat(elenco, cont+1);  
+          elenco[cont] = trasposta(elenco[matchoice]);
+          stampaMatrice(elenco[cont], cont); 
+          cont++; 
           wait();  
                               
       
@@ -97,9 +98,10 @@ int main()
 
       case 5:
            
-           reallocMat(elenco, cont);
-           elenco[++cont] = sommaMatrici(elenco, cont);
+           elenco = reallocMat(elenco, cont+1);
+           elenco[cont] = sommaMatrici(elenco, cont);
            stampaMatrice(elenco[cont], cont);
+           cont++;
            wait();
 
         
@@ -107,9 +109,10 @@ int main()
 
 	case 6:
 	       
-           reallocMat(elenco, cont);
-           elenco[++cont] = diffMatrice(elenco, cont);
+           elenco = reallocMat(elenco, cont+1);
+           elenco[cont] = diffMatrice(elenco, cont);
            stampaMatrice(elenco[cont], cont);
+           cont++;
            wait();
            
 	  break;

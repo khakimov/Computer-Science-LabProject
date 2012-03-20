@@ -28,7 +28,7 @@ matrice prodvetMatrice(matrice *, int);
 void initDim( matrice *, matrice );
 void allocMatrix( matrice * );
 int checkDim( matrice, matrice );
-int checkRowCol( matrice  );
+int checkRowCol( matrice , matrice );
 void sceltaMatrici(matrice *, int *, int *, int);
 int leggiIntero();
 void controllaDati( matrice *, int , char  , int *, int *);

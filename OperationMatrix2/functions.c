@@ -142,9 +142,9 @@ int checkDim( matrice m, matrice n )
     return ( leggiRighe(m) == leggiRighe(n) && leggiColonne(m) == leggiColonne(n) ) ? 1 : 0;
 }
 
-int checkRowCol( matrice m )
+int checkRowCol( matrice m , matrice n)
 {
-    return ( ( leggiRighe(m) != 0 ) && ( leggiColonne(m) != 0 ) ) ? 1 : 0;
+    return ( leggiColonne(m) == leggiRighe(n) ) ? 1 : 0;
 }
 
 void initDim( matrice *dest, matrice src )
@@ -244,7 +244,7 @@ matrice trasposta( matrice mat )
   allocMatrix(&mat_t);
 
   for ( i=0; i < leggiRighe(mat_t); i++ )
-    for ( j = 0; j < leggiRighe(mat_t); j++ )
+    for ( j = 0; j < leggiColonne(mat_t); j++ )
         scriviElemento(&mat_t,i,j,leggiValore(mat,j,i));
 
 
@@ -296,7 +296,7 @@ matrice prodScalareMatrice( matrice *m, int cont )
     salvaValore(&a);
 
     for( i = 0; i < leggiRighe(ma); i++ )
-        for ( j = 0; j < leggiRighe(ma); j++ )
+        for ( j = 0; j < leggiColonne(ma); j++ )
             scriviElemento(&ma,i,j, a * leggiValore(m[scelta],i,j));
 
 
@@ -412,7 +412,7 @@ void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2
             if ( res == 0 )
                 fprintf(stderr,"Reinserisci le matrici!\nLE MATRICI DEVONO NECESSARIAMENTE AVERE LE STESSE DIMENSIONI!\n");
 
-        }while( res == 0 || ( checkRowCol(elenco[*scelta1]) == 0 && checkRowCol(elenco[*scelta2]) ) );
+        }while( res == 0 || ( checkRowCol(elenco[*scelta1],elenco[*scelta2]) == 0));
 
     break;
     }
