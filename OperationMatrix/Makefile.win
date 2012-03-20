@@ -5,11 +5,11 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = functions.o main.o $(RES)
-LINKOBJ  = functions.o main.o $(RES)
-LIBS =   
-INCS = 
-CXXINCS = 
+OBJ  = functions.o main.o ReadWriteFoo.o $(RES)
+LINKOBJ  = functions.o main.o ReadWriteFoo.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib"  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
 BIN  = OperationMatrix.exe
 CXXFLAGS = $(CXXINCS)  
 CFLAGS = $(INCS)  
@@ -31,3 +31,6 @@ functions.o: functions.c
 
 main.o: main.c
 	$(CC) -c main.c -o main.o $(CFLAGS)
+
+ReadWriteFoo.o: ReadWriteFoo.c
+	$(CC) -c ReadWriteFoo.c -o ReadWriteFoo.o $(CFLAGS)
