@@ -22,8 +22,6 @@
 int main()
 {
   matrice *elenco = initElenco();
-  matrice matx_t;
-  matrice matx_s;
   
   int cont_t = 0;
   int cont = 0;
@@ -89,9 +87,10 @@ int main()
                 if (matchoice < 0 || matchoice > cont)
                    printf("ID inserito non fa riferimento a matrici inizializzate!\n");
              }while ( res == 0 || matchoice > cont);
-             
-          matx_t = trasposta(elenco[matchoice]);
-          stampaMatrice(matx_t, matchoice);  
+          
+          reallocMat(elenco, cont);  
+          elenco[++cont] = trasposta(elenco[matchoice]);
+          stampaMatrice(elenco[cont], cont);  
           wait();  
                               
       
@@ -99,13 +98,21 @@ int main()
 
       case 5:
            sceltaMatrici(elenco,&scelta1, &scelta2, cont);
-           sommaMatrici(elenco[scelta1],elenco[scelta2]);
-           stampaMatrice(matx_s, 0);
+           reallocMat(elenco, cont);
+           elenco[++cont] = sommaMatrici(elenco[scelta1],elenco[scelta2]);
+           stampaMatrice(elenco[cont], cont);
+           wait();
+
         
 	  break;
 
 	case 6:
-	  
+	       sceltaMatrici(elenco,&scelta1, &scelta2, cont);
+           reallocMat(elenco, cont);
+           elenco[++cont] = diffMatrici(elenco[scelta1],elenco[scelta2]);
+           stampaMatrice(elenco[cont], cont);
+           wait();
+           
 	  break;
 
 	case 7 :

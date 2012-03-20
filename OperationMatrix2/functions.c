@@ -222,7 +222,7 @@ void stampaMatrice( matrice mat, int id )
       printf(" ----- Matrice %d ---- \n", id);
       for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
         for(j=0;j < leggiColonne(mat);j++)
-            {printf("%15.3f ",leggiValore(mat, i, j)); getch();}
+            printf("%15.3f ",leggiValore(mat, i, j));
   }
 
 }
@@ -260,7 +260,6 @@ matrice sommaMatrici( matrice m, matrice n )
     int i, j;
 
     initDim( &mpn, m);
-
     allocMatrix(&mpn);
 
     for ( i = 0; i < leggiRighe(mpn); i++ )
