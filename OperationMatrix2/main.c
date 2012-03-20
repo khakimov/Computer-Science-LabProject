@@ -23,7 +23,6 @@ int main()
 {
   matrice *elenco = initElenco();
   
-  int cont_t = 0;
   int cont = 0;
   int scelta=1;
   int res;
@@ -97,9 +96,9 @@ int main()
       break; 
 
       case 5:
-           sceltaMatrici(elenco,&scelta1, &scelta2, cont);
+           
            reallocMat(elenco, cont);
-           elenco[++cont] = sommaMatrici(elenco[scelta1],elenco[scelta2]);
+           elenco[++cont] = sommaMatrici(elenco, cont);
            stampaMatrice(elenco[cont], cont);
            wait();
 
@@ -107,9 +106,9 @@ int main()
 	  break;
 
 	case 6:
-	       sceltaMatrici(elenco,&scelta1, &scelta2, cont);
+	       
            reallocMat(elenco, cont);
-           elenco[++cont] = diffMatrici(elenco[scelta1],elenco[scelta2]);
+           elenco[++cont] = diffMatrice(elenco, cont);
            stampaMatrice(elenco[cont], cont);
            wait();
            

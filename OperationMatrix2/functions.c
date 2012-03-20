@@ -254,29 +254,41 @@ matrice trasposta( matrice mat )
 }
 
 
-matrice sommaMatrici( matrice m, matrice n )
+matrice sommaMatrici( matrice *elenco, int cont)
 {
     matrice mpn;
     int i, j;
+    int scelta1,scelta2;
 
-    initDim( &mpn, m);
+    controllaDati( elenco, cont, 'S' , &scelta1, &scelta2);
+    initDim( &mpn, elenco[scelta1]);
     allocMatrix(&mpn);
 
     for ( i = 0; i < leggiRighe(mpn); i++ )
         for ( j = 0; j < leggiColonne(mpn); j++ )
-            scriviElemento( &mpn,i, j, leggiValore(m, i, j) + leggiValore(n, i, j));
+            scriviElemento( &mpn,i, j, leggiValore(elenco[scelta1], i, j) + leggiValore(elenco[scelta2], i, j));
 
 
     return mpn;
 }
 
-matrice prodScalareMatrice( matrice m )
+matrice prodScalareMatrice( matrice *m, int cont )
 {
     matrice ma;
     float a;
     int i, j;
-
-    initDim( &ma, m);
+    int scelta;
+    
+    do
+     {
+          printf("Inserisci l'ID della matrice sulla quale operare: ");
+          scelta = leggiIntero();
+          if(scelta < 0 || scelta > cont)
+             printf("Matrice non esistente!\n");
+             
+     }while( scelta < 0 || scelta > cont );
+     
+    initDim( &ma, m[scelta]);
 
     allocMatrix(&ma);
 
@@ -285,44 +297,50 @@ matrice prodScalareMatrice( matrice m )
 
     for( i = 0; i < leggiRighe(ma); i++ )
         for ( j = 0; j < leggiRighe(ma); j++ )
-            scriviElemento(&ma,i,j, a * leggiValore(m,i,j));
+            scriviElemento(&ma,i,j, a * leggiValore(m[scelta],i,j));
 
 
     return ma;
 }
 
-matrice diffMatrice( matrice m, matrice n )
+matrice diffMatrice( matrice *elenco, int cont)
 {
     matrice md;
     int i,j;
+    int scelta1,scelta2;
 
-    initDim( &md, m);
+    controllaDati( elenco, cont, 'D' , &scelta1, &scelta2);
+    initDim( &md, elenco[scelta1]);
 
     allocMatrix(&md);
 
     for( i=0; i < leggiRighe(md);i++)
        for(j=0; j < leggiColonne(md); j++)
-           scriviElemento( &md, i, j, leggiValore(m,i,j)- leggiValore(n, i,j));
+           scriviElemento( &md, i, j, leggiValore(elenco[scelta1],i,j)- leggiValore(elenco[scelta2], i,j));
 
 
     return md;
 
 }
 
-matrice prodvetMatrice( matrice m, matrice n )
+matrice prodvetMatrice( matrice *elenco, int cont)
 {
     matrice MpvN;
     int i,j,k;
+    int scelta1,scelta2;
 
-    MpvN.righe = leggiRighe(m);
-    MpvN.colonne = leggiColonne(n);
+    controllaDati( elenco, cont, 'P' , &scelta1, &scelta2);
+    
+    
+    MpvN.righe = leggiRighe(elenco[scelta1]);
+    MpvN.colonne = leggiColonne(elenco[scelta2]);
 
     allocMatrix(&MpvN);
 
     for(i=0;i< leggiRighe(MpvN);i++)
        for(j=0;j< leggiColonne(MpvN);j++)
-          for(k=0;k< leggiColonne(m);k++)
-            scriviElemento( &MpvN, i, j, leggiValore(MpvN,i,j) + leggiValore(m,i,k)* leggiValore(n,k,j) );
+          for(k=0;k< leggiColonne(elenco[scelta1]);k++)
+            scriviElemento( &MpvN, i, j, leggiValore(MpvN,i,j) + leggiValore(elenco[scelta1],i,k)* leggiValore(elenco[scelta2],k,j) );
 
 
 
@@ -365,4 +383,37 @@ int leggiIntero()
     }while ( res == 0 );
     
     return intero;
-}   
+} 
+  
+void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2 )
+{
+    int res;
+
+    switch ( opt )
+    {
+
+     case 'S' : case 'D' :
+        do
+        {
+
+            sceltaMatrici(elenco,scelta1, scelta2, n);
+            res = checkDim( elenco[*scelta1], elenco[*scelta2] );
+            if ( res == 0 )
+                fprintf(stderr,"Reinserisci le matrici!\nLE MATRICI DEVONO NECESSARIAMENTE AVERE LE STESSE DIMENSIONI!\n");
+
+        }while( res == 0 || ( checkDim(elenco[*scelta1], elenco[*scelta2])) == 0 );
+    break;
+    case 'P':
+        do
+        {
+
+            sceltaMatrici(elenco,scelta1, scelta2, n);
+            res = checkDim( elenco[*scelta1], elenco[*scelta2] );
+            if ( res == 0 )
+                fprintf(stderr,"Reinserisci le matrici!\nLE MATRICI DEVONO NECESSARIAMENTE AVERE LE STESSE DIMENSIONI!\n");
+
+        }while( res == 0 || ( checkRowCol(elenco[*scelta1]) == 0 && checkRowCol(elenco[*scelta2]) ) );
+
+    break;
+    }
+}

@@ -21,16 +21,17 @@ void free_matrix( matrice );
 void salvaValore( float *);
 void cleanBuffer();
 matrice trasposta(matrice);
-matrice sommaMatrici( matrice, matrice );
-matrice prodScalareMatrice( matrice );
-matrice diffMatrice( matrice, matrice );
-matrice prodvetMatrice(matrice, matrice );
+matrice sommaMatrici( matrice *, int);
+matrice prodScalareMatrice( matrice *, int);
+matrice diffMatrice( matrice *, int);
+matrice prodvetMatrice(matrice *, int);
 void initDim( matrice *, matrice );
 void allocMatrix( matrice * );
 int checkDim( matrice, matrice );
 int checkRowCol( matrice  );
 void sceltaMatrici(matrice *, int *, int *, int);
 int leggiIntero();
+void controllaDati( matrice *, int , char  , int *, int *);
 
 
 /* < -------------------------------------------------------------------- > */
