@@ -222,7 +222,7 @@ void stampaMatrice( matrice mat, int id )
       printf(" ----- Matrice %d ---- \n", id);
       for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
         for(j=0;j < leggiColonne(mat);j++)
-            printf("%15.3f ",leggiValore(mat, i, j));
+            {printf("%15.3f ",leggiValore(mat, i, j)); getch();}
   }
 
 }
@@ -330,3 +330,40 @@ matrice prodvetMatrice( matrice m, matrice n )
     return MpvN;
 }
 
+void sceltaMatrici(matrice *m, int *scelta1, int *scelta2, int cont)
+{
+    do
+     {
+          printf("Matrice 1 (ID): ");
+          *scelta1 = leggiIntero();
+          if(*scelta1 < 0 || *scelta1 > cont)
+             printf("Matrice non esistente!\n");
+     }while( *scelta1 < 0 || *scelta1 > cont );
+     
+    do
+     {
+          printf("Matrice 2 (ID): ");
+          *scelta2 = leggiIntero();
+          if( *scelta2 < 0 || *scelta2 > cont )
+             printf("Matrice non esistente!\n");
+             else if ( *scelta2 == *scelta1 )
+                     printf("Matrice gia' selezionata, riprovare...\n");
+                     
+     }while( (*scelta2 < 0 || *scelta2 > cont) && *scelta2 == *scelta1  );
+}
+
+int leggiIntero()
+{
+    int res;
+    int intero;
+    do
+    {
+        res = scanf("%d",&intero);
+        scanf("%*[^\n]");
+        if( res == 0) 
+          printf("\nAssegnazione valore errata, reinserisci: ");
+          
+    }while ( res == 0 );
+    
+    return intero;
+}   
