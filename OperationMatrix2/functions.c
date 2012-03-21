@@ -19,7 +19,7 @@ int intestazione()
      #elif  defined __unix__
             system("clear");
      #endif
-     printf("----------OPERAZIONI MATRICI----------\nPowered by A. Suglia & N. Chekalin\n\n%s%s%s%s%s%s%s%s%s%s%s\n",
+     printf("----------OPERAZIONI MATRICI----------\nPowered by A. Suglia & N. Chekalin\n\n%s%s%s%s%s%s%s%s%s%s\n",
           "-----------------MENU'----------------\n\n",
           "1 - Inserire Matrice \n",
           "2 - Stampa Matrice \n",
@@ -29,7 +29,6 @@ int intestazione()
           "6 - Differenza Matrici\n",
           "7 - Prodotto Scalare Matrici\n",
           "8 - Prodotto Vettoriale Matrici\n",
-          "9 - Inserisci nuove matrici\n",
           "0 - Esci\n\n");
      printf("Scelta operazione -> ");
      ris=scanf("%d",&scelta);
@@ -283,10 +282,10 @@ matrice prodScalareMatrice( matrice *m, int cont )
      {
           printf("Inserisci l'ID della matrice sulla quale operare: ");
           scelta = leggiIntero();
-          if(scelta < 0 || scelta > cont)
+          if(scelta < 0 || scelta >= cont)
              printf("Matrice non esistente!\n");
              
-     }while( scelta < 0 || scelta > cont );
+     }while( scelta < 0 || scelta >= cont );
      
     initDim( &ma, m[scelta]);
 
@@ -351,22 +350,21 @@ void sceltaMatrici(matrice *m, int *scelta1, int *scelta2, int cont)
 {
     do
      {
-          printf("Matrice 1 (ID): ");
+          printf("Indicare l'ID della matrice n.1: ");
           *scelta1 = leggiIntero();
-          if(*scelta1 < 0 || *scelta1 > cont)
+          if(*scelta1 < 0 || *scelta1 >= cont)
              printf("Matrice non esistente!\n");
-     }while( *scelta1 < 0 || *scelta1 > cont );
+     }while( *scelta1 < 0 || *scelta1 >= cont );
      
     do
      {
-          printf("Matrice 2 (ID): ");
+          printf("Indicare l'ID della matrice n.2: ");
           *scelta2 = leggiIntero();
-          if( *scelta2 < 0 || *scelta2 > cont )
+          if( *scelta2 < 0 || *scelta2 >= cont )
              printf("Matrice non esistente!\n");
-             else if ( *scelta2 == *scelta1 )
-                     printf("Matrice gia' selezionata, riprovare...\n");
+             
                      
-     }while( (*scelta2 < 0 || *scelta2 > cont) && *scelta2 == *scelta1  );
+     }while( (*scelta2 < 0 || *scelta2 >= cont) );
 }
 
 int leggiIntero()

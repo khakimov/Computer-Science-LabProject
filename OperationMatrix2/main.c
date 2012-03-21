@@ -41,13 +41,16 @@ int main()
                if ( cont > 0 )
                 elenco = reallocMat( elenco,cont+1 );
                 
-               printf("Inserisci matrice - ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRALO\n", cont);
+               printf("Inserisci matrice - ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRATO\n", cont);
                elenco[cont] = inserisciMatrice(cont);
                cont++;
              
 	  break;
 	        
       case 2:
+           
+           if( cont > 0 )
+           {
            do
             {
                printf("%s%s %d\n",
@@ -65,78 +68,133 @@ int main()
             
             stampaMatrice(elenco[matchoice], matchoice);  
             wait();
+            }
+             else
+             {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+             }     
             
       break;
 
      case 3:
-      //overwrite this dick stupid duck
+      //overwrite 
       break;
      
      case 4:
-          do
-          {
-             printf("%s%s %d\n",
+          
+          if( cont > 0 )
+           {
+            do
+            {
+              printf("%s%s %d\n",
                     "Inserisci l'ID della matrice sulla quale si intende operare la TRASPOSTA\n",
                     "MATRICI CARICATE", cont);
-             res = scanf("%d", &matchoice);  
-             scanf("%*[^\n]");
-             if ( res == 0 )
-                printf("ID inserito errato, riprovare!\n");
-             else 
-                if (matchoice < 0 || matchoice > cont)
-                   printf("ID inserito non fa riferimento a matrici inizializzate!\n");
+              res = scanf("%d", &matchoice);  
+              scanf("%*[^\n]");
+              if ( res == 0 )
+                 printf("ID inserito errato, riprovare!\n");
+              else 
+                 if (matchoice < 0 || matchoice > cont)
+                    printf("ID inserito non fa riferimento a matrici inizializzate!\n");
              }while ( res == 0 || matchoice > cont);
           
           elenco = reallocMat(elenco, cont+1);  
           elenco[cont] = trasposta(elenco[matchoice]);
           stampaMatrice(elenco[cont], cont); 
           cont++; 
-          wait();  
+          wait();
+           
+           }else
+             {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+             }    
                               
       
       break; 
 
       case 5:
            
-           elenco = reallocMat(elenco, cont+1);
-           elenco[cont] = sommaMatrici(elenco, cont);
-           stampaMatrice(elenco[cont], cont);
-           cont++;
-           wait();
+           if( cont > 0 )
+           {
+             elenco = reallocMat(elenco, cont+1);
+             elenco[cont] = sommaMatrici(elenco, cont);
+             stampaMatrice(elenco[cont], cont);
+             cont++;
+             wait();
+             
+           }else
+             {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+             } 
 
         
 	  break;
 
 	case 6:
 	       
-           elenco = reallocMat(elenco, cont+1);
-           elenco[cont] = diffMatrice(elenco, cont);
-           stampaMatrice(elenco[cont], cont);
-           cont++;
-           wait();
+	       if( cont > 0 )
+           {
+            elenco = reallocMat(elenco, cont+1);
+            elenco[cont] = diffMatrice(elenco, cont);
+            stampaMatrice(elenco[cont], cont);
+            cont++;
+            wait();
+           
+            }else
+             {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+             }
            
 	  break;
 
 	case 7 :
 	  
+	       if( cont > 0 )
+           {
+	        elenco = reallocMat(elenco, cont+1);
+            elenco[cont] = prodScalareMatrice(elenco, cont);
+            stampaMatrice(elenco[cont], cont);
+            cont++;
+            wait();
+           
+            }else
+             {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+             }
 	break;
 
 	case 8 :
+         
+           if( cont > 0 )
+           {
+               
+               elenco = reallocMat(elenco, cont+1);
+               elenco[cont] = prodvetMatrice(elenco, cont);
+               stampaMatrice(elenco[cont], cont);
+               cont++;
+               wait();
+           
+            }else
+             {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+             }
 	  
 	break;
 	
-	case 9 :
-	  
-	break;
-
-   case 0:
+    case 0:
 	  
 
 	  scelta=0;
 
-  break;
+    break;
 
-  default :
+    default :
 	  printf("Scelta immessa non valida!");
 	  wait();
     }
