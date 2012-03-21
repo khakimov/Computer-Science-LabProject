@@ -6,7 +6,7 @@
 
 #define MAXR 100
 #define MAXC 100
-#define MAXM 10
+#define MAXM 50
 
 #if defined _WIN32
 #define wait() getch()

@@ -118,8 +118,43 @@ matrice* initElenco( void )
 void overwriteMatrix( matrice *m, int n )
 {
      int matchoice;
+     char choice;
+     int res;
+
+     printf("----- SOVRASCRITTURA --------\n\n");
+     printf("%s\n%s\n",
+            "SI E' SUPERATO IL NUMERO MASSIMO DI MATRICI SALVABILI",
+            "Sarà possibile inserire l'ID della matrice che si vuole sovrascrivere!!\n\n");
+     if ( n < 0 )
+        printf("%s\n%s\n",
+               "L'operazione di sovrascrittura non è possibile!",
+               "NESSUNA MATRICE DISPONIBILE, PREMI 1 NEL MENU PER INSERIRLE!");
+    else
+    {
+       sceltaMatrici(&matchoice, NULL, n);
+        printf("%s %d\n",
+               "Si sta per sovrascrivere la matrice con ID", matchoice);
+
+        do
+        {
+
+            printf("Si intende continuare? s/n\nSCELTA : ");
+            res = scanf("\n%c", &choice);
+            //scanf("%*[^\n]");
+            if( res == 0 || choice != 'n' && choice != 's')
+            {
+                printf("Scelta non consentita!!\n");
+                scanf("%*[^\n]");
+            }
+        }while ( res == 0 && choice != 'n' || choice != 's');
+
+        if( choice == 's' )
+            m[matchoice] = inserisciMatrice( matchoice);
+        else
+            printf("La matrice con ID %d non è stata sovrascritta!!", matchoice);
 
 
+    }
 
 }
 
@@ -187,6 +222,7 @@ matrice inserisciMatrice( int id )
     matrice array;
     int i,j;
 
+    printf("Inserisci matrice - ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRATO\n", id);
     scriviRighe(&array);
     scriviColonne(&array);
 
@@ -197,7 +233,8 @@ matrice inserisciMatrice( int id )
 
     allocMatrix(&array);
 
-    printf("Inserisci elementi della matrice\n");
+
+    printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(array); i++ )
         for ( j = 0; j < leggiColonne(array); j++ )
             scriviValore(&array, i, j);
@@ -206,26 +243,24 @@ matrice inserisciMatrice( int id )
 }
 
 /* Prints to video the values present in the matrix passed as a parameter */
-void stampaMatrice( matrice *elenco, int cont, int id )
+void stampaMatrice( matrice *elenco, int cont )
 {
   int i,j;
   int matchoice;
   int res;
-  
-  if(!id)
-  {
+
+    printf("MATRICI TOTALI DISPONIBILI = %d\n\n", cont);
    sceltaMatrici(&matchoice, NULL, cont);
-   cont = matchoice;
-  }
-  
+
+
   if ( elenco[matchoice].righe == 0 )
      printf("Matrice non inizializzata!!\n");
   else
   {
-      printf(" ----- Matrice %d ---- \n", cont);
-      for(i = 0; i < leggiRighe(elenco[cont]); printf("\n"),i++)
-        for(j=0;j < leggiColonne(elenco[cont]);j++)
-            printf("%15.3f ",leggiValore(elenco[cont], i, j));
+      printf(" ----- Matrice %d ---- \n", elenco[matchoice].id);
+      for(i = 0; i < leggiRighe(elenco[matchoice]); printf("\n"),i++)
+        for(j=0;j < leggiColonne(elenco[matchoice]);j++)
+            printf("%15.3f ",leggiValore(elenco[matchoice], i, j));
   }
 
 }
@@ -241,9 +276,10 @@ matrice trasposta( matrice *elenco, int cont )
   int i,j;
   matrice mat_t;
   int matchoice;
-  
+
   sceltaMatrici(&matchoice, NULL, cont);
-  
+
+  mat_t.id = cont;
   mat_t.righe = leggiColonne(elenco[matchoice]);
   mat_t.colonne = leggiRighe(elenco[matchoice]);
 
@@ -270,6 +306,8 @@ matrice sommaMatrici( matrice *elenco, int cont)
     initDim( &mpn, elenco[scelta1]);
     allocMatrix(&mpn);
 
+    mpn.id = cont;
+
     for ( i = 0; i < leggiRighe(mpn); i++ )
         for ( j = 0; j < leggiColonne(mpn); j++ )
             scriviElemento( &mpn,i, j, leggiValore(elenco[scelta1], i, j) + leggiValore(elenco[scelta2], i, j));
@@ -284,12 +322,15 @@ matrice prodScalareMatrice( matrice *m, int cont )
     float a;
     int i, j;
     int scelta;
-    
+
+
     sceltaMatrici(&scelta, NULL, cont);
-     
+
     initDim( &ma, m[scelta]);
 
     allocMatrix(&ma);
+
+    ma.id = cont;
 
     printf("Inserisci valore scalare di tipo reale : ");
     salvaValore(&a);
@@ -297,7 +338,6 @@ matrice prodScalareMatrice( matrice *m, int cont )
     for( i = 0; i < leggiRighe(ma); i++ )
         for ( j = 0; j < leggiColonne(ma); j++ )
             scriviElemento(&ma,i,j, a * leggiValore(m[scelta],i,j));
-
 
     return ma;
 }
@@ -312,6 +352,8 @@ matrice diffMatrice( matrice *elenco, int cont)
     initDim( &md, elenco[scelta1]);
 
     allocMatrix(&md);
+
+    md.id = cont;
 
     for( i=0; i < leggiRighe(md);i++)
        for(j=0; j < leggiColonne(md); j++)
@@ -329,10 +371,11 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     int scelta1,scelta2;
 
     controllaDati( elenco, cont, 'P' , &scelta1, &scelta2);
-    
-    
+
+
     MpvN.righe = leggiRighe(elenco[scelta1]);
     MpvN.colonne = leggiColonne(elenco[scelta2]);
+    MpvN.id = cont;
 
     allocMatrix(&MpvN);
 
@@ -345,20 +388,7 @@ matrice prodvetMatrice( matrice *elenco, int cont)
 
     return MpvN;
 }
-/*void sceltaMatrice(int *scelta, int cont)
-{
-   do
-     {
-          printf("\n%s%s %d\n",
-                   "Inserisci l'ID della matrice della quale si intende operare\n",
-                   "MATRICI CARICATE", cont);
-          *scelta = leggiIntero();
-          if(*scelta < 0 || *scelta >= cont)
-             printf("L'ID non fa riferimento a matrici inizializzate!\n");
-             
-     }while( *scelta < 0 || *scelta >= cont );
-     
-}     */  
+
 void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 {
     do
@@ -368,17 +398,17 @@ void sceltaMatrici(int *scelta1, int *scelta2, int cont)
           if(*scelta1 < 0 || *scelta1 >= cont)
              printf("Matrice non esistente!\n");
      }while( *scelta1 < 0 || *scelta1 >= cont );
-    
+
     if(scelta2!=NULL)
-    { 
+    {
      do
      {
           printf("Indicare l'ID della matrice successiva: ");
           *scelta2 = leggiIntero();
           if( *scelta2 < 0 || *scelta2 >= cont )
              printf("Matrice non esistente!\n");
-             
-                     
+
+
       }while( (*scelta2 < 0 || *scelta2 >= cont) );
      }
 }
@@ -391,14 +421,14 @@ int leggiIntero()
     {
         res = scanf("%d",&intero);
         scanf("%*[^\n]");
-        if( res == 0) 
+        if( res == 0)
           printf("\nAssegnazione valore errata, reinserisci: ");
-          
+
     }while ( res == 0 );
-    
+
     return intero;
-} 
-  
+}
+
 void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2 )
 {
     int res;
@@ -422,9 +452,10 @@ void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2
         {
 
             sceltaMatrici(scelta1, scelta2, n);
-            res = checkDim( elenco[*scelta1], elenco[*scelta2] );
+            res = checkRowCol( elenco[*scelta1], elenco[*scelta2] );
             if ( res == 0 )
-                fprintf(stderr,"Reinserisci le matrici!\nLE MATRICI DEVONO NECESSARIAMENTE AVERE LE STESSE DIMENSIONI!\n");
+                fprintf(stderr,"Reinserisci le matrici!\n%s\n",
+                        "ATTENZIONE: IL NUMERO DI COLONNE DELLA SECONDA MATRICE DEVE ESSERE UGUALE A QUELLO DELLE COLONNE!!");
 
         }while( res == 0 || ( checkRowCol(elenco[*scelta1],elenco[*scelta2]) == 0));
 

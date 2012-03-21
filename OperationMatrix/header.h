@@ -16,7 +16,7 @@ matrice *reallocMat( matrice *, int );
 void overwriteMatrix( matrice *, int );
 int intestazione();
 matrice inserisciMatrice( int );
-void stampaMatrice(matrice *, int ,int );
+void stampaMatrice(matrice *, int );
 void free_matrix( matrice *);
 void salvaValore( float *);
 void cleanBuffer();
@@ -30,7 +30,6 @@ void allocMatrix( matrice * );
 int checkDim( matrice, matrice );
 int checkRowCol( matrice , matrice );
 void sceltaMatrici(int *, int *, int);
-void sceltaMatrice(int *, int);
 int leggiIntero();
 void controllaDati( matrice *, int , char  , int *, int *);
 
