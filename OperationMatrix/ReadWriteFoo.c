@@ -36,7 +36,7 @@ void scriviRighe( matrice *m )
      int res;
   do
   {
-     printf("Inserisci righe matrice: ");
+     printf("\nInserisci righe matrice: ");
      res=scanf("%d",&m->righe);
      scanf("%*[^\n]");
      if(res==0)
@@ -62,7 +62,7 @@ void scriviColonne( matrice *m )
 
    do
   {
-     printf("Inserisci colonne matrice: ");
+     printf("\nInserisci colonne matrice: ");
      res=scanf("%d",&m->colonne);
      scanf("%*[^\n]");
      if(res==0)
