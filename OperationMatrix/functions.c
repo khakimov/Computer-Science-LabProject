@@ -214,7 +214,7 @@ void stampaMatrice( matrice *elenco, int cont, int id )
   
   if(!id)
   {
-   sceltaMatrice(&matchoice, cont);
+   sceltaMatrici(&matchoice, NULL, cont);
    cont = matchoice;
   }
   
@@ -242,7 +242,7 @@ matrice trasposta( matrice *elenco, int cont )
   matrice mat_t;
   int matchoice;
   
-  sceltaMatrice(&matchoice, cont);
+  sceltaMatrici(&matchoice, NULL, cont);
   
   mat_t.righe = leggiColonne(elenco[matchoice]);
   mat_t.colonne = leggiRighe(elenco[matchoice]);
@@ -285,7 +285,7 @@ matrice prodScalareMatrice( matrice *m, int cont )
     int i, j;
     int scelta;
     
-    sceltaMatrice(&scelta, cont);
+    sceltaMatrici(&scelta, NULL, cont);
      
     initDim( &ma, m[scelta]);
 
@@ -345,7 +345,7 @@ matrice prodvetMatrice( matrice *elenco, int cont)
 
     return MpvN;
 }
-void sceltaMatrice(int *scelta, int cont)
+/*void sceltaMatrice(int *scelta, int cont)
 {
    do
      {
@@ -358,26 +358,29 @@ void sceltaMatrice(int *scelta, int cont)
              
      }while( *scelta < 0 || *scelta >= cont );
      
-}       
+}     */  
 void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 {
     do
      {
-          printf("Indicare l'ID della matrice n.1: ");
+          printf("Indicare l'ID della matrice: ");
           *scelta1 = leggiIntero();
           if(*scelta1 < 0 || *scelta1 >= cont)
              printf("Matrice non esistente!\n");
      }while( *scelta1 < 0 || *scelta1 >= cont );
-     
-    do
+    
+    if(scelta2!=NULL)
+    { 
+     do
      {
-          printf("Indicare l'ID della matrice n.2: ");
+          printf("Indicare l'ID della matrice successiva: ");
           *scelta2 = leggiIntero();
           if( *scelta2 < 0 || *scelta2 >= cont )
              printf("Matrice non esistente!\n");
              
                      
-     }while( (*scelta2 < 0 || *scelta2 >= cont) );
+      }while( (*scelta2 < 0 || *scelta2 >= cont) );
+     }
 }
 
 int leggiIntero()
