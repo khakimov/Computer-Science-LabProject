@@ -36,7 +36,7 @@ int main()
 	  {
         case 1:
 
-                if ( cont > 0 && cont < MAXM )
+                if ( cont > 0 && cont <= MAXM )
                     elenco = reallocMat( elenco,cont+1 );
                 if( cont >= MAXM )
                 {
@@ -73,7 +73,7 @@ int main()
 
      case 4:
 
-          if( cont > 0 && cont < MAXM )
+          if( cont > 0 && cont <= MAXM )
            {
 
             elenco = reallocMat(elenco, cont+1);
@@ -101,7 +101,7 @@ int main()
 
       case 5:
 
-           if( cont > 0 )
+           if( cont > 0 && cont <= MAXM )
            {
              elenco = reallocMat(elenco, cont+1);
              elenco[cont] = sommaMatrici(elenco, cont);
@@ -127,7 +127,7 @@ int main()
 
 	case 6:
 
-	       if( cont > 0 )
+	       if( cont > 0 && cont <= MAXM )
            {
                 elenco = reallocMat(elenco, cont+1);
                 elenco[cont] = diffMatrice(elenco, cont);
@@ -152,7 +152,7 @@ int main()
 
 	case 7 :
 
-	       if( cont > 0 )
+	       if( cont > 0 && cont <= MAXM )
            {
 	        elenco = reallocMat(elenco, cont+1);
             elenco[cont] = prodScalareMatrice(elenco, cont);
@@ -176,7 +176,7 @@ int main()
 
 	case 8 :
 
-           if( cont > 0 )
+           if( cont > 0 && cont <= MAXM )
            {
 
                elenco = reallocMat(elenco, cont+1);
