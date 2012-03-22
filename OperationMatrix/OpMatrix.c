@@ -1,4 +1,4 @@
-#include "header.h"
+#include "OpMatrix.h"
 #include "ReadWriteFoo.h"
 
 /* Useful funtion used to get the option choosen by the user from the command line and print the menu */
@@ -53,15 +53,15 @@ void allocMatrix( matrice *m )
     int i;
 
     /* Dynamic allocation of a matrix of (r,c) */
-    m->mat = (float**)malloc(leggiRighe(*m)*sizeof(float*));
+    m->mat = (float**)malloc(leggiRighe(m)*sizeof(float*));
      if( m->mat == NULL)
-       fprintf(stderr,"\n**Memoria Esaurita**");
+       fprintf(stderr,"\n**ERRORE ALLOCAZIONE MEMORIA**");
 
-    for ( i = 0; i < leggiRighe(*m); i++ )
+    for ( i = 0; i < leggiRighe(m); i++ )
     {
-        m->mat[i] = (float*)malloc( leggiColonne(*m) * sizeof(float));
+        m->mat[i] = (float*)malloc( leggiColonne(m) * sizeof(float));
         if( m->mat[i] == NULL)
-            printf("\n**Memoria Esaurita**");
+            printf("\n**ERRORE ALLOCAZIONE MEMORIA**");
     }
 
 
@@ -106,7 +106,7 @@ matrice* initElenco( void )
   arr = (matrice*)malloc( 1 * sizeof(matrice));
   if ( arr == NULL )
   {
-      fprintf(stderr,"Errore allocazione dinamica della memoria!\n");
+      fprintf(stderr,"ERRORE ALLOCAZIONE DINAMICA DELLA MEMORIA\n");
       wait();
       exit(-1);
   }
@@ -119,18 +119,18 @@ void overwriteMatrix( matrice *m, int n )
 {
      int matchoice;
      char choice;
-     int res;
+
 
      printf("----- SOVRASCRITTURA --------\n\n");
-     printf("%s\n%s\n",
-            "SI E' SUPERATO IL NUMERO MASSIMO DI MATRICI SALVABILI",
-            "Sarà possibile inserire l'ID della matrice che si vuole sovrascrivere!!\n\n");
-     if ( n < 0 )
+     
+     
+     if ( n <= 0 )
         printf("%s\n%s\n",
-               "L'operazione di sovrascrittura non è possibile!",
+               "L'operazione di sovrascrittura non e' possibile!",
                "NESSUNA MATRICE DISPONIBILE, PREMI 1 NEL MENU PER INSERIRLE!");
     else
     {
+       printf("Sara' possibile inserire l'ID della matrice che si vuole sovrascrivere!!\n\n");
        sceltaMatrici(&matchoice, NULL, n);
         printf("%s %d\n",
                "Si sta per sovrascrivere la matrice con ID", matchoice);
@@ -139,19 +139,21 @@ void overwriteMatrix( matrice *m, int n )
         {
 
             printf("Si intende continuare? s/n\nSCELTA : ");
-            res = scanf("\n%c", &choice);
-            //scanf("%*[^\n]");
-            if( res == 0 || choice != 'n' && choice != 's')
+            scanf("\n%c", &choice);
+
+            if( choice != 'n' && choice != 's' )
             {
                 printf("Scelta non consentita!!\n");
                 scanf("%*[^\n]");
+                
+                
             }
-        }while ( res == 0 && choice != 'n' || choice != 's');
+        }while ( ( choice != 'n' && choice != 's' ) );
 
         if( choice == 's' )
             m[matchoice] = inserisciMatrice( matchoice);
         else
-            printf("La matrice con ID %d non è stata sovrascritta!!", matchoice);
+            printf("La matrice con ID %d non e' stata sovrascritta!!", matchoice);
 
 
     }
@@ -168,20 +170,31 @@ void free_matrix( matrice *elenco )
 
 }
 
+/*
+    Simple function used in order to check the correcteness of the dimension of the matrix
+    that are involved into operation like the sum and the difference, in which the fundamental
+    requirement is that the matrix MUST have the same dimensions.
+*/
 int checkDim( matrice m, matrice n )
 {
-    return ( leggiRighe(m) == leggiRighe(n) && leggiColonne(m) == leggiColonne(n) ) ? 1 : 0;
+    return ( leggiRighe(&m) == leggiRighe(&n) && leggiColonne(&m) == leggiColonne(&n) ) ? 1 : 0;
 }
 
+/*
+    Function that check if the m's colomns and the n'rows are equal
+    in order to grant the possibility to make the vectorial product
+    between the selected matrixs.
+
+*/
 int checkRowCol( matrice m , matrice n)
 {
-    return ( leggiColonne(m) == leggiRighe(n) ) ? 1 : 0;
+    return ( leggiColonne(&m) == leggiRighe(&n) ) ? 1 : 0;
 }
 
 void initDim( matrice *dest, matrice src )
 {
-  dest->righe = src.righe;
-  dest->colonne = src.colonne;
+  dest->righe = leggiRighe(&src);
+  dest->colonne = leggiRighe(&src);
 
 }
 /* Useful function used in order to remove some useless characters present in the buffer */
@@ -222,7 +235,7 @@ matrice inserisciMatrice( int id )
     matrice array;
     int i,j;
 
-    printf("Inserisci matrice - ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRATO\n", id);
+    printf("INSERIMENTO MATRICE\nLa nuova matrice avrà come ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRATO\n", id);
     scriviRighe(&array);
     scriviColonne(&array);
 
@@ -235,8 +248,8 @@ matrice inserisciMatrice( int id )
 
 
     printf("\n\nInserisci elementi della matrice\n");
-    for ( i = 0; i < leggiRighe(array); i++ )
-        for ( j = 0; j < leggiColonne(array); j++ )
+    for ( i = 0; i < leggiRighe(&array); i++ )
+        for ( j = 0; j < leggiColonne(&array); j++ )
             scriviValore(&array, i, j);
 
     return array;
@@ -253,14 +266,14 @@ void stampaMatrice( matrice *elenco, int cont )
    sceltaMatrici(&matchoice, NULL, cont);
 
 
-  if ( elenco[matchoice].righe == 0 )
+  if ( leggiRighe(&elenco[matchoice]) == 0 )
      printf("Matrice non inizializzata!!\n");
   else
   {
-      printf(" ----- Matrice %d ---- \n", elenco[matchoice].id);
-      for(i = 0; i < leggiRighe(elenco[matchoice]); printf("\n"),i++)
-        for(j=0;j < leggiColonne(elenco[matchoice]);j++)
-            printf("%15.3f ",leggiValore(elenco[matchoice], i, j));
+      printf("\t ----- Matrice %d ---- \n", elenco[matchoice].id);
+      for(i = 0; i < leggiRighe(&elenco[matchoice]); printf("\n"),i++)
+        for(j=0;j < leggiColonne(&elenco[matchoice]);j++)
+            printf("%15.3f ",leggiValore(&elenco[matchoice], i, j));
   }
 
 }
@@ -280,14 +293,14 @@ matrice trasposta( matrice *elenco, int cont )
   sceltaMatrici(&matchoice, NULL, cont);
 
   mat_t.id = cont;
-  mat_t.righe = leggiColonne(elenco[matchoice]);
-  mat_t.colonne = leggiRighe(elenco[matchoice]);
+  mat_t.righe = leggiColonne(&elenco[matchoice]);
+  mat_t.colonne = leggiRighe(&elenco[matchoice]);
 
   allocMatrix(&mat_t);
 
-  for ( i=0; i < leggiRighe(mat_t); i++ )
-    for ( j = 0; j < leggiColonne(mat_t); j++ )
-        scriviElemento(&mat_t,i,j,leggiValore(elenco[matchoice],j,i));
+  for ( i=0; i < leggiRighe(&mat_t); i++ )
+    for ( j = 0; j < leggiColonne(&mat_t); j++ )
+        scriviElemento(&mat_t,i,j,leggiValore(&elenco[matchoice],j,i));
 
 
 
@@ -308,9 +321,9 @@ matrice sommaMatrici( matrice *elenco, int cont)
 
     mpn.id = cont;
 
-    for ( i = 0; i < leggiRighe(mpn); i++ )
-        for ( j = 0; j < leggiColonne(mpn); j++ )
-            scriviElemento( &mpn,i, j, leggiValore(elenco[scelta1], i, j) + leggiValore(elenco[scelta2], i, j));
+    for ( i = 0; i < leggiRighe(&mpn); i++ )
+        for ( j = 0; j < leggiColonne(&mpn); j++ )
+            scriviElemento( &mpn,i, j, leggiValore(&elenco[scelta1], i, j) + leggiValore(&elenco[scelta2], i, j));
 
 
     return mpn;
@@ -335,9 +348,9 @@ matrice prodScalareMatrice( matrice *m, int cont )
     printf("Inserisci valore scalare di tipo reale : ");
     salvaValore(&a);
 
-    for( i = 0; i < leggiRighe(ma); i++ )
-        for ( j = 0; j < leggiColonne(ma); j++ )
-            scriviElemento(&ma,i,j, a * leggiValore(m[scelta],i,j));
+    for( i = 0; i < leggiRighe(&ma); i++ )
+        for ( j = 0; j < leggiColonne(&ma); j++ )
+            scriviElemento(&ma,i,j, a * leggiValore(&m[scelta],i,j));
 
     return ma;
 }
@@ -355,9 +368,9 @@ matrice diffMatrice( matrice *elenco, int cont)
 
     md.id = cont;
 
-    for( i=0; i < leggiRighe(md);i++)
-       for(j=0; j < leggiColonne(md); j++)
-           scriviElemento( &md, i, j, leggiValore(elenco[scelta1],i,j)- leggiValore(elenco[scelta2], i,j));
+    for( i=0; i < leggiRighe(&md);i++)
+       for(j=0; j < leggiColonne(&md); j++)
+           scriviElemento( &md, i, j, leggiValore(&elenco[scelta1],i,j)- leggiValore(&elenco[scelta2], i,j));
 
 
     return md;
@@ -373,16 +386,16 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     controllaDati( elenco, cont, 'P' , &scelta1, &scelta2);
 
 
-    MpvN.righe = leggiRighe(elenco[scelta1]);
-    MpvN.colonne = leggiColonne(elenco[scelta2]);
+    MpvN.righe = leggiRighe(&elenco[scelta1]);
+    MpvN.colonne = leggiColonne(&elenco[scelta2]);
     MpvN.id = cont;
 
     allocMatrix(&MpvN);
 
-    for(i=0;i< leggiRighe(MpvN);i++)
-       for(j=0;j< leggiColonne(MpvN);j++)
-          for(k=0;k< leggiColonne(elenco[scelta1]);k++)
-            scriviElemento( &MpvN, i, j, leggiValore(MpvN,i,j) + leggiValore(elenco[scelta1],i,k)* leggiValore(elenco[scelta2],k,j) );
+    for(i=0;i< leggiRighe(&MpvN);i++)
+       for(j=0;j< leggiColonne(&MpvN);j++)
+          for(k=0;k< leggiColonne(&elenco[scelta1]);k++)
+            scriviElemento( &MpvN, i, j, leggiValore(&MpvN,i,j) + leggiValore(&elenco[scelta1],i,k)* leggiValore(&elenco[scelta2],k,j) );
 
 
 

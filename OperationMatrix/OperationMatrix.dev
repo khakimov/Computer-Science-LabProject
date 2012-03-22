@@ -30,7 +30,7 @@ CompilerSet=0
 CompilerSettings=
 
 [Unit1]
-FileName=functions.c
+FileName=main.c
 CompileCpp=0
 Folder=OperationMatrix
 Compile=1
@@ -40,7 +40,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=header.h
+FileName=OpMatrix.c
 CompileCpp=0
 Folder=OperationMatrix
 Compile=1
@@ -50,7 +50,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=main.c
+FileName=OpMatrix.h
 CompileCpp=0
 Folder=OperationMatrix
 Compile=1

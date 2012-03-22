@@ -1,11 +1,8 @@
 /* <------------- Preprocessor useful declaration -------------> */
-#ifndef _HEADER_H
-#define _HEADER_H
+#ifndef _OPMATRIX_H
+#define _OPMATRIX_H
 
 /* <------------- Header file declaration ---------------------> */
-#include <stdio.h>
-#include <stdlib.h>
-#include <float.h>
 #include "ReadWriteFoo.h"
 
 
