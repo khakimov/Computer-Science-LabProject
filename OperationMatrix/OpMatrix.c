@@ -115,15 +115,15 @@ matrice* initElenco( void )
 
 }
 
-void overwriteMatrix( matrice *m, int n )
+int overwriteMatrix( matrice *m, int n )
 {
      int matchoice;
      char choice;
 
 
      printf("----- SOVRASCRITTURA --------\n\n");
-     
-     
+
+
      if ( n <= 0 )
         printf("%s\n%s\n",
                "L'operazione di sovrascrittura non e' possibile!",
@@ -145,13 +145,13 @@ void overwriteMatrix( matrice *m, int n )
             {
                 printf("Scelta non consentita!!\n");
                 scanf("%*[^\n]");
-                
-                
+
+
             }
         }while ( ( choice != 'n' && choice != 's' ) );
 
         if( choice == 's' )
-            m[matchoice] = inserisciMatrice( matchoice);
+            return matchoice;
         else
             printf("La matrice con ID %d non e' stata sovrascritta!!", matchoice);
 
@@ -235,7 +235,7 @@ matrice inserisciMatrice( int id )
     matrice array;
     int i,j;
 
-    printf("INSERIMENTO MATRICE\nLa nuova matrice avrà come ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRATO\n", id);
+    printf("INSERIMENTO MATRICE\nLa nuova matrice avra' come ID %d\nID UNIVOCAMENTE ASSEGNEGNATO REGISTRATO\n", id);
     scriviRighe(&array);
     scriviColonne(&array);
 
@@ -406,7 +406,7 @@ void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 {
     do
      {
-          printf("Indicare l'ID della matrice: ");
+          printf("Indicare l'ID della matrice sulla quale si intende operare: ");
           *scelta1 = leggiIntero();
           if(*scelta1 < 0 || *scelta1 >= cont)
              printf("Matrice non esistente!\n");

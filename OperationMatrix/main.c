@@ -25,7 +25,7 @@ int main()
 
   int cont = 0;
   int scelta=1;
-  int scelta1,scelta2;
+  int pos = 0;
 
 
   while(scelta)
@@ -38,15 +38,17 @@ int main()
 
                 if ( cont > 0 && cont <= MAXM )
                     elenco = reallocMat( elenco,cont+1 );
-                if( cont >= MAXM )
+                if( cont > MAXM )
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    overwriteMatrix(elenco, cont);
-                    
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = inserisciMatrice(pos);
                 }
-
-               elenco[cont] = inserisciMatrice(cont);
-               cont++;
+                else
+                {
+                    elenco[cont] = inserisciMatrice(cont);
+                    cont++;
+                }
 
 	  break;
 
@@ -67,7 +69,8 @@ int main()
 
      case 3:
 
-            overwriteMatrix(elenco, cont );
+            pos = overwriteMatrix(elenco, cont );
+            elenco[pos] = inserisciMatrice( pos );
             wait();
       break;
 
@@ -86,8 +89,8 @@ int main()
               if ( cont >= MAXM )
               {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    overwriteMatrix(elenco, cont);
-                    
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = trasposta( elenco, cont );
                 }
            else
 
@@ -113,8 +116,8 @@ int main()
              if ( cont >= MAXM )
              {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    overwriteMatrix(elenco, cont);
-                    
+                    pos =overwriteMatrix(elenco, cont);
+                    elenco[pos] = sommaMatrici(elenco, cont );
                 }
            else
              {
@@ -139,8 +142,8 @@ int main()
                 if ( cont >= MAXM )
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    overwriteMatrix(elenco, cont);
-                    
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = diffMatrice(elenco, cont );
                 }
             else
              {
@@ -152,7 +155,7 @@ int main()
 
 	case 7 :
 
-	       if( cont > 0 && cont <= MAXM )
+	       if( cont > 0 && cont <= MAXM)
            {
 	        elenco = reallocMat(elenco, cont+1);
             elenco[cont] = prodScalareMatrice(elenco, cont);
@@ -164,8 +167,8 @@ int main()
                 if ( cont >= MAXM )
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    overwriteMatrix(elenco, cont);
-                    
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = prodScalareMatrice( elenco, cont);
                 }
             else
              {
@@ -176,7 +179,7 @@ int main()
 
 	case 8 :
 
-           if( cont > 0 && cont <= MAXM )
+           if( cont > 0 )
            {
 
                elenco = reallocMat(elenco, cont+1);
@@ -189,8 +192,8 @@ int main()
                 if ( cont >= MAXM )
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    overwriteMatrix(elenco, cont);
-                    
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = prodvetMatrice(elenco, cont );
                 }
             else
              {

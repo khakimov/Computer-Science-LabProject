@@ -10,7 +10,7 @@
 
 matrice* initElenco( void );
 matrice *reallocMat( matrice *, int );
-void overwriteMatrix( matrice *, int );
+int overwriteMatrix( matrice *, int );
 int intestazione();
 matrice inserisciMatrice( int );
 void stampaMatrice(matrice *, int );
