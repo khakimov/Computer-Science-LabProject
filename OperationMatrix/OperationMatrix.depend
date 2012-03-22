@@ -1,8 +1,0 @@
-# depslib dependency file v1.0
-1332350747 source:c:\users\alexz\desktop\operationmatrix\readwritefoo.c
-	"ReadWriteFoo.h"
-
-1332350747 c:\users\alexz\desktop\operationmatrix\readwritefoo.h
-	<stdio.h>
-	<stdlib.h>
-
