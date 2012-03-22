@@ -38,7 +38,7 @@ int main()
 
                 if ( cont > 0 && cont < MAXM )
                     elenco = reallocMat( elenco,cont+1 );
-                if( cont > MAXM )
+                if( cont >= MAXM )
                     overwriteMatrix(elenco, cont);
 
                elenco[cont] = inserisciMatrice(cont);
@@ -79,7 +79,7 @@ int main()
 
            }
            else
-              if ( cont > MAXM )
+              if ( cont >= MAXM )
                 overwriteMatrix(elenco, cont);
            else
 
@@ -93,7 +93,7 @@ int main()
 
       case 5:
 
-           if( cont > 0 )
+           if( cont > 0 && cont < MAXM )
            {
              elenco = reallocMat(elenco, cont+1);
              elenco[cont] = sommaMatrici(elenco, cont);
@@ -102,7 +102,7 @@ int main()
 
            }
            else
-             if ( cont > MAXM )
+             if ( cont >= MAXM )
                 overwriteMatrix(elenco, cont);
            else
              {
@@ -115,7 +115,7 @@ int main()
 
 	case 6:
 
-	       if( cont > 0 )
+	       if( cont > 0 && cont < MAXM )
            {
                 elenco = reallocMat(elenco, cont+1);
                 elenco[cont] = diffMatrice(elenco, cont);
@@ -124,7 +124,7 @@ int main()
 
             }
             else
-                if ( cont > MAXM )
+                if ( cont >= MAXM )
                     overwriteMatrix(elenco, cont);
             else
              {
@@ -136,7 +136,7 @@ int main()
 
 	case 7 :
 
-	       if( cont > 0 )
+	       if( cont > 0 && cont < MAXM )
            {
 	        elenco = reallocMat(elenco, cont+1);
             elenco[cont] = prodScalareMatrice(elenco, cont);
@@ -145,7 +145,7 @@ int main()
 
             }
             else
-                if ( cont > MAXM )
+                if ( cont >= MAXM )
                     overwriteMatrix(elenco, cont);
             else
              {
@@ -156,7 +156,7 @@ int main()
 
 	case 8 :
 
-           if( cont > 0 )
+           if( cont > 0 && cont < MAXM )
            {
 
                elenco = reallocMat(elenco, cont+1);
@@ -166,7 +166,7 @@ int main()
 
             }
             else
-                if ( cont > MAXM )
+                if ( cont >= MAXM )
                     overwriteMatrix(elenco, cont);
             else
              {
