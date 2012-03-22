@@ -3,9 +3,6 @@
 #define _OPMATRIX_H
 
 /* <------------- Header file declaration ---------------------> */
-#include <stdio.h>
-#include <stdlib.h>
-#include <float.h>
 #include "ReadWriteFoo.h"
 
 
@@ -13,7 +10,7 @@
 
 matrice* initElenco( void );
 matrice *reallocMat( matrice *, int );
-void overwriteMatrix( matrice *, int );
+int overwriteMatrix( matrice *, int );
 int intestazione();
 matrice inserisciMatrice( int );
 void stampaMatrice(matrice *, int );

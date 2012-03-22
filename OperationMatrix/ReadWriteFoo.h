@@ -3,10 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <float.h>
 
 #define MAXR 100
 #define MAXC 100
-#define MAXM 50
+#define MAXM 2
 
 #if defined _WIN32
 #define wait() getch()
@@ -25,10 +26,10 @@ typedef struct
 }matrice;
 
 
-int leggiRighe( matrice );
-int leggiColonne( matrice );
+int leggiRighe( matrice * );
+int leggiColonne( matrice *);
 void scriviValore( matrice *, int, int );
-float leggiValore( matrice , int, int );
+float leggiValore( matrice *, int, int );
 void scriviRighe( matrice * );
 void scriviColonne( matrice * );
 void scriviElemento( matrice *, int, int, float );

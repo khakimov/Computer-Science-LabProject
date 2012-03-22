@@ -25,7 +25,7 @@ int main()
 
   int cont = 0;
   int scelta=1;
-  int scelta1,scelta2;
+  int pos;
 
 
   while(scelta)
@@ -38,11 +38,18 @@ int main()
 
                 if ( cont > 0 && cont < MAXM )
                     elenco = reallocMat( elenco,cont+1 );
-                if( cont > MAXM )
-                    overwriteMatrix(elenco, cont);
+                if( cont >= MAXM )
+                {
+                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = inserisciMatrice( pos );
 
-               elenco[cont] = inserisciMatrice(cont);
-               cont++;
+                }
+                else
+                {
+                   elenco[cont] = inserisciMatrice(cont);
+                    cont++;
+                }
 
 	  break;
 
@@ -63,7 +70,8 @@ int main()
 
      case 3:
 
-            overwriteMatrix(elenco, cont );
+            pos = overwriteMatrix(elenco, cont );
+            elenco[pos] = inserisciMatrice(cont);
             wait();
       break;
 
@@ -79,8 +87,12 @@ int main()
 
            }
            else
-              if ( cont > MAXM )
-                overwriteMatrix(elenco, cont);
+              if ( cont >= MAXM )
+              {
+                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = trasposta(elenco, cont);
+              }
            else
 
              {
@@ -102,8 +114,12 @@ int main()
 
            }
            else
-             if ( cont > MAXM )
-                overwriteMatrix(elenco, cont);
+             if ( cont >= MAXM )
+             {
+                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = sommaMatrici(elenco, cont );
+                }
            else
              {
                   printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
@@ -124,8 +140,13 @@ int main()
 
             }
             else
-                if ( cont > MAXM )
-                    overwriteMatrix(elenco, cont);
+                if ( cont >= MAXM )
+                {
+                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = diffMatrice(elenco, cont);
+
+                }
             else
              {
                   printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
@@ -145,8 +166,12 @@ int main()
 
             }
             else
-                if ( cont > MAXM )
-                    overwriteMatrix(elenco, cont);
+                if ( cont >= MAXM )
+                {
+                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = prodScalareMatrice( elenco, cont);
+                }
             else
              {
                   printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
@@ -166,8 +191,12 @@ int main()
 
             }
             else
-                if ( cont > MAXM )
-                    overwriteMatrix(elenco, cont);
+                if ( cont >= MAXM )
+                {
+                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
+                    pos = overwriteMatrix(elenco, cont);
+                    elenco[pos] = prodvetMatrice( elenco, cont );
+                }
             else
              {
                   printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");

@@ -6,9 +6,9 @@
     the number of row of the matrix
     taking it from the field of the structure
 */
-int leggiRighe( matrice m )
+int leggiRighe( matrice *m )
 {
-  return m.righe;
+  return m->righe;
 
 }
 
@@ -18,9 +18,9 @@ int leggiRighe( matrice m )
     taking it from the field of the structure
 */
 
-int leggiColonne( matrice m )
+int leggiColonne( matrice *m )
 {
-  return m.colonne;
+  return m->colonne;
 
 }
 
@@ -41,7 +41,7 @@ void scriviRighe( matrice *m )
      scanf("%*[^\n]");
      if(res==0)
         fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
-        else if( m->righe < 1 || m->righe > MAXR) fprintf(stderr,"\n**Il numero di righe e' errato (1< %d <100)**\n\n",MAXR);
+        else if( m->righe < 1 || m->righe > MAXR) fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
 
   }while(res == 0 || ( m->righe < 1 || m->righe > MAXR));
 
@@ -67,7 +67,7 @@ void scriviColonne( matrice *m )
      scanf("%*[^\n]");
      if(res==0)
         fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
-        else if( m->righe < 1 || m->colonne > MAXR) fprintf(stderr,"\n**Il numero di colonne e' errato (1< %d <100)**\n\n",MAXC);
+        else if( m->righe < 1 || m->colonne > MAXR) fprintf(stderr,"\n**Il numero di colonne e' errato (1< c < %d)**\n\n",MAXC);
 
   }while(res == 0 || ( m->colonne < 1 || m->colonne > MAXR));
 
@@ -92,9 +92,10 @@ void scriviValore( matrice *m, int i, int j )
          printf("m[%d][%d] = ", i, j);
          res = scanf("%f", &m->mat[i][j]);
          scanf("%*[^\n]");
-         if ( res == 0 )
+         if ( res == 0 && m->mat[i][j] > FLT_MAX )
             printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
-     }while( res == 0 );
+            
+     }while( res == 0 && m->mat[i][j] > FLT_MAX );
 
 }
 
@@ -103,9 +104,9 @@ void scriviValore( matrice *m, int i, int j )
     stored in the i,j position of the considered
     matrix.
 */
-float leggiValore( matrice m, int i, int j )
+float leggiValore( matrice *m, int i, int j )
 {
-  return m.mat[i][j];
+  return m->mat[i][j];
 
 }
 
