@@ -42,7 +42,8 @@ int main()
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
                     pos = overwriteMatrix(elenco, cont);
-                    elenco[pos] = inserisciMatrice(pos);
+                    if ( pos != -1 )
+                        elenco[pos] = inserisciMatrice(pos);
                 }
                 else
                 {
@@ -70,7 +71,8 @@ int main()
      case 3:
 
             pos = overwriteMatrix(elenco, cont );
-            elenco[pos] = inserisciMatrice( pos );
+            if ( pos != -1 )
+                elenco[pos] = inserisciMatrice( pos );
             wait();
       break;
 
@@ -90,7 +92,8 @@ int main()
               {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
                     pos = overwriteMatrix(elenco, cont);
-                    elenco[pos] = trasposta( elenco, cont );
+                    if ( pos != -1 )
+                        elenco[pos] = trasposta( elenco, cont );
                 }
            else
 
@@ -117,7 +120,8 @@ int main()
              {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
                     pos =overwriteMatrix(elenco, cont);
-                    elenco[pos] = sommaMatrici(elenco, cont );
+                    if ( pos != -1 )
+                        elenco[pos] = sommaMatrici(elenco, cont );
                 }
            else
              {
@@ -143,7 +147,8 @@ int main()
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
                     pos = overwriteMatrix(elenco, cont);
-                    elenco[pos] = diffMatrice(elenco, cont );
+                    if ( pos != -1 )
+                        elenco[pos] = diffMatrice(elenco, cont );
                 }
             else
              {
@@ -168,7 +173,8 @@ int main()
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
                     pos = overwriteMatrix(elenco, cont);
-                    elenco[pos] = prodScalareMatrice( elenco, cont);
+                    if ( pos != -1 )
+                        elenco[pos] = prodScalareMatrice( elenco, cont);
                 }
             else
              {
@@ -193,7 +199,8 @@ int main()
                 {
                     printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
                     pos = overwriteMatrix(elenco, cont);
-                    elenco[pos] = prodvetMatrice(elenco, cont );
+                    if ( pos != -1 )
+                        elenco[pos] = prodvetMatrice(elenco, cont );
                 }
             else
              {

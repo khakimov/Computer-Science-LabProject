@@ -153,8 +153,10 @@ int overwriteMatrix( matrice *m, int n )
         if( choice == 's' )
             return matchoice;
         else
-            printf("La matrice con ID %d non e' stata sovrascritta!!", matchoice);
-
+        {
+           printf("La matrice con ID %d non e' stata sovrascritta!!", matchoice);
+           return -1;
+        }
 
     }
 
