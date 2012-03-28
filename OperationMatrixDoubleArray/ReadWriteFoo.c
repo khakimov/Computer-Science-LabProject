@@ -93,8 +93,15 @@ float scriviValore( int i, int j )
          printf("m[%d][%d] = ", i, j);
          res = scanf("%f", &x);
          scanf("%*[^\n]");
+<<<<<<< HEAD:OperationMatrixDoubleArray/ReadWriteFoo.c
          if ( res == 0 || x > FLT_MAX )
             printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
+=======
+         if ( res == 0 || m->mat[i][j] > FLT_MAX )
+            printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
+            
+     }while( res == 0 || m->mat[i][j] > FLT_MAX );
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587:OperationMatrixDoubleArray/ReadWriteFoo.c
 
      }while( res == 0 || x > FLT_MAX );
 

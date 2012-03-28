@@ -220,11 +220,19 @@ matrice inserisciMatrice( int id )
 
     cleanBuffer();
 
+<<<<<<< HEAD
 
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
             scriviElemento(&array, i, j, scriviValore(i, j) );
+=======
+    
+    printf("\n\nInserisci elementi della matrice\n");
+    for ( i = 0; i < leggiRighe(&array); i++ )
+        for ( j = 0; j < leggiColonne(&array); j++ )
+            scriviValore(&array, i, j);
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
 
     return array;
 }
@@ -270,7 +278,11 @@ matrice trasposta( matrice *elenco, int cont )
   mat_t.righe = leggiColonne(&elenco[matchoice]);
   mat_t.colonne = leggiRighe(&elenco[matchoice]);
 
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
   for ( i=0; i < leggiRighe(&mat_t); i++ )
     for ( j = 0; j < leggiColonne(&mat_t); j++ )
         scriviElemento(&mat_t,i,j,leggiValore(&elenco[matchoice],j,i));
@@ -290,7 +302,11 @@ matrice sommaMatrici( matrice *elenco, int cont)
 
     controllaDati( elenco, cont, 'S' , &scelta1, &scelta2);
     initDim( &mpn, elenco[scelta1]);
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
     mpn.id = cont;
 
     for ( i = 0; i < leggiRighe(&mpn); i++ )
@@ -358,7 +374,11 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     MpvN.colonne = leggiColonne(&elenco[scelta2]);
     MpvN.id = cont;
 
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
     for(i=0;i< leggiRighe(&MpvN);i++)
        for(j=0;j< leggiColonne(&MpvN);j++)
           for(k=0;k< leggiColonne(&elenco[scelta1]);k++)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="default" />
@@ -11,3 +12,43 @@
 		<Cursor position="439" topLine="20" />
 	</File>
 </CodeBlocks_layout_file>
+=======
+[Editor_0]
+CursorCol=1
+CursorRow=1
+TopLine=55
+LeftChar=1
+Open=1
+Top=0
+[Editors]
+Focused=1
+Order=0,1,4,2,3
+[Editor_1]
+Open=1
+Top=1
+CursorCol=1
+CursorRow=42
+TopLine=72
+LeftChar=1
+[Editor_2]
+Open=1
+Top=0
+CursorCol=1
+CursorRow=1
+TopLine=1
+LeftChar=1
+[Editor_3]
+Open=1
+Top=0
+CursorCol=1
+CursorRow=1
+TopLine=1
+LeftChar=1
+[Editor_4]
+Open=1
+Top=0
+CursorCol=24
+CursorRow=20
+TopLine=1
+LeftChar=1
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587

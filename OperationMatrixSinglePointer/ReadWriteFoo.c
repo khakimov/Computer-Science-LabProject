@@ -83,6 +83,7 @@ void scriviColonne( matrice *m )
     represented by the i,j integer variable.
 
 */
+<<<<<<< HEAD
 float scriviValore( int i, int j )
 {
     int res;
@@ -98,6 +99,22 @@ float scriviValore( int i, int j )
      }while( res == 0 || x > FLT_MAX );
 
     return x;
+=======
+void scriviValore( matrice *m, int i, int j )
+{
+  int res;
+
+     do
+     {
+         printf("m[%d][%d] = ", i, j);
+         res = scanf("%f", (m->mat+(i*leggiColonne(m)+j)));
+         scanf("%*[^\n]");
+         if ( res == 0 || (*(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX) )
+            printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
+
+     }while( res == 0 || *(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX );
+
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
 }
 
 /*

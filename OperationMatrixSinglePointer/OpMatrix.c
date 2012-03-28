@@ -249,7 +249,11 @@ matrice inserisciMatrice( int id )
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
+<<<<<<< HEAD
             scriviElemento(&array, i, j, scriviValore(i, j) );
+=======
+            scriviValore(&array, i, j);
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
 
     return array;
 }
@@ -428,7 +432,11 @@ void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 }
 
 /*
+<<<<<<< HEAD
    It reads from the stdin an integer that respects the
+=======
+   It reads from the stdin an integer that respects the 
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
    restrictions connected to the float data type.
 */
 int leggiIntero()
@@ -451,11 +459,19 @@ int leggiIntero()
   Make some types of control based on the options passed as a parameter
   to the function.
   If the option specified was S or D,  it makes the control on the row and of the colomn of the two matrix
+<<<<<<< HEAD
   if they are equal or not. And if the result was negative, it grant to the user to isnert again the
   id of the matrix.
   If the option specified to the function was P, it makes some check connected to the
   restrictions of the vectorial product.
 
+=======
+  if they are equal or not. And if the result was negative, it grant to the user to isnert again the 
+  id of the matrix.
+  If the option specified to the function was P, it makes some check connected to the 
+  restrictions of the vectorial product.
+  
+>>>>>>> 33c0d9d57152b00737146a9f5f47ec75f51ed587
 
 */
 void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2 )
