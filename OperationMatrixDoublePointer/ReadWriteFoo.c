@@ -108,7 +108,7 @@ float scriviValore( int i, int j )
 */
 float leggiValore( matrice *m, int i, int j )
 {
-  return *(m->mat+(i*leggiColonne(m)+j));
+  return m->mat[i][j];
 
 }
 
@@ -119,5 +119,5 @@ float leggiValore( matrice *m, int i, int j )
 */
 void scriviElemento( matrice *m, int i, int j, float n )
 {
-    *(m->mat+(i*leggiColonne(m)+j)) = n;
+    m->mat[i][j] = n;
 }

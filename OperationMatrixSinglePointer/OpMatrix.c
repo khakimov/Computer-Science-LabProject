@@ -53,15 +53,12 @@ void allocMatrix( matrice *m )
     int i;
 
     /* Dynamic allocation of a matrix of (r,c) */
-    m->mat = (float**)malloc(leggiRighe(m)*sizeof(float*));
-     if( m->mat == NULL)
-       fprintf(stderr,"\n**ERRORE ALLOCAZIONE MEMORIA**");
-
-    for ( i = 0; i < leggiRighe(m); i++ )
+    m->mat = (float*)malloc( leggiRighe(m)*leggiColonne(m) * sizeof(float));
+    if ( m->mat == NULL )
     {
-        m->mat[i] = (float*)malloc( leggiColonne(m) * sizeof(float));
-        if( m->mat[i] == NULL)
-            printf("\n**ERRORE ALLOCAZIONE MEMORIA**");
+        fprintf(stderr,"ERRORE ALLOCAZIONE DINAMICA DELLA MEMORIA!!\n");
+        wait();
+        exit(-1);
     }
 
 
@@ -252,7 +249,7 @@ matrice inserisciMatrice( int id )
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
-            scriviValore(&array, i, j);
+            scriviElemento(&array, i, j, scriviValore(i, j) );
 
     return array;
 }
@@ -404,6 +401,8 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     return MpvN;
 }
 
+
+
 void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 {
     do
@@ -428,6 +427,10 @@ void sceltaMatrici(int *scelta1, int *scelta2, int cont)
      }
 }
 
+/*
+   It reads from the stdin an integer that respects the
+   restrictions connected to the float data type.
+*/
 int leggiIntero()
 {
     int res;
@@ -444,6 +447,17 @@ int leggiIntero()
     return intero;
 }
 
+/*
+  Make some types of control based on the options passed as a parameter
+  to the function.
+  If the option specified was S or D,  it makes the control on the row and of the colomn of the two matrix
+  if they are equal or not. And if the result was negative, it grant to the user to isnert again the
+  id of the matrix.
+  If the option specified to the function was P, it makes some check connected to the
+  restrictions of the vectorial product.
+
+
+*/
 void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2 )
 {
     int res;

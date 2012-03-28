@@ -24,7 +24,7 @@ int main()
   matrice *elenco = initElenco();
 
   int cont = 0;
-  int scelta = 1;
+  int scelta=1;
   int pos = 0;
 
 
@@ -211,6 +211,8 @@ int main()
 	break;
 
     case 0:
+
+
 	  scelta=0;
 	  if(elenco)
         free_matrix( elenco );

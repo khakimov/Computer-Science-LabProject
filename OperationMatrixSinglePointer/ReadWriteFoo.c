@@ -85,9 +85,8 @@ void scriviColonne( matrice *m )
 */
 float scriviValore( int i, int j )
 {
-  int res;
-  float x;
-
+    int res;
+    float x;
      do
      {
          printf("m[%d][%d] = ", i, j);
