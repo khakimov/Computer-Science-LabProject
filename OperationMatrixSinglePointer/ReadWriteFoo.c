@@ -92,7 +92,7 @@ void scriviValore( matrice *m, int i, int j )
          printf("m[%d][%d] = ", i, j);
          res = scanf("%f", (m->mat+(i*leggiColonne(m)+j)));
          scanf("%*[^\n]");
-         if ( res == 0 || *(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX )
+         if ( res == 0 || (*(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX) )
             printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
 
      }while( res == 0 || *(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX );

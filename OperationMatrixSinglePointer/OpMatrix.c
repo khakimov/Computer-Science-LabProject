@@ -41,6 +41,30 @@ int intestazione()
 }
 
 /*
+    Functiont that takes as its parameter a pointer
+    to a structure of type "matrice", in which there is
+    a field that represents a bidimensional array which need
+    to be dinamically allocated.
+
+*/
+void allocMatrix( matrice *m )
+{
+
+    int i;
+
+    /* Dynamic allocation of a matrix of (r,c) */
+    m->mat = (float*)malloc( leggiRighe(m)*leggiColonne(m) * sizeof(float));
+    if ( m->mat == NULL )
+    {
+        fprintf(stderr,"ERRORE ALLOCAZIONE DINAMICA DELLA MEMORIA!!\n");
+        wait();
+        exit(-1);
+    }
+
+
+}
+
+/*
     Function that takes as parameters the
     pointer to a structure of type "matrice"
     and an integer variable which represents
@@ -219,7 +243,9 @@ matrice inserisciMatrice( int id )
 
     cleanBuffer();
 
-    
+    allocMatrix(&array);
+
+
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
@@ -269,6 +295,8 @@ matrice trasposta( matrice *elenco, int cont )
   mat_t.righe = leggiColonne(&elenco[matchoice]);
   mat_t.colonne = leggiRighe(&elenco[matchoice]);
 
+  allocMatrix(&mat_t);
+
   for ( i=0; i < leggiRighe(&mat_t); i++ )
     for ( j = 0; j < leggiColonne(&mat_t); j++ )
         scriviElemento(&mat_t,i,j,leggiValore(&elenco[matchoice],j,i));
@@ -288,7 +316,8 @@ matrice sommaMatrici( matrice *elenco, int cont)
 
     controllaDati( elenco, cont, 'S' , &scelta1, &scelta2);
     initDim( &mpn, elenco[scelta1]);
-   
+    allocMatrix(&mpn);
+
     mpn.id = cont;
 
     for ( i = 0; i < leggiRighe(&mpn); i++ )
@@ -311,7 +340,8 @@ matrice prodScalareMatrice( matrice *m, int cont )
 
     initDim( &ma, m[scelta]);
 
-    
+    allocMatrix(&ma);
+
     ma.id = cont;
 
     printf("Inserisci valore scalare di tipo reale : ");
@@ -333,7 +363,8 @@ matrice diffMatrice( matrice *elenco, int cont)
     controllaDati( elenco, cont, 'D' , &scelta1, &scelta2);
     initDim( &md, elenco[scelta1]);
 
-    
+    allocMatrix(&md);
+
     md.id = cont;
 
     for( i=0; i < leggiRighe(&md);i++)
@@ -358,7 +389,8 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     MpvN.colonne = leggiColonne(&elenco[scelta2]);
     MpvN.id = cont;
 
-   
+    allocMatrix(&MpvN);
+
     for(i=0;i< leggiRighe(&MpvN);i++)
        for(j=0;j< leggiColonne(&MpvN);j++)
           for(k=0;k< leggiColonne(&elenco[scelta1]);k++)

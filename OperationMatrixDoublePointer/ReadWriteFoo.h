@@ -17,7 +17,7 @@
 
 typedef struct
 {
-  float mat[MAXC*MAXR];
+  float **mat;
   int righe;
   int colonne;
   int id;

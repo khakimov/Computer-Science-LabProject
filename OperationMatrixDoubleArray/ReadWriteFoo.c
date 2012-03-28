@@ -90,12 +90,12 @@ void scriviValore( matrice *m, int i, int j )
      do
      {
          printf("m[%d][%d] = ", i, j);
-         res = scanf("%f", (m->mat+(i*leggiColonne(m)+j)));
+         res = scanf("%f", &m->mat[i][j]);
          scanf("%*[^\n]");
-         if ( res == 0 || *(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX )
+         if ( res == 0 || m->mat[i][j] > FLT_MAX )
             printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
-
-     }while( res == 0 || *(m->mat+(i*leggiColonne(m)+j)) > FLT_MAX );
+            
+     }while( res == 0 || m->mat[i][j] > FLT_MAX );
 
 }
 
@@ -106,7 +106,7 @@ void scriviValore( matrice *m, int i, int j )
 */
 float leggiValore( matrice *m, int i, int j )
 {
-  return *(m->mat+(i*leggiColonne(m)+j));
+  return m->mat[i][j];
 
 }
 
@@ -117,5 +117,5 @@ float leggiValore( matrice *m, int i, int j )
 */
 void scriviElemento( matrice *m, int i, int j, float n )
 {
-    *(m->mat+(i*leggiColonne(m)+j)) = n;
+    m->mat[i][j] = n;
 }
