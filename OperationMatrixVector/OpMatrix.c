@@ -219,11 +219,11 @@ matrice inserisciMatrice( int id )
 
     cleanBuffer();
 
-    
+
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
-            scriviValore(&array, i, j);
+            scriviElemento(&array, i, j, scriviValore(i, j) );
 
     return array;
 }
@@ -288,7 +288,7 @@ matrice sommaMatrici( matrice *elenco, int cont)
 
     controllaDati( elenco, cont, 'S' , &scelta1, &scelta2);
     initDim( &mpn, elenco[scelta1]);
-   
+
     mpn.id = cont;
 
     for ( i = 0; i < leggiRighe(&mpn); i++ )
@@ -311,7 +311,7 @@ matrice prodScalareMatrice( matrice *m, int cont )
 
     initDim( &ma, m[scelta]);
 
-    
+
     ma.id = cont;
 
     printf("Inserisci valore scalare di tipo reale : ");
@@ -333,7 +333,7 @@ matrice diffMatrice( matrice *elenco, int cont)
     controllaDati( elenco, cont, 'D' , &scelta1, &scelta2);
     initDim( &md, elenco[scelta1]);
 
-    
+
     md.id = cont;
 
     for( i=0; i < leggiRighe(&md);i++)
@@ -358,7 +358,7 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     MpvN.colonne = leggiColonne(&elenco[scelta2]);
     MpvN.id = cont;
 
-   
+
     for(i=0;i< leggiRighe(&MpvN);i++)
        for(j=0;j< leggiColonne(&MpvN);j++)
           for(k=0;k< leggiColonne(&elenco[scelta1]);k++)
@@ -396,7 +396,7 @@ void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 }
 
 /*
-   It reads from the stdin an integer that respects the 
+   It reads from the stdin an integer that respects the
    restrictions connected to the float data type.
 */
 int leggiIntero()
@@ -419,11 +419,11 @@ int leggiIntero()
   Make some types of control based on the options passed as a parameter
   to the function.
   If the option specified was S or D,  it makes the control on the row and of the colomn of the two matrix
-  if they are equal or not. And if the result was negative, it grant to the user to isnert again the 
+  if they are equal or not. And if the result was negative, it grant to the user to isnert again the
   id of the matrix.
-  If the option specified to the function was P, it makes some check connected to the 
+  If the option specified to the function was P, it makes some check connected to the
   restrictions of the vectorial product.
-  
+
 
 */
 void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2 )

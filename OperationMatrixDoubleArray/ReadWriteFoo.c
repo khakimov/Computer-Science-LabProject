@@ -83,22 +83,23 @@ void scriviColonne( matrice *m )
     represented by the i,j integer variable.
 
 */
-void scriviValore( matrice *m, int i, int j )
+float scriviValore( int i, int j )
 {
   int res;
+  float x;
 
      do
      {
          printf("m[%d][%d] = ", i, j);
-         res = scanf("%f", &m->mat[i][j]);
+         res = scanf("%f", &x);
          scanf("%*[^\n]");
-         if ( res == 0 || m->mat[i][j] > FLT_MAX )
+         if ( res == 0 || x > FLT_MAX )
             printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
-            
-     }while( res == 0 || m->mat[i][j] > FLT_MAX );
 
+     }while( res == 0 || x > FLT_MAX );
+
+    return x;
 }
-
 /*
     Functions that returns a specific element
     stored in the i,j position of the considered

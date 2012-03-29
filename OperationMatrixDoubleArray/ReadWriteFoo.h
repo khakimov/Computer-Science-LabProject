@@ -28,7 +28,7 @@ typedef struct
 
 int leggiRighe( matrice * );
 int leggiColonne( matrice *);
-void scriviValore( matrice *, int, int );
+float scriviValore( int, int );
 float leggiValore( matrice *, int, int );
 void scriviRighe( matrice * );
 void scriviColonne( matrice * );

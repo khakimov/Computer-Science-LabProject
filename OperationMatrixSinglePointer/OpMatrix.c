@@ -249,7 +249,7 @@ matrice inserisciMatrice( int id )
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
-            scriviValore(&array, i, j);
+            scriviElemento(&array, i, j, scriviValore(i, j) );
 
     return array;
 }
@@ -428,7 +428,7 @@ void sceltaMatrici(int *scelta1, int *scelta2, int cont)
 }
 
 /*
-   It reads from the stdin an integer that respects the 
+   It reads from the stdin an integer that respects the
    restrictions connected to the float data type.
 */
 int leggiIntero()
@@ -451,11 +451,11 @@ int leggiIntero()
   Make some types of control based on the options passed as a parameter
   to the function.
   If the option specified was S or D,  it makes the control on the row and of the colomn of the two matrix
-  if they are equal or not. And if the result was negative, it grant to the user to isnert again the 
+  if they are equal or not. And if the result was negative, it grant to the user to isnert again the
   id of the matrix.
-  If the option specified to the function was P, it makes some check connected to the 
+  If the option specified to the function was P, it makes some check connected to the
   restrictions of the vectorial product.
-  
+
 
 */
 void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2 )

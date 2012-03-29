@@ -252,7 +252,7 @@ matrice inserisciMatrice( int id )
     printf("\n\nInserisci elementi della matrice\n");
     for ( i = 0; i < leggiRighe(&array); i++ )
         for ( j = 0; j < leggiColonne(&array); j++ )
-            scriviValore(&array, i, j);
+            scriviElemento(&array, i, j, scriviValore(i, j) );
 
     return array;
 }
