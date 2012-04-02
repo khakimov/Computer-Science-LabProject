@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1333360878 source:/home/alex/C/OperationMatrixLinkedList/OpMatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+
+1332902778 /home/alex/C/OperationMatrixLinkedList/OpMatrix.h
+	"ReadWriteFoo.h"
+
+1333361010 /home/alex/C/OperationMatrixLinkedList/ReadWriteFoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1333361016 source:/home/alex/C/OperationMatrixLinkedList/ReadWriteFoo.c
+	"ReadWriteFoo.h"
+
+1332902778 source:/home/alex/C/OperationMatrixLinkedList/main.c
+	"OpMatrix.h"
+
