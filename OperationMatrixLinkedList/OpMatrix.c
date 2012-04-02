@@ -246,6 +246,7 @@ matrice inserisciMatrice( int id )
     scriviColonne(&array);
 
     array.id = id;
+    array.mat = NULL;
 
 
     cleanBuffer();

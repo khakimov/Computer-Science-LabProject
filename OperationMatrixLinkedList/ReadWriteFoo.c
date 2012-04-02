@@ -108,13 +108,14 @@ float scriviValore( int i, int j )
 */
 float leggiValore( matrice *m, int i, int j )
 {
-  List* curr;
+  List* curr = NULL;
   int cont = 0;
 
 
   curr = m->mat;
+  printf("STO LEGGENDO!!\n");
 
-  while ( curr &&  cont < val_access(i, leggiColonne(m), j ) )
+  while ( cont < val_access(i, leggiColonne(m), j ) )
     {
         curr = curr->next;
         cont++;
@@ -133,30 +134,30 @@ float leggiValore( matrice *m, int i, int j )
 */
 void scriviElemento( matrice *m, int i, int j, float n )
 {
-    List* curr = m->mat;
-    int cont = 0;
+    List* curr = NULL;
 
-    if ( !m->mat )
+    if ( !(m->mat) )
     {
         m->mat = (List*)malloc(sizeof(List));
-        m->mat->val = n;
-        m->mat->next = NULL;
+        if ( !m->mat )
+            printf("ERROR OCCURED!!\n");
+        else
+        {
+            m->mat->val = n;
+            m->mat->next = NULL;
+        }
     }
-
-    while( curr && cont < val_access(i, leggiColonne(m), j ) )
+    else
     {
-        curr = curr->next;
-        cont ++;
+        curr = m->mat;
 
+        while( curr )
+            curr = curr->next;
+
+        curr = (List *)malloc( sizeof(List ));
+
+        curr->val = n;
+        curr->next = NULL;
     }
-
-    if ( !curr->next)
-     curr->next = (List *)malloc( sizeof(List ));
-
-    curr = curr->next;
-
-    curr->val = n;
-    curr->next = NULL;
-
 
 }
