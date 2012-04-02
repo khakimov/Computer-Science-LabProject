@@ -113,9 +113,9 @@ float leggiValore( matrice *m, int i, int j )
 
 
   curr = m->mat;
-  printf("STO LEGGENDO!!\n");
 
-  while ( cont < val_access(i, leggiColonne(m), j ) )
+
+  while ( curr->next && cont < val_access(i, leggiColonne(m), j ) )
     {
         curr = curr->next;
         cont++;
@@ -151,11 +151,12 @@ void scriviElemento( matrice *m, int i, int j, float n )
     {
         curr = m->mat;
 
-        while( curr )
+        while( curr->next )
             curr = curr->next;
 
-        curr = (List *)malloc( sizeof(List ));
+        curr->next = (List *)malloc( sizeof(List ));
 
+        curr = curr->next;
         curr->val = n;
         curr->next = NULL;
     }

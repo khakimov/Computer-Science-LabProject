@@ -302,8 +302,8 @@ matrice trasposta( matrice *elenco, int cont )
   mat_t.id = cont;
   mat_t.righe = leggiColonne(&elenco[matchoice]);
   mat_t.colonne = leggiRighe(&elenco[matchoice]);
+  mat_t.mat = NULL;
 
-  /*allocMatrix(&mat_t);*/
 
   for ( i=0; i < leggiRighe(&mat_t); i++ )
     for ( j = 0; j < leggiColonne(&mat_t); j++ )
@@ -324,8 +324,8 @@ matrice sommaMatrici( matrice *elenco, int cont)
 
     controllaDati( elenco, cont, 'S' , &scelta1, &scelta2);
     initDim( &mpn, elenco[scelta1]);
-    /*allocMatrix(&mpn);*/
 
+    mpn.mat = NULL;
     mpn.id = cont;
 
     for ( i = 0; i < leggiRighe(&mpn); i++ )
@@ -348,8 +348,7 @@ matrice prodScalareMatrice( matrice *m, int cont )
 
     initDim( &ma, m[scelta]);
 
-    /*allocMatrix(&ma);*/
-
+    ma.mat = NULL;
     ma.id = cont;
 
     printf("Inserisci valore scalare di tipo reale : ");
@@ -371,7 +370,7 @@ matrice diffMatrice( matrice *elenco, int cont)
     controllaDati( elenco, cont, 'D' , &scelta1, &scelta2);
     initDim( &md, elenco[scelta1]);
 
-    /*allocMatrix(&md);*/
+    md.mat = NULL;
 
     md.id = cont;
 
@@ -396,8 +395,9 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     MpvN.righe = leggiRighe(&elenco[scelta1]);
     MpvN.colonne = leggiColonne(&elenco[scelta2]);
     MpvN.id = cont;
+    MpvN.mat = NULL;
 
-    /*allocMatrix(&MpvN);*/
+
 
     for(i=0;i< leggiRighe(&MpvN);i++)
        for(j=0;j< leggiColonne(&MpvN);j++)

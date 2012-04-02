@@ -17,3 +17,21 @@
 1332902778 source:/home/alex/C/OperationMatrixLinkedList/main.c
 	"OpMatrix.h"
 
+1333369306 source:c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\main.c
+	"OpMatrix.h"
+
+1333369306 c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\opmatrix.h
+	"ReadWriteFoo.h"
+
+1333369306 c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\readwritefoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1333369828 source:c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\opmatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+
+1333369962 source:c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\readwritefoo.c
+	"ReadWriteFoo.h"
+
