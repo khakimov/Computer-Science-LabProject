@@ -21,7 +21,7 @@
 
 int main()
 {
-  matrice *elenco = NULL;
+  matrice *elenco = NULL;//initElenco();
   matrice *curr;
   matrice *succ;
   int cont = 0;

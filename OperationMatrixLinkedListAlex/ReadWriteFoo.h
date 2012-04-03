@@ -44,7 +44,7 @@ typedef struct Matrice matrice;
 int leggiRighe( matrice * );
 int leggiColonne( matrice *);
 float scriviValore( int, int );
-float leggiValore( matrice *, int, int);
+float leggiValore( matrice *, int, int , int);
 void scriviRighe( matrice * );
 void scriviColonne( matrice * );
 void scriviElemento( matrice *, int, int, float );

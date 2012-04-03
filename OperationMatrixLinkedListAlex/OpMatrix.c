@@ -183,9 +183,9 @@ void free_matrix( matrice *elenco )
     that are involved into operation like the sum and the difference, in which the fundamental
     requirement is that the matrix MUST have the same dimensions.
 */
-int checkDim( matrice *m, matrice *n )
+int checkDim( matrice m, matrice n )
 {
-    return ( leggiRighe(m) == leggiRighe(n) && leggiColonne(m) == leggiColonne(n) ) ? 1 : 0;
+    return ( leggiRighe(&m) == leggiRighe(&n) && leggiColonne(&m) == leggiColonne(&n) ) ? 1 : 0;
 }
 
 /*
@@ -194,15 +194,15 @@ int checkDim( matrice *m, matrice *n )
     between the selected matrixs.
 
 */
-int checkRowCol( matrice *m , matrice *n)
+int checkRowCol( matrice m , matrice n)
 {
-    return ( leggiColonne(m) == leggiRighe(n) ) ? 1 : 0;
+    return ( leggiColonne(&m) == leggiRighe(&n) ) ? 1 : 0;
 }
 
-void initDim( matrice *dest, matrice *src )
+void initDim( matrice *dest, matrice src )
 {
-  dest->righe = leggiRighe(src);
-  dest->colonne = leggiColonne(src);
+  dest->righe = leggiRighe(&src);
+  dest->colonne = leggiColonne(&src);
 
 }
 /* Useful function used in order to remove some useless characters present in the buffer */
@@ -240,6 +240,7 @@ void salvaValore( float *f )
 matrice inserisciMatrice( int id )
 {
     matrice array;
+    array.mat->next = NULL;
     array.mat = NULL;
 
     int i,j;
@@ -282,7 +283,7 @@ void stampaMatrice( matrice *elenco, int cont )
       printf("\t ----- Matrice %d ---- \n", curr -> id);
       for(i = 0; i < leggiRighe(curr); printf("\n"),i++)
         for(j=0;j < leggiColonne(curr);j++)
-            printf("%15.3f ",leggiValore(curr, i, j));
+            printf("%15.3f ",leggiValore(curr, i, j, leggiColonne(curr)));
   }
 
 }
@@ -304,16 +305,18 @@ matrice trasposta( matrice *elenco, int cont )
   sceltaMatrici(&matchoice, NULL, cont);
   curr = cercaMatrice(elenco, matchoice);
 
-  mat_t.mat = NULL;
   mat_t.id = cont;
   mat_t.righe = leggiColonne(curr);
   mat_t.colonne = leggiRighe(curr);
 
+  mat_t.mat->next=NULL;
+  mat_t.mat=NULL;
 
+  /*allocMatrix(&mat_t);*/
 
   for ( i=0; i < leggiRighe(&mat_t); i++ )
     for ( j = 0; j < leggiColonne(&mat_t); j++ )
-        scriviElemento(&mat_t,i,j,leggiValore(curr,j,i));
+        scriviElemento(&mat_t,i,j,leggiValore(curr,j,i,leggiColonne(curr)));
 
 
 
@@ -328,19 +331,20 @@ matrice sommaMatrici( matrice *elenco, int cont)
     int i, j;
     int scelta1,scelta2;
     matrice *curr,*curr2;
-
-    mpn.mat = NULL;
+    mpn.mat->next=NULL;
+    mpn.mat=NULL;
 
     controllaDati( elenco, cont, 'S' , &scelta1, &scelta2);
     curr = cercaMatrice(elenco, scelta1);
     curr2 = cercaMatrice(elenco, scelta2);
-    initDim( &mpn, curr);
+    initDim( &mpn, *curr);
+    /*allocMatrix(&mpn);*/
 
     mpn.id = cont;
 
     for ( i = 0; i < leggiRighe(&mpn); i++ )
         for ( j = 0; j < leggiColonne(&mpn); j++ )
-            scriviElemento( &mpn,i, j, leggiValore(curr, i, j) + leggiValore(curr2, i, j));
+            scriviElemento( &mpn,i, j, leggiValore(curr, i, j, leggiColonne(curr)) + leggiValore(curr2, i, j, leggiColonne(curr2)));
 
 
     return mpn;
@@ -353,13 +357,15 @@ matrice prodScalareMatrice( matrice *m, int cont )
     int i, j;
     int scelta;
     matrice *curr;
+    ma.mat->next=NULL;
+    ma.mat=NULL;
 
-    ma.mat = NULL;
 
     sceltaMatrici(&scelta, NULL, cont);
     curr = cercaMatrice(m, scelta);
-    initDim( &ma, curr);
+    initDim( &ma, *curr);
 
+    /*allocMatrix(&ma);*/
 
     ma.id = cont;
 
@@ -368,7 +374,7 @@ matrice prodScalareMatrice( matrice *m, int cont )
 
     for( i = 0; i < leggiRighe(&ma); i++ )
         for ( j = 0; j < leggiColonne(&ma); j++ )
-            scriviElemento(&ma,i,j, a * leggiValore(curr,i,j));
+            scriviElemento(&ma,i,j, a * leggiValore(curr,i,j, leggiColonne(curr)));
 
     return ma;
 }
@@ -380,12 +386,13 @@ matrice diffMatrice( matrice *elenco, int cont)
     int scelta1,scelta2;
     matrice *curr,*curr2;
 
-    md.mat = NULL;
+    md.mat->next=NULL;
+    md.mat=NULL;
 
     controllaDati( elenco, cont, 'D' , &scelta1, &scelta2);
     curr = cercaMatrice(elenco, scelta1);
     curr2 = cercaMatrice(elenco, scelta2);
-    initDim( &md, cercaMatrice(elenco, scelta1));
+    initDim( &md, elenco[scelta1]);
 
     /*allocMatrix(&md);*/
 
@@ -393,7 +400,7 @@ matrice diffMatrice( matrice *elenco, int cont)
 
     for( i=0; i < leggiRighe(&md);i++)
        for(j=0; j < leggiColonne(&md); j++)
-           scriviElemento( &md, i, j, leggiValore(curr,i,j)- leggiValore(curr2, i,j));
+           scriviElemento( &md, i, j, leggiValore(curr,i,j,leggiColonne(curr))- leggiValore(curr2, i,j,leggiColonne(curr2)));
 
 
     return md;
@@ -407,20 +414,23 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     int scelta1,scelta2;
     matrice *curr,*curr2;
 
+    MpvN.mat->next=NULL;
+    MpvN.mat=NULL;
+
     controllaDati( elenco, cont, 'P' , &scelta1, &scelta2);
     curr = cercaMatrice(elenco, scelta1);
     curr2 = cercaMatrice(elenco, scelta2);
 
-    MpvN.mat = NULL;
     MpvN.righe = leggiRighe(curr);
     MpvN.colonne = leggiColonne(curr2);
     MpvN.id = cont;
 
+    /*allocMatrix(&MpvN);*/
 
     for(i=0;i< leggiRighe(&MpvN);i++)
        for(j=0;j< leggiColonne(&MpvN);j++)
           for(k=0;k< leggiColonne(curr);k++)
-            scriviElemento( &MpvN, i, j, leggiValore(&MpvN,i,j) + leggiValore(curr,i,k)* leggiValore(curr2,k,j) );
+            scriviElemento( &MpvN, i, j, leggiValore(&MpvN,i,j,leggiColonne(curr2)) + leggiValore(curr,i,k,leggiColonne(curr))* leggiValore(curr2,k,j,leggiColonne(curr2)) );
 
 
 
@@ -479,23 +489,23 @@ void controllaDati( matrice *elenco, int n, char opt, int *scelta1, int *scelta2
         {
 
             sceltaMatrici(scelta1, scelta2, n);
-            res = checkDim( cercaMatrice(elenco, *scelta1), cercaMatrice(elenco, *scelta2) );
+            res = checkDim( elenco[*scelta1], elenco[*scelta2] );
             if ( res == 0 )
                 fprintf(stderr,"Reinserisci le matrici!\nLE MATRICI DEVONO NECESSARIAMENTE AVERE LE STESSE DIMENSIONI!\n");
 
-        }while( res == 0 || ( cercaMatrice(elenco, *scelta1), cercaMatrice(elenco, *scelta2)) == 0 );
+        }while( res == 0 || ( checkDim(elenco[*scelta1], elenco[*scelta2])) == 0 );
     break;
     case 'P':
         do
         {
 
             sceltaMatrici(scelta1, scelta2, n);
-            res = checkRowCol( cercaMatrice(elenco, *scelta1), cercaMatrice(elenco, *scelta2));
+            res = checkRowCol( elenco[*scelta1], elenco[*scelta2] );
             if ( res == 0 )
                 fprintf(stderr,"Reinserisci le matrici!\n%s\n",
                         "ATTENZIONE: IL NUMERO DI COLONNE DELLA SECONDA MATRICE DEVE ESSERE UGUALE A QUELLO DELLE COLONNE!!");
 
-        }while( res == 0 || ( checkRowCol(cercaMatrice(elenco, *scelta1), cercaMatrice(elenco, *scelta2)) == 0));
+        }while( res == 0 || ( checkRowCol(elenco[*scelta1],elenco[*scelta2]) == 0));
 
     break;
     }

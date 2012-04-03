@@ -106,29 +106,20 @@ float scriviValore( int i, int j )
     stored in the i,j position of the considered
     matrix.
 */
-float leggiValore( matrice *m, int i, int j )
+float leggiValore( matrice *m, int i, int j , int c)
 {
   List* curr;
   int cont = 0;
 
-  if ( !m->mat )
-  {
-    m->mat = allocMatrice();
-    m->mat->val = 0;
-    m->mat->next = NULL;
-    curr = m->mat;
-  }
-  else
-  {
-    curr = m->mat;
+  curr = m->mat;
 
-    while ( cont < val_access(i, leggiColonne(m), j) )
-    {
+  while ( cont < (i*c)+j )
+  {
       curr = curr->next;
       cont++;
-    }
-
   }
+
+
     /* Localized correct value when we exit from the while statement */
     /* Take it and take away */
 
@@ -156,12 +147,9 @@ void scriviElemento( matrice *m, int i, int j, float n )
     else
     {
 
-        while(curr->next)
-            curr = curr->next;
-
+        while(curr->next) curr = curr->next;
         curr->next = (List*)malloc(sizeof(List));
         curr = curr->next;
-
         if(!curr) printf("\nALLOCATION MEMORY ERROR in scriviElemento!");
 
         curr->val = n;
