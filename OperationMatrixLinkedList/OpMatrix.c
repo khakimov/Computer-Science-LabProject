@@ -405,6 +405,7 @@ matrice prodvetMatrice( matrice *elenco, int cont)
     matrice MpvN;
     int i,j,k;
     int scelta1,scelta2;
+    float tot = 0;
     matrice *curr,*curr2;
 
     controllaDati( elenco, cont, 'P' , &scelta1, &scelta2);
@@ -419,9 +420,11 @@ matrice prodvetMatrice( matrice *elenco, int cont)
 
     for(i=0;i< leggiRighe(&MpvN);i++)
        for(j=0;j< leggiColonne(&MpvN);j++)
-          for(k=0;k< leggiColonne(curr);k++)
-            scriviElemento( &MpvN, i, j, leggiValore(&MpvN,i,j) + leggiValore(curr,i,k)* leggiValore(curr2,k,j) );
-
+       {
+         for(k=0;k< leggiColonne(curr);k++)
+            tot += leggiValore(curr,i,k)* leggiValore(curr2,k,j);
+         scriviElemento( &MpvN, i, j, tot );
+       }
 
 
     return MpvN;

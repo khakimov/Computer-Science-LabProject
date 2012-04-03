@@ -110,7 +110,7 @@ float leggiValore( matrice *m, int i, int j )
 {
   List* curr;
   int cont = 0;
-
+/*
   if ( !m->mat )
   {
     m->mat = allocMatrice();
@@ -119,7 +119,7 @@ float leggiValore( matrice *m, int i, int j )
     curr = m->mat;
   }
   else
-  {
+  { */
     curr = m->mat;
 
     while ( cont < val_access(i, leggiColonne(m), j) )
@@ -128,7 +128,7 @@ float leggiValore( matrice *m, int i, int j )
       cont++;
     }
 
-  }
+ // }
     /* Localized correct value when we exit from the while statement */
     /* Take it and take away */
 
