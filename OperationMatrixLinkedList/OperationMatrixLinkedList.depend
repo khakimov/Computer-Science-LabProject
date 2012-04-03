@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1333463000 source:c:\users\snake\computer-science-labproject\operationmatrixlinkedlist\readwritefoo.c
+	"ReadWriteFoo.h"
+
+1333459007 c:\users\snake\computer-science-labproject\operationmatrixlinkedlist\readwritefoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1333463951 source:c:\users\snake\computer-science-labproject\operationmatrixlinkedlist\main.c
+	"OpMatrix.h"
+
+1333461678 c:\users\snake\computer-science-labproject\operationmatrixlinkedlist\opmatrix.h
+	"ReadWriteFoo.h"
+

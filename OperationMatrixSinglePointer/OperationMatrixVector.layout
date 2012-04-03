@@ -11,6 +11,7 @@
 		<Cursor position="419" topLine="20" />
 	</File>
 </CodeBlocks_layout_file>
+<<<<<<< HEAD
 [Editors]
 Focused=1
 Order=3,2,1
@@ -41,3 +42,5 @@ LeftChar=1
 [Editor_4]
 Open=0
 Top=0
+=======
+>>>>>>> d3f46c56f46d441a426d9fef20f02475c20c1912
