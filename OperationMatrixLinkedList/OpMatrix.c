@@ -4,8 +4,8 @@
 /* Useful funtion used to get the option choosen by the user from the command line and print the menu */
 int intestazione()
 {
-   int scelta;
-   int ris;
+  int scelta; /* Holds the choice made by the user when was asked to him which operation will do */
+  int ris; /* Represents the return value of the scanf() that was checked out in order to manage some possible errors */
 
 
    do
@@ -40,91 +40,24 @@ int intestazione()
    return scelta;
 }
 
-/*
-    Functiont that takes as its parameter a pointer
-    to a structure of type "matrice", in which there is
-    a field that represents a bidimensional array which need
-    to be dinamically allocated.
+/* 
+   overwriteMatrix function which grants to the user
+   to overwrite unneeded matrix saved in memory in oreder
+   to save some other when the memory was full.
 
-*/
+   Parameters:
+   matrice m* : Pointers to a struct of type matrice
+   int n : represents the number of matrix saved in memory until now
 
-/*
-void allocMatrix( matrice *m )
-{
-
-    int i;
-
-    Dynamic allocation of a matrix of (r,c)
-    m->mat = (float**)malloc(leggiRighe(m)*sizeof(float*));
-     if( m->mat == NULL)
-       fprintf(stderr,"\n**ERRORE ALLOCAZIONE MEMORIA**");
-
-    for ( i = 0; i < leggiRighe(m); i++ )
-    {
-        m->mat[i] = (float*)malloc( leggiColonne(m) * sizeof(float));
-        if( m->mat[i] == NULL)
-            printf("\n**ERRORE ALLOCAZIONE MEMORIA**");
-    }
-
-
-}
-*/
-
-
-/*
-    Function that takes as parameters the
-    pointer to a structure of type "matrice"
-    and an integer variable which represents
-    the number of matrix actually contained into the list
-    of matrix.
-    It returns a pointer to the new resized list of matrix.
-
-*/
-/*
-matrice *reallocMat( matrice *m, int n )
-{
-  matrice *new_mat;
-
-  // Create a new memory location for the next matrix that was declared
-  new_mat = (matrice*)realloc( m, (n+1) * sizeof(matrice));
-  if ( new_mat == NULL )
-  {
-      fprintf(stderr,"ERRORE ALLOCAZIONE MEMORIA!\n");
-      wait();
-      exit(-1);
-  }
-
-  return new_mat;
-}
-*/
-/*
-    Function that simply initializes
-    the array of matrix returning a pointer
-    to this array properly dinamically allocated
-    using malloc() function.
-
-*/
-/*
-matrice* initElenco( void )
-{
-  matrice *arr;
-
-  arr = (matrice*)malloc( 1 * sizeof(matrice));
-  if ( arr == NULL )
-  {
-      fprintf(stderr,"ERRORE ALLOCAZIONE DINAMICA DELLA MEMORIA\n");
-      wait();
-      exit(-1);
-  }
-
-  return arr;
-
-}
+   Returns :
+   an integer value which represents the location in
+   which was present the matrix that will be 
+   overwritten.
 */
 int overwriteMatrix( matrice *m, int n )
 {
-     int matchoice;
-     char choice;
+  int matchoice; /* A specific integer value that represent the id of the matrix */
+  char choice; /* Hold the value of the user's choice needed to ask to him if he wants to continue */
 
 
      printf("----- SOVRASCRITTURA --------\n\n");
