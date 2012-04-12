@@ -169,7 +169,7 @@ int checkRowCol( matrice m , matrice n)
 void initDim( matrice *dest, matrice src )
 {
   dest->righe = leggiRighe(&src);
-  dest->colonne = leggiRighe(&src);
+  dest->colonne = leggiColonne(&src);
 
 }
 /* Useful function used in order to remove some useless characters present in the buffer */
