@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <time.h>
-#include stdlib.h>
+#include <stdlib.h>
 
 /* Constant that represent the max num of row and col of the Tabellone */
 
@@ -18,6 +18,9 @@
 #define CTC 5
 
 /* --------------------------------------------------------------------------------- */
+
+/* Total number of elements that will be shuffled */
+#define TOT_NUM 90
 
 /* Enum variable which grant to understand if a specific number is out or not */
 typedef enum { NO, O } is_out;
@@ -35,13 +38,12 @@ typedef Cell Cart_Tab[CTR][CTC];
 
 
 /* A new type of matrix which represent the scheme thanks to we manage the game */
-typedef Cart_tab Tabellone[MAXR][MAXC];
+//typedef Cart_tab Tabellone[MAXR][MAXC];
 
 void fill_cells( Cart_Tab );
 int rand_num( void );
-
-
-
-
+void fill_numbers ( int [], int );
+void print_cells( Cart_Tab );
+void get_row_col( int, int *, int * );
 
 #endif

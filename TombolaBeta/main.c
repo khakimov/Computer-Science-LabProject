@@ -1,8 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "manage.h"
 
 int main()
 {
-    printf("Hello world!\n");
-    return 0;
+    Cart_Tab cartella;
+
+    fill_cells(cartella);
+    print_cells(cartella);
+
+    return EXIT_SUCCESS;
 }

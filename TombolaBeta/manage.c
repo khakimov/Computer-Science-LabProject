@@ -3,6 +3,8 @@
 
 void fill_cells( Cart_Tab tab )
 {
+    int i, j;
+
     for ( i = 0; i < CTR; i++ )
         for ( j = 0; j < CTC; j++ )
         {
@@ -11,42 +13,50 @@ void fill_cells( Cart_Tab tab )
 
         }
 }
+void print_cells( Cart_Tab cartella )
+{
+    int i, j;
+    for ( i = 0; i < CTR; printf("\n"), i++ )
+        for ( j = 0; j < CTC; j++ )
+            printf("%d ", cartella[i][j].num);
 
+
+}
+
+void fill_numbers ( int num[], int n )
+{
+    int i;
+
+    for ( i = 0; i < n; num[i] = i+1, i++ );
+}
 int rand_num( void )
 {
 
-    const int tot_num = 90;
-    static int numbers[tot_num];
+    static int numbers[TOT_NUM];
     int i = 0;
     int n_rand;
+    int temp;
 
     srand(time(NULL));
 
-    x = 1 + rand() % tot_num;
+    if ( numbers[0] == 0 )
+        fill_numbers(numbers, TOT_NUM);
 
-    if ( n_rand > 1 )
-        for ( i = 0; i < tot_num-1; i++ )
-        {
-            int n_rand =  1 + rand() % tot_num;
-            int temp = numbers[i];
-            numbers[i] = numbers[n_rand];
-            numbers[n_rand] = temp;
-
-        }
-    else
+    for( i = TOT_NUM-1; i > 0; i-- )
     {
-       for ( i = 0; i < tot_num; i++ )
-            numbers[i] = i+1;
-        for ( i = 0; i < tot_num-1; i++ )
-        {
-            int n_rand =  1 + rand() % tot_num;
-            int temp = numbers[i];
-            numbers[i] = numbers[n_rand];
-            numbers[n_rand] = temp;
-
-        }
+        n_rand = 1 +  rand() % i;
+        temp = numbers[i];
+        numbers[i] = numbers[n_rand];
+        numbers[n_rand] = temp;
     }
 
-    return numbers[n_rand];
+
+    return numbers[1+ rand() % TOT_NUM];
+}
+
+void get_row_col( int num, int *r, int *c )
+{
+    *r = num / 10 - 1;
+    *c = num % 10 - 1;
 }
 
