@@ -7,5 +7,7 @@ int main()
     fill_cells(cartella);
     print_cells(cartella);
 
+
+
     return EXIT_SUCCESS;
 }

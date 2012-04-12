@@ -36,6 +36,21 @@ typedef struct
 /* New data type which represent a specific tab */
 typedef Cell Cart_Tab[CTR][CTC];
 
+typedef struct
+{
+    Cart_Tab cart;
+    int id;
+
+}Cartella;
+
+typedef struct
+{
+    Cartella *cartella;
+    int n_cart;
+
+}Player;
+
+
 
 /* A new type of matrix which represent the scheme thanks to we manage the game */
 //typedef Cart_tab Tabellone[MAXR][MAXC];
@@ -45,5 +60,6 @@ int rand_num( void );
 void fill_numbers ( int [], int );
 void print_cells( Cart_Tab );
 void get_row_col( int, int *, int * );
+Cartella *createCartelle( Cartella *, int );
 
 #endif

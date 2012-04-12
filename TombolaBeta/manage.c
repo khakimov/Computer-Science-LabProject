@@ -29,6 +29,7 @@ void fill_numbers ( int num[], int n )
 
     for ( i = 0; i < n; num[i] = i+1, i++ );
 }
+
 int rand_num( void )
 {
 
@@ -60,3 +61,7 @@ void get_row_col( int num, int *r, int *c )
     *c = num % 10 - 1;
 }
 
+Cartella *createCartelle( Cartella *listCartelle, int n )
+{
+    return malloc( n * sizeof(Cartella));
+}
