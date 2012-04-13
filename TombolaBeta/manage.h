@@ -3,7 +3,7 @@
 
 #include "ReadWriteFoo.h"
 
-
+int playGame( ListPlayer *);
 void fill_cells( Cart_Tab );
 int rand_num( void );
 void fill_numbers ( int [], int );
@@ -16,5 +16,6 @@ int readInteger( void );
 Player *initListPlayer( ListPlayer *);
 char *getName( Player *);
 void cleanBuffer( void );
+void initTabellone()
 
 #endif

@@ -1,6 +1,17 @@
 #include "manage.h"
 
 ListPrize premi = { { "Ambo", 0, NO}, { "Terno", 0, NO}, { "Quaterna", 0, NO}, { "Cinquina", 0, NO}, { "Tombola", 0, NO} };
+Cart_Tab Tabellone[MAXR][MAXC];
+
+void banner( void )
+{
+    printf("**************************************************\n",
+           "************** INIZIA IL GIOCO *******************\n",
+           "**************************************************\n"
+
+           );
+}
+
 
 void fill_cells( Cart_Tab tab )
 {
@@ -133,6 +144,23 @@ int readInteger( void )
 
     return intero;
 }
+
+char *getName( Player *play )
+{
+    printf("INSERISCI IL TUO NOME :\n");
+
+    play->name_player = malloc( MAX_LEN * sizeof(char));
+
+    if ( !play->name_player )
+    {
+        printf("ERRORE ALLOCAZIONE MEMORIA!\n");
+        exit(-1);
+    }
+    fgets( play->name_player, MAX_LEN, stdin);
+
+    return play->name_player;
+}
+
 /*
     Returns a correctly allocated pointer to a region
     of memory of n Cartella data structures.
@@ -186,18 +214,8 @@ void initGame( ListPlayer *players )
 
 }
 
-char *getName( Player *play )
+int playGame( ListPlayer *list_player )
 {
-    printf("INSERISCI IL TUO NOME :\n");
+    banner();
 
-    play->name_player = malloc( MAX_LEN * sizeof(char));
-
-    if ( !play->name_player )
-    {
-        printf("ERRORE ALLOCAZIONE MEMORIA!\n");
-        exit(-1);
-    }
-    fgets( play->name_player, MAX_LEN, stdin);
-
-    return play->name_player;
 }
