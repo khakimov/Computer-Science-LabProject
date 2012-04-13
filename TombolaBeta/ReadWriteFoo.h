@@ -10,8 +10,8 @@
 
 /* Constant that represent the max num of row and col of the Tabellone */
 
-#define MAXR 3
-#define MAXC 2
+#define MAXR 9
+#define MAXC 10
 
 /* ------------------------------------------------------------------- */
 
@@ -35,6 +35,7 @@ struct Prize
     char *name_prize;
     int prize;
     is_out checked;
+    int winner_id;
 };
 
 
@@ -86,12 +87,15 @@ typedef struct
 }ListPlayer;
 
 
-int readNumber( Player *, int, int, int );
+
+void swapCell( Cell *c1, Cell *c2 );
+void ord_row( Cell row[] );
+int readNumber( Cartella *, int, int );
 int readId( Player *, int );
 void writeId( Player *, int, int );
 void writeNumber( Player *, int, int, int, int );
 int isChecked( struct Prize * );
-int isGameFinished( ListPrize * );
+int isGameFinished( struct Prize * );
 
 
 #endif

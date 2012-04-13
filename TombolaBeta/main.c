@@ -6,5 +6,12 @@ int main()
 
     initGame(players);
 
+    initTombolone();
+    printTombolone();
+
+
+    while( playGame( players ) )
+        ;
+
     return EXIT_SUCCESS;
 }

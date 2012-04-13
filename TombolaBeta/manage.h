@@ -16,6 +16,13 @@ int readInteger( void );
 Player *initListPlayer( ListPlayer *);
 char *getName( Player *);
 void cleanBuffer( void );
-void initTabellone()
+void initTombolone( void );
+void printTombolone( void );
+void banner( void );
+void checkValue( ListPlayer *, int );
+void setValue( Cartella *, int );
+void checkPrize( ListPlayer *);
+void printPrize( struct Prize *, Player *, int );
+int checkCartella( Cartella *, int  );
 
 #endif
