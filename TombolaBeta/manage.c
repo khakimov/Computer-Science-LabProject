@@ -31,6 +31,14 @@ void print_cartelle( Player *p )
 
 }
 
+/*
+    Function : fill_numbers()
+    Parameters :
+    - int num[] integer array which will contains all the value from 1 to 90
+    - int n array's length
+
+*/
+
 void fill_numbers ( int num[], int n )
 {
     int i;
@@ -38,6 +46,25 @@ void fill_numbers ( int num[], int n )
     for ( i = 0; i < n; num[i] = i+1, i++ );
 }
 
+/*
+    Function: rand_num()
+    Returns :
+    int : a random number generate using shuffling
+
+    rand_num() uses a static array in order to
+    shuffle all the ninety value that was contained in it
+    using the modern implementation of Durstenfeld of the
+    Fisher-Yaste's shuffling algorithm.
+
+    if the source was not initialized than
+        initialize it with value that go from 1 to 90
+
+    for i from 1 to n − 1 do
+      j ← random integer with 0 ≤ j ≤ i
+      a[i] ← a[j]
+      a[j] ← source[i]
+
+*/
 int rand_num( void )
 {
 
@@ -63,6 +90,17 @@ int rand_num( void )
     return numbers[1+ rand() % TOT_NUM];
 }
 
+/*
+    Function : get_row_col()
+    Parameters:
+    - int num : specific number that was extracted
+    - int *r : pointer to the location in which there is the row number
+    - int *c : pointer to the location in which there is the colomn number
+
+    It splits the number in order to retrieve from the its first digit, the
+    row's number and from its second digit the colomn's number.
+
+*/
 void get_row_col( int num, int *r, int *c )
 {
     *r = num / 10 - 1;
