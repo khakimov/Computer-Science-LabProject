@@ -26,7 +26,7 @@ void print_cartelle( Player *p )
 
         for ( i = 0; i < CTR; printf("\n"), i++ )
             for ( j = 0; j < CTC; j++ )
-                printf("%d ", p->cartelle->cart[i][j].num);
+                printf("%d ", p->cartelle[cont_c].cart[i][j].num);
     }
 
 }
