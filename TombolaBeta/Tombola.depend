@@ -1,12 +1,19 @@
 # depslib dependency file v1.0
-1334320064 source:c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\manage.c
+1334332255 source:c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\manage.c
 	"manage.h"
 
-1334319194 c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\manage.h
+1334331896 c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\manage.h
+	"ReadWriteFoo.h"
+
+1334332284 source:c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\main.c
+	"manage.h"
+
+1334332360 c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\readwritefoo.h
 	<stdio.h>
 	<time.h>
 	<stdlib.h>
+	<string.h>
 
-1334312780 source:c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\main.c
-	"manage.h"
+1334332166 source:c:\users\alexz\desktop\labproject\giocodellatombola\tombolabeta\readwritefoo.c
+	"ReadWriteFoo.h"
 

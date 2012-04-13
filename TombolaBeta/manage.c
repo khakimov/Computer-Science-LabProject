@@ -1,5 +1,6 @@
 #include "manage.h"
 
+ListPrize premi = { { "Ambo", 0, NO}, { "Terno", 0, NO}, { "Quaterna", 0, NO}, { "Cinquina", 0, NO}, { "Tombola", 0, NO} };
 
 void fill_cells( Cart_Tab tab )
 {
@@ -22,11 +23,11 @@ void print_cartelle( Player *p )
 
     for( cont_c = 0; cont_c < p->n_cart; cont_c++ )
     {
-        printf("\tCARTELLA N %d\n", p->cartelle[cont_c].id);
+        printf("\tCARTELLA N %d\n", readId(p, cont_c));
 
         for ( i = 0; i < CTR; printf("\n"), i++ )
             for ( j = 0; j < CTC; j++ )
-                printf("%d ", p->cartelle[cont_c].cart[i][j].num);
+                printf("%d ", readNumber(p, cont_c, i, j));
     }
 
 }
@@ -151,7 +152,7 @@ Cartella *createCartelle( Player *p )
     for ( i = 0; i < p->n_cart; i++ )
     {
         fill_cells( p->cartelle[i].cart );
-        p->cartelle[i].id = rand_num();
+        writeId(p, i, rand_num());
     }
     return p->cartelle;
 }
@@ -165,7 +166,6 @@ void initGame( ListPlayer *players )
 {
 
     int i;
-    char buffer[MAX_LEN-1];
 
     printf("STAI INIZIANDO IL GIOCO CON QUANTI GIOCATORI?\n( RICORDA, DEVONO ESSERCENE ALMENO 2!! )\n");
     players->n_player = readInteger();

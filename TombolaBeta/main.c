@@ -6,7 +6,5 @@ int main()
 
     initGame(players);
 
-
-
     return EXIT_SUCCESS;
 }
