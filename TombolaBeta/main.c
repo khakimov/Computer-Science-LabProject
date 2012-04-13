@@ -2,10 +2,9 @@
 
 int main()
 {
-    Cart_Tab cartella;
+    ListPlayer *players;
 
-    fill_cells(cartella);
-    print_cells(cartella);
+    initGame(players);
 
 
 

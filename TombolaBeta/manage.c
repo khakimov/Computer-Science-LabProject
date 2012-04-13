@@ -13,13 +13,21 @@ void fill_cells( Cart_Tab tab )
 
         }
 }
-void print_cells( Cart_Tab cartella )
+
+void print_cartelle( Player *p )
 {
     int i, j;
-    for ( i = 0; i < CTR; printf("\n"), i++ )
-        for ( j = 0; j < CTC; j++ )
-            printf("%d ", cartella[i][j].num);
+    int cont_c; /* Counter uses in order to loop throught the cartelle hold by a single player*/
 
+
+    for( cont_c = 0; cont_c < p->n_cart; cont_c++ )
+    {
+        printf("\tCARTELLA N %d\n", p->cartelle[cont_c].id);
+
+        for ( i = 0; i < CTR; printf("\n"), i++ )
+            for ( j = 0; j < CTC; j++ )
+                printf("%d ", p->cartelle->cart[i][j].num);
+    }
 
 }
 
@@ -60,8 +68,98 @@ void get_row_col( int num, int *r, int *c )
     *r = num / 10 - 1;
     *c = num % 10 - 1;
 }
+/*
+   It reads from the stdin an integer that respects the
+   restrictions connected to the float data type.
+*/
 
-Cartella *createCartelle( Cartella *listCartelle, int n )
+/* Useful function used in order to remove some useless characters present in the buffer */
+void cleanBuffer()
 {
-    return malloc( n * sizeof(Cartella));
+    while ( getchar() != '\n');
+}
+
+int readInteger( void )
+{
+    int res;
+    int intero;
+    do
+    {
+        res = scanf("%d",&intero);
+        scanf("%*[^\n]");
+        if( res == 0)
+          printf("\nAssegnazione valore errata, reinserisci: ");
+
+    }while ( res == 0 );
+
+    return intero;
+}
+/*
+    Returns a correctly allocated pointer to a region
+    of memory of n Cartella data structures.
+
+*/
+Cartella *createCartelle( Player *p )
+{
+    int i;
+
+    p->cartelle = ( (Cartella*)malloc( p->n_cart * sizeof(Cartella)));
+    if ( !p->cartelle )
+    {
+        fprintf(stderr, "ERRORE ALLOCAZIONE MEMORIA!\n");
+        exit(-1);
+    }
+
+    for ( i = 0; i < p->n_cart; i++ )
+    {
+        fill_cells( p->cartelle[i].cart );
+        p->cartelle[i].id = rand_num();
+    }
+    return p->cartelle;
+}
+
+Player *initListPlayer( ListPlayer *players )
+{
+    return ((Player*)malloc( players->n_player * sizeof(Player)));
+}
+
+void initGame( ListPlayer *players )
+{
+
+    int i;
+    char buffer[MAX_LEN-1];
+
+    printf("STAI INIZIANDO IL GIOCO CON QUANTI GIOCATORI?\n( RICORDA, DEVONO ESSERCENE ALMENO 2!! )\n");
+    players->n_player = readInteger();
+    cleanBuffer();
+    players->list_player = initListPlayer( players);
+
+    for( i = 0; i < players->n_player; i++ )
+    {
+        getName( &(players->list_player[i]));
+        printf("PLAYER %d : %s", i+1, players->list_player[i].name_player);
+        printf("Quante Cartelle desideri?\nN.Cartelle : ");
+        players->list_player[i].n_cart = readInteger();
+        players->list_player[i].cartelle = createCartelle( &(players->list_player[i]));
+        print_cartelle( &(players->list_player[i]) );
+        cleanBuffer();
+
+    }
+
+}
+
+char *getName( Player *play )
+{
+    printf("INSERISCI IL TUO NOME :\n");
+
+    play->name_player = malloc( MAX_LEN * sizeof(char));
+
+    if ( !play->name_player )
+    {
+        printf("ERRORE ALLOCAZIONE MEMORIA!\n");
+        exit(-1);
+    }
+    fgets( play->name_player, MAX_LEN, stdin);
+
+    return play->name_player;
 }
