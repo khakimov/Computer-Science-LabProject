@@ -1,8 +1,9 @@
 #include "manage.h"
 
-ListPrize premi = { { "Ambo", 0, NO, 0}, { "Terno", 0, NO, 0}, { "Quaterna", 0, NO, 0}, { "Cinquina", 0, NO, 0 }, { "Bingo", 0, NO, 0} };
+ListPrize premi = { { "Ambo", 5, NO, 0}, { "Terno", 10, NO, 0}, { "Quaterna", 20, NO, 0}, { "Cinquina", 30, NO, 0 }, { "Bingo", 50, NO, 0} };
 
 Cell Tombolone[MAXR][MAXC];
+int numbers[TOT_NUM];
 
 void banner( void )
 {
@@ -49,6 +50,7 @@ void printTombolone( void )
 void fill_cells( Cart_Tab tab )
 {
     int i, j;
+
 
     for ( i = 0; i < CTR; i++ )
     {
@@ -99,7 +101,7 @@ void fill_numbers ( int num[], int n )
 /*
     Function: rand_num()
     Returns :
-    int : a random number generate using shuffling
+    a random number generate using shuffling
 
     rand_num() uses a static array in order to
     shuffle all the ninety value that was contained in it
@@ -118,15 +120,31 @@ void fill_numbers ( int num[], int n )
 int rand_num( void )
 {
 
-    static int numbers[TOT_NUM];
+    int rand_number;
+    static int tot = 0;
+
+    if ( tot == 0 || tot >= 90 )
+    {
+        tot = 0;
+        fill_numbers( numbers, TOT_NUM);
+        shuffle(numbers);
+        rand_number = numbers[tot++];
+    }
+    else
+        rand_number = numbers[tot++];
+
+    return rand_number;
+
+}
+
+void shuffle( int numbers[] )
+{
     int i = 0;
     int n_rand;
     int temp;
 
     srand(time(NULL));
 
-    if ( numbers[0] == 0 )
-        fill_numbers(numbers, TOT_NUM);
 
     for( i = TOT_NUM-1; i > 0; i-- )
     {
@@ -135,9 +153,6 @@ int rand_num( void )
         numbers[i] = numbers[n_rand];
         numbers[n_rand] = temp;
     }
-
-
-    return numbers[1+ rand() % TOT_NUM];
 }
 
 /*
@@ -275,21 +290,22 @@ void setValue( Cartella *cartella, int num )
                 cartella->cart[i][j].check = O;
 }
 
-void printPrize( struct Prize *prize, Player *win_player, int cont_c )
+void printPrize( int curr_prize, Player *win_player, int cont_c )
 {
     /* If it not specified the player, the croupier has won */
     if ( !win_player )
         printf("Il Croupier ha fatto %s e ha vinto %d\n",
-           prize->name_prize, prize->prize );
+                premi[curr_prize].name_prize,
+                premi[curr_prize].prize );
     /* In  the other case, A specific player has won so I print all the information */
     else
     {
-        prize->winner_id = win_player->cartelle[cont_c].id;
+        premi[curr_prize].winner_id = win_player->cartelle[cont_c].id;
         printf("%s ha fatto %s e ha vinto %d con la cartella %d\n",
-                win_player->name_player, prize->name_prize,
-                prize->prize, prize->winner_id );
+                win_player->name_player, premi[curr_prize].name_prize,
+                premi[curr_prize].prize, premi[curr_prize].winner_id );
     }
-    prize->checked = O;
+    premi[curr_prize].checked = O;
 }
 
 int checkCartella( Cartella *cartella, int in_a_row )
@@ -298,10 +314,22 @@ int checkCartella( Cartella *cartella, int in_a_row )
     int i,j;
 
 
-    for( i = 0; i < CTR; i++ )
-        for ( j = 0; j < CTC && win < in_a_row; j++ )
-            if ( cartella->cart[i][j].check == O )
-                win++;
+    if ( in_a_row == 10 )
+    {
+        win = 10;
+        for ( i = 0; i < CTR && win != 0; i++ )
+            for ( j = 0; j < CTC && win != 0; j++ )
+                if ( cartella->cart[i][j].check != O )
+                    win = 0;
+
+    }
+    else
+    {
+        for( i = 0; i < CTR; i++ )
+            for ( j = 0; j < CTC && win < in_a_row; j++ )
+                if ( cartella->cart[i][j].check == O )
+                    win++;
+    }
 
     return win;
 
@@ -355,13 +383,13 @@ void checkPrize( ListPlayer *list )
                     win++;
         }
         if ( win == in_a_row )
-            printPrize( &(premi[curr_prize]), NULL, 0);
+            printPrize( curr_prize, NULL, 0);
 
 
         for( i = 0; i < list->n_player; i++ )
             for ( cont_c = 0; cont_c < list->list_player[i].n_cart; cont_c++ )
                 if ( checkCartella( &(list->list_player[i].cartelle[cont_c]), in_a_row) == in_a_row )
-                    printPrize( &premi[curr_prize], &(list->list_player[i]), cont_c );
+                    printPrize( curr_prize, &(list->list_player[i]), cont_c );
 
 
 
@@ -369,21 +397,19 @@ void checkPrize( ListPlayer *list )
     }
     else
     {
+        win = 1;
         /* Check BINGO prize for the Tombolone */
         for ( i = 0; i < MAXR && win == 1; i++ )
             for ( j = 0; j < MAXC; j++ )
                 if ( Tombolone[i][j].check != O )
                         win = 0;
         if ( win == 1 )
-            printPrize( &(premi[curr_prize]), NULL, 0);
+            printPrize( curr_prize, NULL, 0);
 
-        /*
-            ****************** TODO ****************************
-            Implement the control on the Bingo Prize also on the
-            Player's cartelle.
-            ****************************************************
-
-        */
+        for ( i = 0; i < list->n_player; i++ )
+            for ( cont_c = 0; cont_c < list->list_player[i].n_cart; cont_c++ )
+                if ( checkCartella( &(list->list_player[i].cartelle[cont_c]), in_a_row) == in_a_row )
+                    printPrize( curr_prize, &(list->list_player[i]), cont_c );
 
 
 
@@ -398,11 +424,14 @@ int playGame( ListPlayer *list_player )
     banner();
 
 
-    while( isGameFinished( premi ) != 1 && cont < TOT_NUM )
+    while( isGameFinished(premi) != 1 && cont < TOT_NUM )
     {
         int estracted = rand_num();
         cont++;
-        printf("\nESTRATTO NUMERO %d\n", estracted);
+        printf("\nESTRATTO NUMERO");
+        wait(5);
+        printf(" %d\n", estracted);
+
         checkValue( list_player, estracted);
 
         if ( cont >= 2 )

@@ -22,7 +22,8 @@ void banner( void );
 void checkValue( ListPlayer *, int );
 void setValue( Cartella *, int );
 void checkPrize( ListPlayer *);
-void printPrize( struct Prize *, Player *, int );
+void printPrize( int, Player *, int );
 int checkCartella( Cartella *, int  );
+void shuffle( int numbers[] );
 
 #endif

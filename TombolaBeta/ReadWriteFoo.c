@@ -28,7 +28,7 @@ int isChecked( struct Prize *prize )
 
 int isGameFinished( struct Prize *prizes )
 {
-    return ( isChecked( &(prizes[TOT_PRIZE] ) ) ) ? 1 : 0;
+    return ( isChecked( &(prizes[TOT_PRIZE-1] ) ) ) ? 1 : 0;
 }
 
 void swapCell( Cell *c1, Cell *c2 )
@@ -55,4 +55,11 @@ void ord_row( Cell row[] )
             }
         i++;
     }
+}
+
+void wait ( int seconds )
+{
+  clock_t endwait;
+  endwait = clock () + seconds * CLOCKS_PER_SEC ;
+  while (clock() < endwait) {}
 }

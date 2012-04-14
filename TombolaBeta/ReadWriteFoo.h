@@ -96,6 +96,6 @@ void writeId( Player *, int, int );
 void writeNumber( Player *, int, int, int, int );
 int isChecked( struct Prize * );
 int isGameFinished( struct Prize * );
-
+void wait ( int );
 
 #endif
