@@ -1,0 +1,37 @@
+# depslib dependency file v1.0
+1332943346 source:c:\users\alexz\labproj\computer-science-labproject\operationmatrixdoublearray\readwritefoo.c
+	"ReadWriteFoo.h"
+
+1332943370 c:\users\alexz\labproj\computer-science-labproject\operationmatrixdoublearray\readwritefoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1332902778 source:c:\users\alexz\labproj\computer-science-labproject\operationmatrixdoublearray\main.c
+	"OpMatrix.h"
+
+1332902778 c:\users\alexz\labproj\computer-science-labproject\operationmatrixdoublearray\opmatrix.h
+	"ReadWriteFoo.h"
+
+1334242697 source:c:\users\alexz\labproj\computer-science-labproject\operationmatrixdoublearray\opmatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+
+1334692042 source:c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixdoublearray\readwritefoo.c
+	"ReadWriteFoo.h"
+
+1334692004 c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixdoublearray\readwritefoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1334692753 source:c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixdoublearray\main.c
+	"OpMatrix.h"
+
+1334691960 c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixdoublearray\opmatrix.h
+	"ReadWriteFoo.h"
+
+1334693178 source:c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixdoublearray\opmatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+

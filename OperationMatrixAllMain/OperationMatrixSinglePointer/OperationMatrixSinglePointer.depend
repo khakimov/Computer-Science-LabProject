@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1334694177 source:c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixsinglepointer\readwritefoo.c
+	"ReadWriteFoo.h"
+
+1334694289 c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixsinglepointer\readwritefoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1334694671 source:c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixsinglepointer\main.c
+	"OpMatrix.h"
+
+1334694258 c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixsinglepointer\opmatrix.h
+	"ReadWriteFoo.h"
+
+1334694448 source:c:\users\alexz\desktop\labproject\operazionimatriciallmain\operationmatrixsinglepointer\opmatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+

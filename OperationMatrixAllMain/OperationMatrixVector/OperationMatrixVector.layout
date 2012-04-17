@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="default" />
+	<File name="OpMatrix.c" open="0" top="0" tabpos="0">
+		<Cursor position="0" topLine="63" />
+	</File>
+	<File name="OpMatrix.h" open="0" top="0" tabpos="0">
+		<Cursor position="662" topLine="0" />
+	</File>
+	<File name="ReadWriteFoo.c" open="0" top="0" tabpos="0">
+		<Cursor position="1028" topLine="44" />
+	</File>
+	<File name="ReadWriteFoo.h" open="0" top="0" tabpos="0">
+		<Cursor position="652" topLine="3" />
+	</File>
+	<File name="main.c" open="0" top="0" tabpos="0">
+		<Cursor position="15207" topLine="442" />
+	</File>
+</CodeBlocks_layout_file>
