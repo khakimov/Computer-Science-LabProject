@@ -7,100 +7,199 @@
 
     @authors : Alessandro Suglia & Nazar Chekalin
 
+    Simple program that uses Linked List in order to
+    implement some important matrix operation like
+    Vectorial Product, Scalar Product, Sum and difference
+    between two matrix.
 
 */
-
-#if defined _WIN32
-#define pause() getch()
-#elif defined __unix__
-#define pause() getchar()
-#endif
 
 #include "OpMatrix.h"
 
 
 int main()
 {
-  matrice *elenco = NULL;
-  matrice *curr,*curr2,*curr3;
-  matrice *succ;
-  int cont = 0;
-  int scelta=1;
-  int pos = 0;
-  int res;
-  int intero;
-  int trovato = 0;
-
+    matrice *elenco = NULL; /* List of all the matrix that will be used throught the program */
+    matrice *curr; /* Pointer to the current matrix */
+    matrice *sel_matrix1, *sel_matrix2;
+    int cont = 0; /* Integer variable that save the number of matrix that was saved until a defined moment */
+    int scelta=1; /* Integer variable that holds the choice inserted by the user */
+    List *curr_mat = NULL;
+    int res;
+    int scelta1, scelta2;
+    int row, col;
+    float val;
+    int ris;
+    int i, j;
 
   while(scelta)
   {
-      scelta=intestazione();
+      do
+      {
+     /*
+       Macro preprocessor used in order to
+       check the system on which the program was executed
+     */
+     #if defined _WIN32
+            system("cls");
+     #elif  defined __unix__
+            system("clear");
+     #endif
+     printf("----------OPERAZIONI MATRICI----------\nPowered by A. Suglia & N. Chekalin\n\n%s%s%s%s%s%s%s%s%s\n",
+          "-----------------MENU'----------------\n\n",
+          "1 - Inserire Matrice \n",
+          "2 - Stampa Matrice \n",
+          "3 - Matrice Trasposta\n",
+          "4 - Somma Matrici\n",
+          "5 - Differenza Matrici\n",
+          "6 - Prodotto Scalare Matrici\n",
+          "7 - Prodotto Vettoriale Matrici\n",
+          "0 - Esci\n\n");
+     printf("Scelta operazione -> ");
+     ris=scanf("%d",&scelta);
+     scanf("%*[^\n]");
+
+    }while(ris==0);
 
       switch(scelta)
 	  {
         case 1:
 
-                /*
-                if ( cont > 0 && cont <= MAXM )
-                    elenco = reallocMat( elenco,cont+1 );
-                if( cont > MAXM )
+               if( !elenco )
                 {
-                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
-                        elenco[pos] = inserisciMatrice(pos);
-                }
-                else
-                {
-                    elenco[cont] = inserisciMatrice(cont);
-                    cont++;
-                }
-                */
-                if( !elenco )
-                {
-                    elenco = (matrice*)malloc(sizeof(matrice));
-                    *elenco = creaMatrice(0);
+                    elenco = malloc( sizeof(matrice));
+                    if ( !elenco )
+                    {
+                        fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
+                        exit(-1);
+                    }
+
+                    do
+                    {
+                        printf("\nInserisci righe matrice: ");
+                        res=scanf("%d",&row);
+                        scanf("%*[^\n]");
+
+                        if(res==0)
+                            fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
+
+                        else if( row < 1 || row > MAXR)
+                            fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
+
+                    } while(res == 0 || ( row < 1 || row > MAXR));
+
+                    scanf("%*[^\n]");
+                    do
+                    {
+                        printf("\nInserisci colonne matrice: ");
+                        res=scanf("%d",&col);
+                        scanf("%*[^\n]");
+
+                        if(res==0)
+                            fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
+
+                        else if( col < 1 || col > MAXR)
+                            fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
+
+                    } while(res == 0 || ( col < 1 || col > MAXR));
+
+                    scanf("%*[^\n]");
+                    creaMatrice(elenco, row, col);
+                    scriviId(elenco, cont);
+
+                    curr_mat = elenco->mat;
+
+                    printf("\n\nInserisci elementi della matrice\n");
+                    for ( i = 0; i < leggiRighe(elenco); i++ )
+                        for ( j = 0; j < leggiColonne(elenco); j++ )
+                        {
+                            do
+                            {
+                                printf("m[%d][%d] = ", i, j);
+                                res = scanf("%f", &val);
+                                scanf("%*[^\n]");
+                                if ( res == 0 || val > FLT_MAX )
+                                    printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
+
+                            }while( res == 0 || val > FLT_MAX );
+
+                            scriviElemento(elenco, val);
+                        }
                     elenco -> next = NULL;
                     cont++;
                 }
                 else
                 {
+                    curr = elenco;
 
-
-                if ( cont > 0 /*&& cont <= MAXM*/ )
-                {
-                    curr2 = elenco; 
-                     while (curr2 && !trovato)
-                     {
-                      if (curr2 -> id == intero) trovato = 1;
-                      else curr2 = curr2 -> next;
-                      }
-                    curr2 -> next = (matrice*)malloc(sizeof(matrice));
-                }
-
-                /*if ( cont >= MAXM)
-                {
-                    printf("E' stato superato il limite di matrici previsto!\n");
-                    pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
+                    while( curr->next != NULL )
+                        curr = curr->next;
+                    curr->next = malloc(sizeof(matrice));
+                    if ( !curr->next )
                     {
-                      curr = cercaMatrice(elenco, pos);
-                      succ = curr -> next;
-                      *curr = creaMatrice(pos);
-                      curr -> next = succ;
+                        fprintf(stderr, "ERROR IN ALLOCATION OF MEMORY!\n");
+                        exit(-1);
                     }
 
-                }
-                else
-                {
+                    curr = curr->next;
 
-                    curr = cercaMatrice(elenco, cont-1);
-                    curr = curr -> next;
-                    *curr = creaMatrice(cont);
-                    curr -> next = NULL;
+                    curr_mat = curr->mat;
+
+                    do
+                    {
+                        printf("\nInserisci righe matrice: ");
+                        res=scanf("%d",&row);
+                        scanf("%*[^\n]");
+
+                        if(res==0)
+                            fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
+
+                        else if( row < 1 || row > MAXR)
+                            fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
+
+                    } while(res == 0 || ( row < 1 || row > MAXR));
+
+                    scanf("%*[^\n]");
+                    do
+                    {
+                        printf("\nInserisci colonne matrice: ");
+                        res=scanf("%d",&col);
+                        scanf("%*[^\n]");
+
+                        if(res==0)
+                            fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
+
+                        else if( col < 1 || col > MAXR)
+                            fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
+
+                    } while(res == 0 || ( col || col > MAXR));
+
+                    scanf("%*[^\n]");
+                    creaMatrice(curr, row, col);
+                    scriviId(curr, cont);
+
+                    printf("\n\nInserisci elementi della matrice\n");
+                    for ( i = 0; i < leggiRighe(curr); i++ )
+                        for ( j = 0; j < leggiColonne(curr); j++ )
+                        {
+                            do
+                            {
+                                printf("m[%d][%d] = ", i, j);
+                                res = scanf("%f", &val);
+                                scanf("%*[^\n]");
+                                if ( res == 0 || val > FLT_MAX )
+                                    printf("Valore inserito non corretto!!Sono ammessi solo valori reali!\n");
+
+                            }while( res == 0 || val > FLT_MAX );
+
+                            scriviElemento(curr, val);
+                        }
+                    elenco -> next = NULL;
                     cont++;
-                }*/
+
+
                 }
+
 
 	  break;
 
@@ -108,31 +207,29 @@ int main()
 
            if( cont > 0 )
            {
-            do
-            {
-             printf("Indicare l'ID della matrice sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
 
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr2 = elenco; 
-            while (curr2 && !trovato)
-            {
-             if (curr2 -> id == intero) trovato = 1;
-             else curr2 = curr2 -> next;
-             }
-             
-            stampaMatrice(curr2, cont);
-            wait();
+                do
+                {
+                    printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                    do
+                    {
+                        res = scanf("%d",&scelta1);
+                        scanf("%*[^\n]");
+                        if( res == 0)
+                            printf("\nAssegnazione valore errata, reinserisci: ");
+
+                    }while ( res == 0 );
+                    if(scelta1 < 0 || scelta1 >= cont)
+                        printf("Matrice non esistente!\n");
+                }while( scelta1 < 0 || scelta1 >= cont );
+
+                i = 1;
+                curr = elenco;
+                while( i++ <= scelta1 )
+                    curr = curr->next;
+
+                stampaMatrice( curr);
+                wait();
             }
              else
              {
@@ -142,382 +239,411 @@ int main()
 
       break;
 
-    /* case 3:
+     case 3:
 
-            pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
-                    {
-                      curr = cercaMatrice(elenco, pos);
-                      succ = curr -> next;
-                      *curr = creaMatrice(pos);
-                      curr -> next = succ;
-                    }
-            wait();
-      break;*/
-
-     case 4:
-
-          if( cont > 0 /*&& cont <= MAXM*/ )
-           {
-
-            curr = elenco; 
-            while (curr -> next)
-            {
-               curr = curr -> next;
-              }
-            curr -> next = (matrice*)malloc(sizeof(matrice));
-            curr = curr -> next;
-            
-            do
-            {
-             printf("Indicare l'ID della matrice sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
-
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr2 = elenco; 
-            while (curr2 && !trovato)
-            {
-             if (curr2 -> id == intero) trovato = 1;
-             else curr2 = curr2 -> next;
-             }
-             
-            *curr = trasposta(curr2, cont);
-            curr -> next = NULL;
-            cont++;
-
-
-           }
-          /* else
-              if ( cont >= MAXM )
+         if( cont > 0  )
               {
-                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
+                    curr = elenco;
+                    /* Loop throught the list and allocate memory for the next matrix that will be created */
+                    while( curr->next != NULL )
+                        curr = curr->next;
+
+                    curr -> next = (matrice*)malloc( sizeof(matrice));
+                    if ( !curr->next )
                     {
-                        curr = cercaMatrice(elenco, pos);
-                        curr = curr -> next;
-                        *curr = trasposta( elenco, cont );
-                        curr -> next = NULL;
+                        fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
+                        exit(-1);
+
                     }
+                    curr = curr -> next;
 
-                }*/
-           else
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta1);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
 
-             {
+                        }while ( res == 0 );
+
+                        if(scelta1 < 0 || scelta1 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta1 < 0 || scelta1 >= cont );
+
+
+                    sel_matrix1 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta1 )
+                        sel_matrix1 = sel_matrix1->next;
+
+
+                    creaMatrice(curr, leggiColonne(sel_matrix1), leggiRighe(sel_matrix1));
+                    scriviId(curr, cont);
+
+                    trasposta( curr, sel_matrix1);
+                    curr -> next = NULL;
+                    cont++;
+              }
+              else
+              {
                   printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
                   wait();
-             }
+              }
+
+
 
 
       break;
 
-      case 5:
+      case 4:
 
-           if( cont > 0 /*&& cont <= MAXM*/ )
-           {
-             curr = elenco; 
-             while (curr -> next)
-            {
-               curr = curr -> next;
-              }
-             curr -> next = (matrice*)malloc(sizeof(matrice));
-            do
-            {
-             printf("Indicare l'ID della matrice 1 sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
+              if( cont > 0  )
+              {
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta1);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
 
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr2 = elenco; 
-            while (curr2 && !trovato)
-            {
-             if (curr2 -> id == intero) trovato = 1;
-             else curr2 = curr2 -> next;
-             }
-             do
-            {
-             printf("Indicare l'ID della matrice 2 sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
+                        }while ( res == 0 );
 
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr3 = elenco; 
-            while (curr3 && !trovato)
-            {
-             if (curr3 -> id == intero) trovato = 1;
-             else curr3 = curr3 -> next;
-             }
-             *curr -> next = somma(curr2,curr3, cont);
-             cont++;
+                        if(scelta1 < 0 || scelta1 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta1 < 0 || scelta1 >= cont );
+
+
+                    sel_matrix1 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta1 )
+                        sel_matrix1 = sel_matrix1->next;
+
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta2);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
+
+                        }while ( res == 0 );
+
+                        if(scelta2 < 0 || scelta2 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta2 < 0 || scelta2 >= cont );
+
+
+                    sel_matrix2 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta2 )
+                        sel_matrix2 = sel_matrix2->next;
+
+                    if ( leggiRighe(sel_matrix1) == leggiRighe(sel_matrix2 ) &&
+                         leggiColonne(sel_matrix2 ) == leggiColonne(sel_matrix2 ) )
+                    {
+
+
+                        curr = elenco;
+                        /* Loop throught the list and allocate memory for the next matrix that will be created */
+                        while( curr->next != NULL )
+                            curr = curr->next;
+
+                        curr -> next = (matrice*)malloc( sizeof(matrice));
+                        if ( !curr->next )
+                        {
+                            fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
+                            exit(-1);
+
+                        }
+                        curr = curr -> next;
+                        creaMatrice(curr, leggiRighe(sel_matrix1), leggiColonne(sel_matrix1));
+                        scriviId(curr, cont);
+
+                        somma( curr, sel_matrix1, sel_matrix2);
+                        curr -> next = NULL;
+                        cont++;
+                    }
+                    else
+                    {
+                        fprintf(stderr, "%s\n%s\n",
+                                "ATTENZIONE, LE MATRICI SELEZIONATE NON HANNO LE MEDESIME DIMENSIONI!",
+                                "INSERIRE NUOVE MATRICI DAL MENU' OPPURE SCEGLIERE CON MAGGIOR CURA LE MATRICI GIA' INSERITE!!\n");
+
+                    }
 
 
            }
-           /*else
-             if ( cont >= MAXM )
-             {
-                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    pos =overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
-                    {
-                        curr = cercaMatrice(elenco, pos);
-                        *curr -> next = somma(elenco, cont);
-                        curr = curr -> next;
-                        curr -> next = NULL;
-                    }
-                }*/
            else
+
              {
-                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  fprintf(stderr,"NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
                   wait();
              }
-
-
 	  break;
 
-	case 6:
+	case 5:
 
-	       if( cont > 0 /*&& cont <= MAXM*/ )
-           {
-             curr = elenco; 
-             while (curr -> next)
-            {
-               curr = curr -> next;
-              }
-             curr -> next = (matrice*)malloc(sizeof(matrice));
-            do
-            {
-             printf("Indicare l'ID della matrice 1 sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
+	       if( cont > 0  )
+              {
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta1);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
 
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr2 = elenco; 
-            while (curr2 && !trovato)
-            {
-             if (curr2 -> id == intero) trovato = 1;
-             else curr2 = curr2 -> next;
-             }
-             do
-            {
-             printf("Indicare l'ID della matrice 2 sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
+                        }while ( res == 0 );
 
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr3 = elenco; 
-            while (curr3 && !trovato)
-            {
-             if (curr3 -> id == intero) trovato = 1;
-             else curr3 = curr3 -> next;
-             }
-             *curr -> next = differenza(curr2,curr3, cont);
-             cont++;
+                        if(scelta1 < 0 || scelta1 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta1 < 0 || scelta1 >= cont );
+
+
+                    sel_matrix1 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta1 )
+                        sel_matrix1 = sel_matrix1->next;
+
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta2);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
+
+                        }while ( res == 0 );
+
+                        if(scelta2 < 0 || scelta2 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta2 < 0 || scelta2 >= cont );
+
+
+                    sel_matrix2 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta2 )
+                        sel_matrix2 = sel_matrix2->next;
+
+                    if ( leggiRighe(sel_matrix1) == leggiRighe(sel_matrix2 ) &&
+                         leggiColonne(sel_matrix2 ) == leggiColonne(sel_matrix2 ) )
+                    {
+
+
+                        curr = elenco;
+                        /* Loop throught the list and allocate memory for the next matrix that will be created */
+                        while( curr->next != NULL )
+                            curr = curr->next;
+
+                        curr -> next = (matrice*)malloc( sizeof(matrice));
+                        if ( !curr->next )
+                        {
+                            fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
+                            exit(-1);
+
+                        }
+                        curr = curr -> next;
+                        creaMatrice(curr, leggiRighe(sel_matrix1), leggiColonne(sel_matrix1));
+                        scriviId(curr, cont);
+
+                        differenza( curr, sel_matrix1, sel_matrix2);
+                        curr -> next = NULL;
+                        cont++;
+                    }
+                    else
+                    {
+                        fprintf(stderr, "%s\n%s\n",
+                                "ATTENZIONE, LE MATRICI SELEZIONATE NON HANNO LE MEDESIME DIMENSIONI!",
+                                "INSERIRE NUOVE MATRICI DAL MENU' OPPURE SCEGLIERE CON MAGGIOR CURA LE MATRICI GIA' INSERITE!!\n");
+
+                    }
 
 
            }
-            /*else
-                if ( cont >= MAXM )
-                {
-                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
-                    {
-                        curr = cercaMatrice(elenco, pos);
-                        *curr -> next = differenza(elenco, cont);
-                        curr = curr -> next;
-                        curr -> next = NULL;
-                    }
-                }*/
-            else
+           else
+
              {
-                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  fprintf(stderr,"NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
                   wait();
              }
 
 	  break;
+
+	case 6 :
+
+	        if( cont > 0  )
+              {
+                    curr = elenco;
+                    /* Loop throught the list and allocate memory for the next matrix that will be created */
+                    while( curr->next != NULL )
+                        curr = curr->next;
+
+                    curr -> next = (matrice*)malloc( sizeof(matrice));
+                    if ( !curr->next )
+                    {
+                        fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
+                        exit(-1);
+
+                    }
+                    curr = curr -> next;
+
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta1);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
+
+                        }while ( res == 0 );
+
+                        if(scelta1 < 0 || scelta1 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta1 < 0 || scelta1 >= cont );
+
+
+                    sel_matrix1 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta1 )
+                        sel_matrix1 = sel_matrix1->next;
+
+                    do
+                    {
+                        res = scanf("%f", &val);
+                        if ( res == 0 )
+                        {
+                            fprintf(stderr,"ERRORE: valore errato!!\n%s",
+                                    "Reinserisci il valore : ");
+                        }
+                        scanf("%*[^\n]");
+
+                    } while ( res == 0);
+
+                    creaMatrice(curr, leggiRighe(sel_matrix1), leggiColonne(sel_matrix1));
+                    scriviId(curr, cont);
+
+                    scalare( curr, sel_matrix1, val);
+                    curr -> next = NULL;
+                    cont++;
+              }
+              else
+              {
+                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  wait();
+              }
+	break;
 
 	case 7 :
 
-	       if( cont > 0 /*&& cont <= MAXM*/ )
-           {
-             curr = elenco; 
-             while (curr -> next)
-            {
-               curr = curr -> next;
-              }
-             curr -> next = (matrice*)malloc(sizeof(matrice));
-            do
-            {
-             printf("Indicare l'ID della matrice sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
+           if( cont > 0  )
+              {
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta1);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
 
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr2 = elenco; 
-            while (curr2 && !trovato)
-            {
-             if (curr2 -> id == intero) trovato = 1;
-             else curr2 = curr2 -> next;
-             }
-            
-             *curr -> next = scalare(curr2, cont);
-             cont++;
+                        }while ( res == 0 );
+
+                        if(scelta1 < 0 || scelta1 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta1 < 0 || scelta1 >= cont );
+
+
+                    sel_matrix1 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta1 )
+                        sel_matrix1 = sel_matrix1->next;
+
+                    do
+                    {
+                        printf("Indicare l'ID della matrice sulla quale si intende operare: ");
+                        do
+                        {
+                            res = scanf("%d",&scelta2);
+                            scanf("%*[^\n]");
+                            if( res == 0)
+                                printf("\nAssegnazione valore errata, reinserisci: ");
+
+                        }while ( res == 0 );
+
+                        if(scelta2 < 0 || scelta2 >= cont)
+                            printf("Matrice non esistente!\n");
+                    }while( scelta2 < 0 || scelta2 >= cont );
+
+
+                    sel_matrix2 = elenco;
+                    i = 0;
+
+                    while( i++ < scelta2 )
+                        sel_matrix2 = sel_matrix2->next;
+
+                    if ( leggiColonne(sel_matrix1) == leggiRighe(sel_matrix2) )
+                    {
+
+
+                        curr = elenco;
+                        /* Loop throught the list and allocate memory for the next matrix that will be created */
+                        while( curr->next != NULL )
+                            curr = curr->next;
+
+                        curr -> next = (matrice*)malloc( sizeof(matrice));
+                        if ( !curr->next )
+                        {
+                            fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
+                            exit(-1);
+
+                        }
+                        curr = curr -> next;
+                        creaMatrice(curr, leggiRighe(sel_matrix1), leggiColonne(sel_matrix2));
+                        scriviId(curr, cont);
+
+                        prodotto( curr, sel_matrix1, sel_matrix2);
+                        curr -> next = NULL;
+                        cont++;
+                    }
+                    else
+                    {
+                        fprintf(stderr, "%s\n%s\n",
+                                "ATTENZIONE, LE MATRICI SELEZIONATE NON HANNO LE MEDESIME DIMENSIONI!",
+                                "INSERIRE NUOVE MATRICI DAL MENU' OPPURE SCEGLIERE CON MAGGIOR CURA LE MATRICI GIA' INSERITE!!\n");
+
+                    }
 
 
            }
-           /* else
-                if ( cont >= MAXM )
-                {
-                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
-                    {
-                        curr = cercaMatrice(elenco, pos);
-                        *curr -> next = scalare( elenco, cont);
-                        curr = curr -> next;
-                        curr -> next = NULL;
-                    }
-                }*/
-            else
+           else
+
              {
-                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
+                  fprintf(stderr,"NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
                   wait();
              }
-	break;
 
-	case 8 :
-
-           if( cont > 0 /*&& cont <= MAXM*/ )
-           {
-             curr = elenco; 
-             while (curr -> next)
-            {
-               curr = curr -> next;
-              }
-             curr -> next = (matrice*)malloc(sizeof(matrice));
-            do
-            {
-             printf("Indicare l'ID della matrice 1 sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
-
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr2 = elenco; 
-            while (curr2 && !trovato)
-            {
-             if (curr2 -> id == intero) trovato = 1;
-             else curr2 = curr2 -> next;
-             }
-             do
-            {
-             printf("Indicare l'ID della matrice 2 sulla quale si intende operare: ");
-             do
-             {
-               res = scanf("%d",&intero);
-               scanf("%*[^\n]");
-               if( res == 0)
-               printf("\nAssegnazione valore errata, reinserisci: ");
-
-             }while ( res == 0 );
-             if(intero < 0 || intero >= cont)
-                       printf("Matrice non esistente!\n");
-             
-            }while( intero < 0 || intero >= cont );
-            
-            curr3 = elenco; 
-            while (curr3 && !trovato)
-            {
-             if (curr3 -> id == intero) trovato = 1;
-             else curr3 = curr3 -> next;
-             }
-             *curr -> next = prodotto(curr2,curr3, cont);
-             cont++;
-
-
-           }
-
-            /*else
-                if ( cont >= MAXM )
-                {
-                    printf("E' stato superato il limite massimo di matrici salvabili in memoria!!\n");
-                    pos = overwriteMatrix(elenco, cont);
-                    if ( pos != -1 )
-                    {
-                        curr = cercaMatrice(elenco, pos);
-                        *curr -> next = prodotto(elenco, cont );
-                        curr = curr -> next;
-                        curr -> next = NULL;
-                    }
-                }*/
-            else
-             {
-                  printf("NESSUNA MATRICE INSERITA...OPERAZIONE NON VALIDA\nSELEZIONARE IL PUNTO 1 DEL MENU' PER UNA NUOVA INIZIALIZZAZIONE!\n");
-                  wait();
-             }
 
 	break;
 
@@ -526,7 +652,7 @@ int main()
 
 	  scelta=0;
 	  if(elenco)
-        free( elenco );
+        free(elenco);
 
     break;
 

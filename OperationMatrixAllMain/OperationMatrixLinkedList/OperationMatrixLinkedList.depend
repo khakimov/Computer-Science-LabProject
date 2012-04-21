@@ -3,6 +3,8 @@
 	"OpMatrix.h"
 	"ReadWriteFoo.h"
 
+1333475053 Foo.h"
+
 1332902778 /home/alex/C/OperationMatrixLinkedList/OpMatrix.h
 	"ReadWriteFoo.h"
 
@@ -11,11 +13,15 @@
 	<stdlib.h>
 	<float.h>
 
+1333473523 
+
 1333367771 source:/home/alex/C/OperationMatrixLinkedList/ReadWriteFoo.c
 	"ReadWriteFoo.h"
 
 1332902778 source:/home/alex/C/OperationMatrixLinkedList/main.c
 	"OpMatrix.h"
+
+1333470375 h"
 
 1333470375 source:c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\main.c
 	"OpMatrix.h"
@@ -32,6 +38,24 @@
 	"OpMatrix.h"
 	"ReadWriteFoo.h"
 
-1333473558 source:c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\readwritefoo.c
+1333475053 source:c:\users\alexz\desktop\labproject\operationmatrixlinkedlist\readwritefoo.c
 	"ReadWriteFoo.h"
+
+1335014546 source:/home/alex/C/OperationMatrixLinkedList/OpMatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+
+1335014363 /home/alex/C/OperationMatrixLinkedList/OpMatrix.h
+	"ReadWriteFoo.h"
+
+1335015110 /home/alex/C/OperationMatrixLinkedList/ReadWriteFoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1335014401 source:/home/alex/C/OperationMatrixLinkedList/ReadWriteFoo.c
+	"ReadWriteFoo.h"
+
+1335015092 source:/home/alex/C/OperationMatrixLinkedList/main.c
+	"OpMatrix.h"
 

@@ -31,21 +31,9 @@ int leggiColonne( matrice *m )
     structure m.
 
 */
-void scriviRighe( matrice *m )
+void scriviRighe( matrice *m, int row )
 {
-     int res;
-  do
-  {
-     printf("\nInserisci righe matrice: ");
-     res=scanf("%d",&m->righe);
-     scanf("%*[^\n]");
-     if(res==0)
-        fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
-        else if( m->righe < 1 || m->righe > MAXR) fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
-
-  }while(res == 0 || ( m->righe < 1 || m->righe > MAXR));
-
-  scanf("%*[^\n]");
+    m->righe = row;
 
 }
 
@@ -56,23 +44,9 @@ void scriviRighe( matrice *m )
     structure m.
 
 */
-void scriviColonne( matrice *m )
+void scriviColonne( matrice *m, int col )
 {
-  int res;
-
-   do
-  {
-     printf("\nInserisci colonne matrice: ");
-     res=scanf("%d",&m->colonne);
-     scanf("%*[^\n]");
-     if(res==0)
-        fprintf(stderr,"\n**Assegnazione valore errata!**\n\n");
-        else if( m->righe < 1 || m->colonne > MAXR) fprintf(stderr,"\n**Il numero di colonne e' errato (1< c < %d)**\n\n",MAXC);
-
-  }while(res == 0 || ( m->colonne < 1 || m->colonne > MAXR));
-
-  scanf("%*[^\n]");
-
+    m->colonne = col;
 }
 
 /*
@@ -106,7 +80,7 @@ float scriviValore( int i, int j )
     stored in the i,j position of the considered
     matrix.
 */
-float leggiValore( matrice *m, int i, int j )
+float leggiElemento( matrice *m, int i, int j )
 {
   List* curr;
   int cont = 0;
@@ -128,9 +102,9 @@ float leggiValore( matrice *m, int i, int j )
       cont++;
     }
 
- // }
-    /* Localized correct value when we exit from the while statement */
-    /* Take it and take away */
+ /* }
+    Localized correct value when we exit from the while statement
+    Take it and take away */
 
     return curr->val;
 }
@@ -140,7 +114,7 @@ float leggiValore( matrice *m, int i, int j )
     of the matrix, a value specified as a parameter n
     of the function.
 */
-void scriviElemento( matrice *m, int i, int j, float n )
+void scriviElemento( matrice *m, float n )
 {
     List* curr = m->mat;
 
@@ -168,5 +142,26 @@ void scriviElemento( matrice *m, int i, int j, float n )
         curr->next = NULL;
     }
 
+
+}
+
+void scriviId( matrice *m, int num_id )
+{
+    m->id = num_id;
+
+}
+
+int leggiId( matrice *m )
+{
+    return m->id;
+
+}
+
+void creaMatrice( matrice *m, int row, int col )
+{
+    scriviRighe(m,row);
+    scriviColonne(m,col);
+
+    m->mat = NULL;
 
 }

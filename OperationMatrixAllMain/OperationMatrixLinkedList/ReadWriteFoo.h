@@ -41,12 +41,14 @@ struct Matrice
 typedef struct Matrice matrice;
 
 
-int leggiRighe( matrice * );
-int leggiColonne( matrice *);
-float scriviValore( int, int );
-float leggiValore( matrice *, int, int);
-void scriviRighe( matrice * );
-void scriviColonne( matrice * );
-void scriviElemento( matrice *, int, int, float );
+int leggiRighe( matrice *);
+int leggiColonne( matrice * );
+float leggiElemento( matrice *, int, int);
+void scriviRighe( matrice *, int );
+void scriviColonne( matrice *, int );
+void scriviElemento( matrice *, float );
+void scriviId( matrice *, int );
+int leggiId( matrice * );
+void creaMatrice( matrice *, int, int );
 
 #endif
