@@ -172,7 +172,7 @@ int main()
                         else if( col < 1 || col > MAXR)
                             fprintf(stderr,"\n**Il numero di righe e' errato (1< r < %d)**\n\n",MAXR);
 
-                    } while(res == 0 || ( col || col > MAXR));
+                    } while(res == 0 || ( col < 1 || col > MAXR));
 
                     scanf("%*[^\n]");
                     creaMatrice(curr, row, col);

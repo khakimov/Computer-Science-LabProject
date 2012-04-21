@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+#include <time.h>
 
 #define MAXR 100
 #define MAXC 100
@@ -11,11 +12,16 @@
 
 #define val_access( i, n, j) ( i * n + j )
 
+
+/*
 #if defined _WIN32
 #define wait() getch()
 #elif defined __unix__
 #define wait() getchar()
 #endif
+*/
+
+#define wait() { clock_t end_wait = clock() < 5 * CLOCKS_PER_SEC; while( clock() < end_wait ); }
 
 struct Node
 {
