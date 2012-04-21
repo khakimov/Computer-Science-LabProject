@@ -21,16 +21,15 @@ int main()
 {
     matrice *elenco = NULL; /* List of all the matrix that will be used throught the program */
     matrice *curr; /* Pointer to the current matrix */
-    matrice *sel_matrix1, *sel_matrix2;
+    matrice *sel_matrix1, *sel_matrix2; /* Pointer to the matrix that the user can selected in order to do his operations */
     int cont = 0; /* Integer variable that save the number of matrix that was saved until a defined moment */
     int scelta=1; /* Integer variable that holds the choice inserted by the user */
-    List *curr_mat = NULL;
-    int res;
-    int scelta1, scelta2;
-    int row, col;
-    float val;
-    int ris;
-    int i, j;
+    List *curr_mat = NULL, *temp = NULL; /* A List variable in order to hold the temporary mat that will be inserted by the user*/
+    int res; /* flag variable which was used in order to check the status of the acquisition of the data */
+    int scelta1, scelta2; /* variable that holds the position of the matrix in the list */
+    int row, col; /* The inserted matrix's row and colomn */
+    float val; /* A specific float variables which was used in order to get the value that will be put in the matrix */
+    int i, j; /* integer variables which was used in order to loop throught the matrix */
 
   while(scelta)
   {
@@ -56,16 +55,16 @@ int main()
           "7 - Prodotto Vettoriale Matrici\n",
           "0 - Esci\n\n");
      printf("Scelta operazione -> ");
-     ris=scanf("%d",&scelta);
+     res=scanf("%d",&scelta);
      scanf("%*[^\n]");
 
-    }while(ris==0);
+    }while(res==0);
 
       switch(scelta)
 	  {
         case 1:
 
-               if( !elenco )
+               if( !elenco  )
                 {
                     elenco = malloc( sizeof(matrice));
                     if ( !elenco )
@@ -73,7 +72,9 @@ int main()
                         fprintf(stderr,"ALLOCATION OF MEMORY FAILED!\n");
                         exit(-1);
                     }
-
+                    printf("%s %d\n%s\n",
+                           "MATRICE ID ", cont,
+                           "ATTENZIONE: ID ASSEGNATO UNIVOCAMENTE, REGISTRALO");
                     do
                     {
                         printf("\nInserisci righe matrice: ");
@@ -125,7 +126,7 @@ int main()
 
                             scriviElemento(elenco, val);
                         }
-                    elenco -> next = NULL;
+                    elenco->next = NULL;
                     cont++;
                 }
                 else
@@ -144,6 +145,10 @@ int main()
                     curr = curr->next;
 
                     curr_mat = curr->mat;
+
+                    printf("%s %d\n%s\n",
+                           "MATRICE ID ", cont,
+                           "ATTENZIONE: ALLA MATRICE VERRA' ASSEGNATO UN ID UNICO, REGISTRALO");
 
                     do
                     {
@@ -194,7 +199,7 @@ int main()
 
                             scriviElemento(curr, val);
                         }
-                    elenco -> next = NULL;
+                    curr->next = NULL;
                     cont++;
 
 
@@ -207,7 +212,7 @@ int main()
 
            if( cont > 0 )
            {
-
+                printf("MATRICI DISPONIBILI %d\n", cont);
                 do
                 {
                     printf("Indicare l'ID della matrice sulla quale si intende operare: ");
@@ -223,9 +228,9 @@ int main()
                         printf("Matrice non esistente!\n");
                 }while( scelta1 < 0 || scelta1 >= cont );
 
-                i = 1;
+
                 curr = elenco;
-                while( i++ <= scelta1 )
+                while( leggiId(curr) != scelta1 )
                     curr = curr->next;
 
                 stampaMatrice( curr);
@@ -650,10 +655,53 @@ int main()
     case 0:
 
 
-	  scelta=0;
-	  if(elenco)
-        free(elenco);
+        scelta=0;
 
+        if( elenco )
+        {
+            curr = elenco;
+            if ( curr->next == NULL )
+            {
+                curr_mat = curr->mat;
+
+                if( curr_mat->next == NULL )
+                {
+                    free(curr_mat);
+                }
+                else
+                {
+
+                    /* Deallocates memory for each element that was contained in the matrix */
+                    while( curr_mat->next )
+                    {
+                        temp = curr_mat->next;
+                        free(curr_mat);
+                        curr_mat = temp;
+                    }
+                }
+            }
+            while ( curr->next )
+            {
+                curr_mat = curr->mat;
+                /* Deallocates memory for each element that was contained in the matrix */
+                while( curr_mat->next )
+                {
+                    temp = curr_mat->next;
+                    free(curr_mat);
+                    curr_mat = temp;
+                }
+                curr = curr->next;
+            }    /* Deallocates memory for all the node of the list matrice which represents all the matrix saved in memory*/
+
+            while( elenco->next )
+            {
+                curr = elenco->next;
+                free(elenco);
+                elenco = curr;
+            }
+
+
+        }
     break;
 
     default :

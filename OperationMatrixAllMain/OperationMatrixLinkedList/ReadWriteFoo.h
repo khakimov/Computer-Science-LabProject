@@ -21,7 +21,7 @@
 #endif
 */
 
-#define wait() { clock_t end_wait = clock() < 5 * CLOCKS_PER_SEC; while( clock() < end_wait ); }
+#define wait() { clock_t end_wait = clock() + 2 * CLOCKS_PER_SEC; while( clock() < end_wait ); }
 
 struct Node
 {
