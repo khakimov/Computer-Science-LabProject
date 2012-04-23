@@ -20,8 +20,6 @@ typedef struct
   float mat[MAXC*MAXR];
   int righe;
   int colonne;
-  int id;
-
 
 }matrice;
 
@@ -32,8 +30,6 @@ float leggiElemento( matrice *, int, int );
 void scriviRighe( matrice *, int );
 void scriviColonne( matrice *, int );
 void scriviElemento( matrice *, int, int, float );
-void scriviId( matrice *, int );
-int leggiId(matrice * );
 void creaMatrice( matrice *, int, int );
 
 #endif

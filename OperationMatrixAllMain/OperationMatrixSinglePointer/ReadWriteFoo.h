@@ -1,9 +1,8 @@
 #ifndef _READWRITEFOO_H
 #define _READWRITEFOO_H
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <float.h>
+#include <stdio.h>
 
 #define MAXR 100
 #define MAXC 100
@@ -20,8 +19,6 @@ typedef struct
   float *mat;
   int righe;
   int colonne;
-  int id;
-
 
 }matrice;
 
@@ -33,8 +30,6 @@ float leggiElemento( matrice *, int, int );
 void scriviRighe( matrice *, int );
 void scriviColonne( matrice *, int );
 void scriviElemento( matrice *, int, int, float );
-void scriviId( matrice *, int );
-int leggiId( matrice * );
 void creaMatrice( matrice *, int, int );
 
 #endif

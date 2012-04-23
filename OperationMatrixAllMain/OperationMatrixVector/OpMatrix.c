@@ -4,18 +4,11 @@
 /* Prints to video the values present in the matrix passed as a parameter */
 void stampaMatrice( matrice *mat )
 {
-  int i,j;
+    int i,j;
 
-  if ( leggiRighe(mat) == 0 )
-     printf("Matrice non inizializzata!!\n");
-  else
-  {
-      printf("\t ----- Matrice %d ---- \n", leggiId(mat));
-      for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
+    for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
         for(j=0;j < leggiColonne(mat);j++)
             printf("%15.3f ",leggiElemento(mat, i, j));
-  }
-
 }
 
 /*

@@ -1,10 +1,6 @@
 #ifndef _READWRITEFOO_H
 #define _READWRITEFOO_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <float.h>
-
 #define MAXR 100
 #define MAXC 100
 #define MAXM 50
