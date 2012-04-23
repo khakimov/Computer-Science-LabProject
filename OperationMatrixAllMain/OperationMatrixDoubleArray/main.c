@@ -388,6 +388,7 @@ int main()
 
             }while( scelta1 < 0 || scelta1 >= cont );
              /* Gets the float value from stdin */
+              printf("Inserisci valore scalare per il quale moltiplicare la matrice : ");
             do
              {
 

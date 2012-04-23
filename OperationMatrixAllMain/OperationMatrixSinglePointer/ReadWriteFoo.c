@@ -1,6 +1,26 @@
 #include "ReadWriteFoo.h"
 
+/*
+    Function that receives the number of colomn and the number of row of the matrix,
+    and create it asking to the user to fill it inserting each row.
+*/
 
+void creaMatrice( matrice *m, int row, int col )
+{
+    int i;
+    
+    scriviRighe(m, row);
+    scriviColonne( m, col );
+    
+    m->mat = (float*)malloc( leggiRighe(m) * leggiColonne(m) * sizeof(float));
+    if ( !m->mat ) 
+    {
+        fprintf(stderr,"ERRORE ALLOCAZIONE DINAMICA DELLA MEMORIA!!\n");
+        wait();
+        exit(-1);     
+         
+    }
+}
 /*
     Functions that returns
     the number of row of the matrix
@@ -42,6 +62,12 @@ void scriviId( matrice *m, int id_num )
 {
     m->id = id_num;
 
+}
+
+int leggiId( matrice *m ) 
+{
+    return m->id;    
+    
 }
 /*
     Function that correctly takes from the

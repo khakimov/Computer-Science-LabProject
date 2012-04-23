@@ -1,6 +1,15 @@
 #include "ReadWriteFoo.h"
 
+/*
+    Function that receives the number of colomn and the number of row of the matrix,
+    and create it asking to the user to fill it inserting each row.
+*/
 
+void creaMatrice( matrice *mat, int row, int col )
+{
+    scriviRighe(mat, row);
+    scriviColonne( mat, col );
+}
 /*
     Functions that returns
     the number of row of the matrix
@@ -43,6 +52,13 @@ void scriviId( matrice *m, int id_num )
     m->id = id_num;
 
 }
+
+int leggiId( matrice *m )
+{
+    return m->id;    
+}
+
+
 /*
     Function that correctly takes from the
     stdin the row's value inserted by the user

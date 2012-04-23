@@ -18,8 +18,8 @@ void creaMatrice( matrice *m, int row, int col )
      }
     for ( i = 0; i < leggiRighe(m); i++ )
     {
-        m->mat[i] = (float*)malloc( leggiColonne(m) * sizeof(float));
-        if( m->mat[i] == NULL)
+        *(m->mat+i) = (float*)malloc( leggiColonne(m) * sizeof(float));
+        if( *(m->mat+i) == NULL)
             printf("\n**ERRORE ALLOCAZIONE MEMORIA**");
     }
 
@@ -67,6 +67,12 @@ void scriviId( matrice *m, int id_num )
     m->id = id_num;
 
 }
+
+int leggiId( matrice *m )
+{
+    return m->id;    
+}
+
 /*
     Function that correctly takes from the
     stdin the row's value inserted by the user
@@ -89,7 +95,7 @@ void scriviColonne( matrice *m, int n_colonne )
 */
 float leggiElemento( matrice *m, int i, int j )
 {
-  return m->mat[i][j];
+  return *(*(m->mat+i)+j);
 
 }
 
@@ -100,5 +106,5 @@ float leggiElemento( matrice *m, int i, int j )
 */
 void scriviElemento( matrice *m, int i, int j, float n )
 {
-    m->mat[i][j] = n;
+    *(*(m->mat+i)+j) = n;
 }

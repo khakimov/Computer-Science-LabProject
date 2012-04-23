@@ -33,6 +33,7 @@ void scriviRighe( matrice *, int );
 void scriviColonne( matrice *, int );
 void scriviElemento( matrice *, int, int, float );
 void scriviId( matrice *, int );
+int leggiId(matrice * );
 void creaMatrice( matrice *, int, int );
 
 #endif
