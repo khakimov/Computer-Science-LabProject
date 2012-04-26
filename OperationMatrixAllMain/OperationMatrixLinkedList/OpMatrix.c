@@ -6,16 +6,10 @@ void stampaMatrice( matrice *m )
 {
   int i,j;
 
-
-  if ( leggiRighe(m) == 0 )
-     printf("Matrice non inizializzata!!\n");
-  else
-  {
-      printf("\t ----- Matrice %d ---- \n", leggiId(m));
-      for(i = 0; i < leggiRighe(m); printf("\n"),i++)
-        for(j=0;j < leggiColonne(m);j++)
-            printf("%15.3f ",leggiElemento(m, i, j));
-  }
+  for(i = 0; i < leggiRighe(m); printf("\n"),i++)
+     for(j=0;j < leggiColonne(m);j++)
+        printf("%15.3f ",leggiElemento(m, i, j));
+  
 
 }
 
@@ -25,55 +19,43 @@ void stampaMatrice( matrice *m )
     It returns a double pointer which points to the current location
     in which the new trasposed matrix will be.
 */
-matrice* trasposta( matrice *mt, matrice *m )
+void trasposta( matrice *mt, matrice *m )
 {
     int i, j;
 
    for ( i=0; i < leggiRighe(mt); i++ )
     for ( j = 0; j < leggiColonne(mt); j++ )
-        scriviElemento(mt,leggiElemento(m,j,i));
-
-
-
-  return mt;
+        scriviElemento(mt,i, j, leggiElemento(m, j, i));
 
 }
 
 
-matrice* somma( matrice *sum_mat, matrice *m, matrice *n )
+void somma( matrice *sum_mat, matrice *m, matrice *n )
 {
     int i, j;
 
     for ( i = 0; i < leggiRighe(sum_mat); i++ )
         for ( j = 0; j < leggiColonne(sum_mat); j++ )
-            scriviElemento( sum_mat, leggiElemento(m, i, j) + leggiElemento(n, i, j));
+            scriviElemento( sum_mat, i,j, leggiElemento(m, i, j) + leggiElemento(n, i, j));
 
-
-    return sum_mat;
 }
 
-matrice* scalare( matrice *ma, matrice *m, float a )
+void scalare( matrice *ma, matrice *m, float a )
 {
     int i, j;
 
     for( i = 0; i < leggiRighe(ma); i++ )
         for ( j = 0; j < leggiColonne(ma); j++ )
-            scriviElemento(ma, a * leggiElemento(m,i,j));
-
-    return ma;
+            scriviElemento(ma,i, j,  a * leggiElemento(m, i, j));
 }
 
-matrice* differenza( matrice *diff_mat, matrice *m, matrice *n )
+void differenza( matrice *diff_mat, matrice *m, matrice *n )
 {
     int i, j;
 
     for( i=0; i < leggiRighe(diff_mat);i++)
        for(j=0; j < leggiColonne(diff_mat); j++)
-           scriviElemento( diff_mat,leggiElemento(m,i,j)- leggiElemento(n, i,j));
-
-
-    return diff_mat;
-
+           scriviElemento( diff_mat,i, j,leggiElemento(m, i, j)- leggiElemento(n, i, j));
 }
 
 /*
@@ -87,7 +69,7 @@ matrice* differenza( matrice *diff_mat, matrice *m, matrice *n )
 
 */
 
-matrice* prodotto( matrice *mp, matrice *m, matrice *n )
+void prodotto( matrice *mp, matrice *m, matrice *n )
 {
     int i, j, k;
     int tot = 0;
@@ -96,11 +78,10 @@ matrice* prodotto( matrice *mp, matrice *m, matrice *n )
        for(j=0;j< leggiColonne(mp);j++)
        {
          for(k=0;k< leggiColonne(m);k++)
-            tot += leggiElemento(m,i,k)* leggiElemento(n,k,j);
-         scriviElemento( mp, tot );
+            tot += leggiElemento(m, i, k)* leggiElemento(n, k, j);
+         scriviElemento( mp, i, j, tot );
        }
 
 
-    return mp;
-}
+ }
 

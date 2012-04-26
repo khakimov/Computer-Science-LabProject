@@ -13,7 +13,6 @@ void creaMatrice( matrice *m, int row, int col )
      if( m->mat == NULL )
      {
         fprintf(stderr,"\n**ERRORE ALLOCAZIONE MEMORIA**");
-        wait();
         exit(-1);
      }
     for ( i = 0; i < leggiRighe(m); i++ )
@@ -57,20 +56,7 @@ int leggiColonne( matrice *m )
 */
 void scriviRighe( matrice *m, int n_righe )
 {
-
-
-  m->righe = n_righe;
-}
-
-void scriviId( matrice *m, int id_num )
-{
-    m->id = id_num;
-
-}
-
-int leggiId( matrice *m )
-{
-    return m->id;    
+    m->righe = n_righe;
 }
 
 /*

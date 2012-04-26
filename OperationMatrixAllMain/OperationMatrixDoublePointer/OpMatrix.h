@@ -8,7 +8,6 @@
 
 /* <------------- Functions' prototype declaration -------------- > */
 
-void inserisciMatrice( matrice * );
 void stampaMatrice(matrice * );
 void trasposta(matrice *, matrice *);
 void somma( matrice *, matrice *, matrice *);

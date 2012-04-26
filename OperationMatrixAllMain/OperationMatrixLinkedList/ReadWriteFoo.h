@@ -4,57 +4,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
-#include <time.h>
 
 #define MAXR 100
 #define MAXC 100
 #define MAXM 50
 
-#define val_access( i, n, j) ( i * n + j )
-
-
-/*
-#if defined _WIN32
-#define wait() getch()
-#elif defined __unix__
-#define wait() getchar()
-#endif
-*/
-
-#define wait() { clock_t end_wait = clock() + 2 * CLOCKS_PER_SEC; while( clock() < end_wait ); }
-
-struct Node
+typedef struct node
 {
     float val;
-    struct Node *next;
+    struct node *next;
 
-};
+}Node;
 
-typedef struct Node List;
+typedef Node List;
 
 
 
-struct Matrice
+typedef struct Matrice
 {
   List* mat;
   int righe;
   int colonne;
-  int id;
   struct Matrice *next;
 
 
-};
-typedef struct Matrice matrice;
+}matrice;
 
 
 int leggiRighe( matrice *);
 int leggiColonne( matrice * );
-float leggiElemento( matrice *, int, int);
+float leggiElemento(matrice *, int, int );
 void scriviRighe( matrice *, int );
 void scriviColonne( matrice *, int );
-void scriviElemento( matrice *, float );
-void scriviId( matrice *, int );
-int leggiId( matrice * );
+void scriviElemento( matrice *, int, int, float );
 void creaMatrice( matrice *, int, int );
+List *nextNode (List *);
+List *SetNull( void );
+int isSet(List *);
+List *getNode( List *, int );
+List *setTail( List *, float );
 
 #endif

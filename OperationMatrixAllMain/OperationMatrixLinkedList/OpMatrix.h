@@ -9,11 +9,11 @@
 /* <------------- Functions' prototype declaration -------------- > */
 
 void stampaMatrice( matrice * );
-matrice *trasposta( matrice *, matrice *);
-matrice *somma( matrice *, matrice *, matrice * );
-matrice *differenza( matrice *, matrice *, matrice * );
-matrice *scalare( matrice *, matrice *, float );
-matrice *prodotto( matrice *, matrice *, matrice * );
+void trasposta( matrice *, matrice *);
+void somma( matrice *, matrice *, matrice * );
+void differenza( matrice *, matrice *, matrice * );
+void scalare( matrice *, matrice *, float );
+void prodotto( matrice *, matrice *, matrice * );
 
 /* < -------------------------------------------------------------------- > */
 

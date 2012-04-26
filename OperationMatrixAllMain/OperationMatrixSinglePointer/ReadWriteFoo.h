@@ -8,12 +8,6 @@
 #define MAXC 100
 #define MAXM 50
 
-#if defined _WIN32
-#define wait() getch()
-#elif defined __unix__
-#define wait() getchar()
-#endif
-
 typedef struct
 {
   float *mat;

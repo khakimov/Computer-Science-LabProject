@@ -16,7 +16,6 @@ void creaMatrice( matrice *m, int row, int col )
     if ( !m->mat ) 
     {
         fprintf(stderr,"ERRORE ALLOCAZIONE DINAMICA DELLA MEMORIA!!\n");
-        wait();
         exit(-1);     
          
     }

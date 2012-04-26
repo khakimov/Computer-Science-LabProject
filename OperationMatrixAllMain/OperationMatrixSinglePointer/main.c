@@ -7,7 +7,6 @@ int main()
     creaMatrice(&m1, 2, 2);
     scriviElemento( &m1, 0,0, 2);
     scriviElemento(&m1, 0,1, 3);
-    scriviElemento(&m1, 0, 2,5);
     scriviElemento(&m1, 1, 0, 58);
     scriviElemento(&m1, 1, 1, 23);
     
