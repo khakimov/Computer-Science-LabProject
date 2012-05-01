@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1335857816 source:c:\users\alexz\desktop\labproject\matrixlibrary\operationmatrixdoublelist\readwritefoo.c
+	"ReadWriteFoo.h"
+
+1335857786 c:\users\alexz\desktop\labproject\matrixlibrary\operationmatrixdoublelist\readwritefoo.h
+	<stdio.h>
+	<stdlib.h>
+	<float.h>
+
+1335387712 source:c:\users\alexz\desktop\labproject\matrixlibrary\operationmatrixdoublelist\opmatrix.c
+	"OpMatrix.h"
+	"ReadWriteFoo.h"
+
+1335387712 c:\users\alexz\desktop\labproject\matrixlibrary\operationmatrixdoublelist\opmatrix.h
+	"ReadWriteFoo.h"
+
+1335857744 source:c:\users\alexz\desktop\labproject\matrixlibrary\operationmatrixdoublelist\main.c
+	"OpMatrix.h"
+

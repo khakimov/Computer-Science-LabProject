@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="ReadWriteFoo.c" open="1" top="1" tabpos="2">
+		<Cursor position="2949" topLine="113" />
+	</File>
+	<File name="ReadWriteFoo.h" open="1" top="0" tabpos="3">
+		<Cursor position="561" topLine="0" />
+	</File>
+	<File name="main.c" open="1" top="0" tabpos="1">
+		<Cursor position="311" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>
