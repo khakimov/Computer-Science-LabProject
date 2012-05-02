@@ -23,8 +23,10 @@ int main()
    matrice m2;
    matrice prod;
    FILE *mat_file;
+    FILE *mat_file2;
 
-    leggiMatriceDaFile(mat_file, &m1);
+    if ( ( mat_file = fopen("matrix.txt", "r") ) != NULL )
+        leggiMatriceDaFile(mat_file, &m1);
 
     creaMatrice(&m2, 3, 2);
     scriviElemento( &m2, 0,0, 2);
@@ -38,7 +40,9 @@ int main()
     creaMatrice(&prod, leggiRighe(&m1), leggiColonne(&m2));
     prodotto(&prod, &m1, &m2);
     stampaMatrice(&prod);
-    stampaMatriceSuFile(mat_file, &prod);
+
+    if ( ( mat_file2 = fopen("prodotto.txt", "w")) != NULL )
+        stampaMatriceSuFile(mat_file2, &prod);
 
     printf("MATRICE 1\n");
     stampaMatrice(&m1);
@@ -46,7 +50,10 @@ int main()
     printf("MATRICE 2 \n");
     stampaMatrice(&m2);
 
+    fclose(mat_file);
+    fclose(mat_file2);
     system("PAUSE");
+
     return EXIT_SUCCESS;
 
 }

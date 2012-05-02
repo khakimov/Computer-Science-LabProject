@@ -89,64 +89,32 @@ void leggiMatriceDaFile( FILE *mat_file, matrice *m )
     int row, col;
     int i = 0, j = 0;
     float x;
-    static fpos_t current_position;
 
+    fscanf(mat_file,"%d %d\n", &row, &col );
+    creaMatrice(m, row, col);
 
-
-    if (  ( mat_file = fopen(MAT_FILENAME, "r") ) == NULL )
+    for ( i = 0; i < row; i++ )
     {
-        fprintf(stderr, "ERROR WHILE READING FROM FILE %s\n", MAT_FILENAME);
-        exit(-1);
-
-    }
-    else
-    {
-        if ( current_position )
-            fsetpos(mat_file, &current_position);
-
-        fscanf(mat_file,"%d %d\n", &row, &col );
-        creaMatrice(m, row, col);
-
-        for ( i = 0; i < row; i++ )
+        for ( j = 0; j < col; j++ )
         {
-            for ( j = 0; j < col; j++ )
-            {
-                fscanf(mat_file,"%f ", &x);
-                scriviElemento( m, i, j, x);
-            }
+            fscanf(mat_file,"%f ", &x);
+            scriviElemento( m, i, j, x);
         }
-
-        fgetpos(mat_file, &current_position);
-
     }
 
-    fclose(mat_file);
 }
 
 void stampaMatriceSuFile( FILE *mat_file, matrice *m )
 {
     int i, j;
 
-    if ( ( mat_file = fopen( MAT_FILENAME, "a")) == NULL )
-    {
-        fprintf(stderr,"ERROR WHILE OPENING FILE %s\n", MAT_FILENAME);
-        exit(-1);
+    fprintf(mat_file,"%d %d\n", leggiRighe(m), leggiColonne(m));
+    for ( i = 0; i < leggiRighe(m); i++ )
+        for ( j = 0; j < leggiColonne(m); j++ )
+            fprintf(mat_file, "%f ", leggiElemento(m, i, j));
 
-    }
-    else
-    {
-        fprintf(mat_file,"%d %d\n", leggiRighe(m), leggiColonne(m));
+    fprintf(mat_file, "\n");
 
-        for ( i = 0; i < leggiRighe(m); i++ )
-            for ( j = 0; j < leggiColonne(m); j++ )
-                fprintf(mat_file, "%f ", leggiElemento(m, i, j));
 
-        fprintf(mat_file, "\n");
 
-    }
-
-    fclose(mat_file);
 }
-
-
-
