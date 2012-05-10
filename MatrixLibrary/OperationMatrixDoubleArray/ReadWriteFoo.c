@@ -84,6 +84,14 @@ void scriviElemento( matrice *m, int i, int j, float n )
     m->mat[i][j] = n;
 }
 
+/*
+ * 	Function : leggiMatriceDaFile()
+ * 	@parameters :
+ * 		- mat_file : pointer to the file( textual file ) from which will be read the matrix
+ * 		- m : pointer to a matrix
+ *
+ *
+ * */
 void leggiMatriceDaFile( FILE *mat_file, matrice *m )
 {
     int row, col;
@@ -104,6 +112,14 @@ void leggiMatriceDaFile( FILE *mat_file, matrice *m )
 
 }
 
+/*
+ * 	Function : stampaMatriceSuFile()
+ * 	@parameters :
+ * 		- mat_file : pointer to the file( textual file ) in which will be written the matrix(m)
+ * 		- m : pointer to a matrix
+ *
+ *
+ * */
 void stampaMatriceSuFile( FILE *mat_file, matrice *m )
 {
     int i, j;
@@ -115,6 +131,57 @@ void stampaMatriceSuFile( FILE *mat_file, matrice *m )
 
     fprintf(mat_file, "\n");
 
+}
+
+/*
+ * 	Function : stampaMatriceSuFileBinario()
+ * 	@parameters :
+ * 		- mat_file : pointer to the file ( binary file ) in which will be written the matrix(m)
+ * 		- m : pointer to a matrix
+ *
+ *
+ * */
+
+void stampaMatriceSuFileBinario( FILE *mat_file, matrice *m )
+{
+
+	fwrite( m, sizeof(matrice), 1, mat_file);
 
 
+}
+
+
+/*
+ * 	Function : leggiMatriceDaFileBinario()
+ * 	@parameters :
+ * 		- mat_file : pointer to the file( binary file ) from which will be read the matrix
+ * 		- m : pointer to a matrix
+ *
+ *
+ * */
+void leggiMatriceDaFileBinario( FILE *mat_file, matrice *m )
+{
+	fread( m, sizeof(matrice), 1, mat_file);
+
+}
+
+
+/*
+ * 	Function : leggiMatriciRisultato()
+ * 	@parameters :
+ * 		- mat_file : pointer to the file from which you will read the matrix
+ * 		- elenco : array of matrix
+ * 	@returns :
+ * 		int - number of matrix that will be read from the mat_file
+ *
+ *
+ * */
+int leggiMatriciRisultato( FILE *mat_file, matrice elenco[] )
+{
+	int i = 0;
+
+	while( !feof(mat_file))
+		leggiMatriceDaFileBinario(mat_file, &elenco[i++]);
+
+	return i-1;
 }

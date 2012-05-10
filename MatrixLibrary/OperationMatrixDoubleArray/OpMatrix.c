@@ -1,19 +1,14 @@
 #include "OpMatrix.h"
 #include "ReadWriteFoo.h"
 
-
-
 /* Prints to video the values present in the matrix passed as a parameter */
 void stampaMatrice( matrice *mat )
 {
   int i,j;
 
-     
   for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
-    for(j=0;j < leggiColonne(mat);j++)
-        printf("%15.3f ",leggiElemento(mat, i, j));
-  
-
+      for(j=0;j < leggiColonne(mat);j++)
+          printf("%15.3f ",leggiElemento(mat, i, j));
 }
 
 /*
@@ -71,11 +66,17 @@ void prodotto( matrice *prod_mat, matrice *m, matrice *n)
 {
 
     int i,j,k;
+    int tot = 0;
 
     for(i=0;i< leggiRighe(prod_mat);i++)
        for(j=0;j< leggiColonne(prod_mat);j++)
+       {
+    	  tot = 0;
+
           for(k=0;k< leggiColonne(m);k++)
-            scriviElemento( prod_mat, i, j, leggiElemento(prod_mat,i,j) + leggiElemento(m,i,k)* leggiElemento(n,k,j) );
+          tot += leggiElemento(m,i,k)* leggiElemento(n,k,j);
+            scriviElemento( prod_mat, i, j, tot);
+       }
 
 }
 
