@@ -1,0 +1,17 @@
+   _   _   _   _   _     _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \   / \ / \ / \ / \ / \ / \ / \ 
+ ( n | u | o | v | a ) ( p | a | r | t | i | t | a )
+  \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/ \_/ 
+
+----------------- Costo cartella 2.5$ --------------
+
+GIOCATORE N*1 - Denaro 5$
+
+Inserisci numero cartelle desiderate 
+Numero Cartelle [1-6] : 2
+
+1 - Visualizza Cartelle
+2 - Passa al prossimo Giocatore
+3 - Impostazioni
+4 - Abbandona
+

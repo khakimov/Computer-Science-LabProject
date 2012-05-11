@@ -1,0 +1,53 @@
+   _   _   _   _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ 
+ ( i | s | t | r | u | z | i | o | n | i )
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ 
+
+------------ Gioco della Tombola  ------------
+
+Per poter iniziare a giocare e' necessario unicamente
+acquistare una serie di cartelle( da 1 a 6 ) con le quali
+si intede giocare al gioco della tombola, il cui scopo
+e' quello di vincere una serie di premi che sono conseguibili
+unicamente se si hanno due numeri su una stessa riga ( Ambo ),
+tre numeri su una stessa riga ( Terno ), quattro numeri su una
+stessa riga( Quaterna ), cinque numeri sulla stessa riga
+( Cinquina ) oppure e' possibile ottenere il premio finale
+chiamato Tombola nel caso in cui si hanno tutti i numeri presenti
+all'interno della cartella che si possiede.
+Il giocatore che prima vince tale premio e' il vincitore del gioco
+e tale condizione porra' fine allo stesso.
+
+Prima di poter inziare a giocare e' possibile 
+modificare quelle che sono le impostazioni di base
+presenti all'interno della voce "Impostazioni" nelle 
+quali sulla base della scelta della modalita' di gioco
+scelta sara' possibile giocare al gioco adoperando
+differenti controlli.
+
+ESC - Ritorna al menu' principale
+0 - Mostra Comandi di gioco
+
+MODALITA' CORREZIONE MANUALE:
+Viene mostrato ad ogni estrazione un menu'
+relativo ad ogni utente con le seguenti possibilita'
+che verranno attivate premendo dei tasti della tastiera.
+
+OPZIONI UTENTE :
+
+1 - controlla numero estratto
+2 - visualizza cartella 
+3 - Prosegui gioco
+
+MODALITA' CORREZIONE AUTOMATICA:
+
+L'utente visualizza unicamente lo svilupparsi del gioco
+visualizzando gli ultimi numeri estratti e monitorando la situazione 
+guardando il tombolone e le sue cartelle che vengono visualizzate sulla
+base del comando inserito dallo stesso.
+
+OPZIONE UTENTE :
+1 - visualizza cartella
+2 - prosegui gioco
+
+                     Powered by Alessandro Suglia and Nazar Chekalin
