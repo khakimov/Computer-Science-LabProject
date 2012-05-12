@@ -122,9 +122,6 @@ void impostazioni()
 void uscita()
 {
    printFile("uscita.txt");
-   printf("ARRIVERDERCI SIGNORE BUONA SERATA!!\n");
-
-
 
 }
 void carica()
@@ -153,21 +150,22 @@ void topten()
 {
      printFile("topten.txt");
 
-    printf("POS.\t   NAME\t\t  TOT GAINED\n");
-    printf("1st\t%10s\t\t%4d\n","Alessandro", 577);
+    printf("POS.\t   NAME\t\t  TOT GAINED\n\n");
+    textcolor(4);
+    printf("1st\t%10s\t\t%4d\n\n","Alessandro", 577);
+    textcolor(2);
+    printf("2nd\t%10s\t\t%4d\n\n", "Nazario",550);
+    textcolor(5);
+    printf("3rd\t%10s\t\t%4d\n\n", "Daniele",490);
+    textcolor(6);
+    printf("4th\t%10s\t\t%4d\n\n","Anna", 485);
 
-    printf("2nd\t%10s\t\t%4d\n", "Nazario",550);
-
-    printf("3rd\t%10s\t\t%4d\n", "Daniele",90);
-
-    printf("4th\t%10s\t\t%4d\n","Anna", 485);
-
-    printf("5th\t%10s\t\t%4d\n", "Tonio", 478);
-    printf("6th\t%10s\t\t%4d\n", "Pino",450);
-    printf("7th\t%10s\t\t%4d\n", "Gianvito", 449);
-    printf("8th\t%10s\t\t%4d\n", "Raffaele",447);
-    printf("9th\t%10s\t\t%4d\n", "Paolo",420);
-    printf("10th\t%10s\t\t%4d\n","Filippo", 300);
+    printf("5th\t%10s\t\t%4d\n\n", "Tonio", 478);
+    printf("6th\t%10s\t\t%4d\n\n", "Pino",450);
+    printf("7th\t%10s\t\t%4d\n\n", "Gianvito", 449);
+    printf("8th\t%10s\t\t%4d\n\n", "Raffaele",447);
+    printf("9th\t%10s\t\t%4d\n\n", "Paolo",420);
+    printf("10th\t%10s\t\t%4d\n\n","Filippo", 300);
     getch();
 
 

@@ -3,22 +3,22 @@
  ( i | m | p | o | s | t | a | z | i | o | n | i )
   \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ 
 
--------- Gameplay ---------
+-------------------- Gameplay --------------------
 
 1 - Numero Giocatori [Min 2]
 2 - Dimensione Tombolone [Min 90]
 3 - Cartelle per Giocatore [Min 1/Max 6]
 4 - controllo numeri Estratti [Auto/Manual]
 
---------- AUDIO -----------
+-------------------- AUDIO -----------------------
 
 5 - Suoni Vittoria [ON][OFF]
 6 - Suoni Estrazione [ON][OFF]
 
-MODIFICA IMPOSTAZIONI
-Seguire il formato NUM_OPZ OPZ_SCELTA per modificare l'impostazione
-SCELTA : 2 90
+--------------------------------------------------
 
-
+SCELTA : 2
+ATTENZIONE: MODIFICHE ALLE OPZIONI AVVENGONO IN QUESTO
+MODO -> OPZ_SCELTA PAR_OPZ e.g. 2 90
 
 
