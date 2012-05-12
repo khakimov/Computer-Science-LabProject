@@ -5,20 +5,17 @@
 
 -------------------- Gameplay --------------------
 
-1 - Numero Giocatori [Min 2]
-2 - Dimensione Tombolone [Min 90]
-3 - Cartelle per Giocatore [Min 1/Max 6]
-4 - controllo numeri Estratti [Auto/Manual]
+->  Numero Giocatori [Min 2]
+    Dimensione Tombolone [Min 90]
+    Cartelle per Giocatore [Min 1/Max 6]
+    Controllo numeri Estratti [Auto/Manual]
 
 -------------------- AUDIO -----------------------
 
-5 - Suoni Vittoria [ON][OFF]
-6 - Suoni Estrazione [ON][OFF]
+    Suoni Vittoria [ON][OFF]
+    Suoni Estrazione [ON][OFF]
 
 --------------------------------------------------
 
-SCELTA : 2
-ATTENZIONE: MODIFICHE ALLE OPZIONI AVVENGONO IN QUESTO
-MODO -> OPZ_SCELTA PAR_OPZ e.g. 2 90
 
 

@@ -4,8 +4,16 @@
 #include <string.h>
 #include <windows.h>
 
+#define NEW_GAME 10
+#define LOAD 14
+#define SETTINGS 18
+#define TOP 22
+#define ISTR 26
+#define EXIT 30
+
+
 void printFile( char * );
-void menu();
+int menu();
 void carica();
 void nuova();
 void impostazioni();
@@ -24,7 +32,10 @@ int main()
     SetConsoleTitle("IL GIOCO DELLA TOMBOLA - Created by Alessandro Suglia & Nazar Chekalin");
 
    system("COLOR 3F");
+   while( ( scelta = menu() ) != 0 )
 
+
+/*
    while ( scelta != 0 )
    {
       menu();
@@ -51,7 +62,7 @@ int main()
 
       }
 
-   }
+   } */
    getch();
 
 
@@ -68,11 +79,14 @@ void ResizeWindows( void )
 
     SetConsoleWindowInfo( hConsole, TRUE, &size);
 }
-void menu()
+int menu()
 {
-
+    int locX = 10, locY = 10;
+    int cursX = 7, cursY = 10;
+    int key;
+    int scelta = 1;
      printFile("tombola.txt");
-     printf("%s\n%s\n%s\n%s\n%s\n%s\n%s",
+     /*printf("%s\n%s\n%s\n%s\n%s\n%s\n%s",
             "1 - NUOVA PARTITA",
             "2 - CARICA PARTITA",
             "3 - IMPOSTAZIONI",
@@ -81,6 +95,72 @@ void menu()
             "0 - ESCI",
             "SCELTA : "
             );
+    */
+    gotoxy(locX, locY);
+    printf("NUOVA PARTITA");
+    gotoxy(locX, locY+=4);
+    printf("CARICA PARTITA");
+    gotoxy(locX, locY+=4);
+    printf("IMPOSTAZIONI");
+    gotoxy(locX, locY+=4);
+    printf("TOT TEN");
+    gotoxy(locX, locY+=4);
+    printf("ISTRUZIONI");
+    gotoxy(locX, locY+=4);
+    printf("USCITA");
+    gotoxy(cursX, cursY);
+
+
+       while( 1 )
+    {
+        key = getch();
+
+        switch ( key )
+        {
+            case 'H' :
+                if ( cursY < 0 )
+                    cursY  = 10;
+                printf("->"); gotoxy(cursX, cursY-=4);
+            break;
+            case 'P' :
+                if ( cursY > 26 )
+                    cursY = 6;
+                printf("->"); gotoxy(cursX, cursY += 4);
+            break;
+            case '\r':
+                    switch ( cursY )
+                        {
+                            case NEW_GAME : nuova();
+                            break;
+
+                            case LOAD : carica();
+                            break;
+
+                            case SETTINGS : impostazioni();
+                            break;
+
+                            case TOP : topten();
+                            break;
+
+                            case ISTR : istruzioni();
+                            break;
+
+                            case EXIT : uscita(); scelta = 0;
+                            break;
+                        }
+
+
+            break;
+
+        }
+
+
+    }
+
+
+
+    return scelta;
+
 
 
 
@@ -141,7 +221,7 @@ void carica()
           "6 - maner");
 
    printf("Quale salvataggio intendi caricare ? \n");
-   printf("Partita 1 scelta : gino\tCaricamento in corso . . .\n");
+   printf("<<< Partita 1 scelta : gino >>>>> \nCaricamento in corso . . .\n");
    getch();
 }
 
@@ -151,13 +231,13 @@ void topten()
      printFile("topten.txt");
 
     printf("POS.\t   NAME\t\t  TOT GAINED\n\n");
-    textcolor(4);
+    textcolor(12);
     printf("1st\t%10s\t\t%4d\n\n","Alessandro", 577);
-    textcolor(2);
+    textcolor(14);
     printf("2nd\t%10s\t\t%4d\n\n", "Nazario",550);
-    textcolor(5);
+    textcolor(10);
     printf("3rd\t%10s\t\t%4d\n\n", "Daniele",490);
-    textcolor(6);
+    textcolor(15);
     printf("4th\t%10s\t\t%4d\n\n","Anna", 485);
 
     printf("5th\t%10s\t\t%4d\n\n", "Tonio", 478);
@@ -186,7 +266,9 @@ void nuova()
     int scelta;
     int flag = 0;
     printFile("nuova.txt");
-
+    int x, y;
+    int posX = 5, posY = 5;
+    gotoxy(posX, posY);
 
     while ( scelta != 4)
     {
