@@ -68,10 +68,21 @@ void printTombolone( void )
 /* ---------------------------------------------------------------------------------        */
 void fill_cells( Cart_Tab tab )
 {
-    int i, j;
+
+
+    /*
+     *
+     * FIRST METHOD OF GENERATING THE SCHEDULE
+     *
+     * A huge amount of array that are quite inefficient
+     * but they do quite well their work.
+     *
+     *
+     *
+	<---------------------------------------------------------------->
+	int i, j;
     int take = 0;
     int flag = 0;
-
 
     int num1to9[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     int num10to19[10] = { 10, 11, 12, 13, 14, 15, 16, 17,18,19 };
@@ -211,6 +222,41 @@ void fill_cells( Cart_Tab tab )
 
         take = 0;
     }
+	< ------------------------------------------------------------>
+	*/
+
+    int num_int[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int i, j;
+    int take = 0;
+    int pos_col;
+
+    for ( i = 0; i < CTR; i++ )
+    {
+    	fill_numbers(num_int, 9);
+    	shuffle(num_int, 9);
+    	take = 0;
+
+    	for ( j = 0; j < 5; j++ )
+    	{
+
+
+    		/* Posizione random all'interno della riga i-esima */
+    		pos_col = num_int[take++];
+    		/* Stabilisco che nella pos_col colonna della riga i-esima
+    		 * andrà un elemento corrispondente alla precisa
+    		 * disposizione dei numeri in colonne nelle cartelle della tombola.
+    		 *
+    		 * */
+    		tab[i][pos_col-1].num = num_int[take] + 10 * pos_col;
+    		printf("NUM ESTRACTED %d\n ", tab[i][pos_col].num);
+    		tab[i][pos_col-1].check = NO;
+
+    	}
+
+
+
+    }
+
 }
 
 void printCartTab( Cart_Tab cartella )
@@ -377,6 +423,7 @@ char *getName( Player *play )
 Cartella *createCartelle( Player *p )
 {
     int i;
+    static int id_cart = 10;
 
     p->cartelle = ( (Cartella*)malloc( p->n_cart * sizeof(Cartella)));
     if ( !p->cartelle )
@@ -388,7 +435,7 @@ Cartella *createCartelle( Player *p )
     for ( i = 0; i < p->n_cart; i++ )
     {
         fill_cells( p->cartelle[i].cart );
-        writeId(p, i, rand_num());
+        writeId(p, i, id_cart++);
     }
     return p->cartelle;
 }
