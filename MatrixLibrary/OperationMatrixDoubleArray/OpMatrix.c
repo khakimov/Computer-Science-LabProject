@@ -2,13 +2,22 @@
 #include "ReadWriteFoo.h"
 
 /* Prints to video the values present in the matrix passed as a parameter */
-void stampaMatrice( matrice *mat )
+int stampaMatrice( matrice *mat )
 {
   int i,j;
 
-  for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
-      for(j=0;j < leggiColonne(mat);j++)
-          printf("%15.3f ",leggiElemento(mat, i, j));
+  if ( !matrixExist(mat) )
+
+	  mat_error("Una matrice nulla vuoi stampare?\n");
+  else
+  {
+	  /*for(i = 0; i < leggiRighe(mat); printf("\n"),i++)
+		  for(j=0;j < leggiColonne(mat);j++)
+			  printf("%15.3f ",leggiElemento(mat, i, j)); */
+	  printf("CI RIPROVA!\n");
+  }
+
+  return ( get_curr_error() == EMNOTF ) ? 1 : 0;
 }
 
 /*

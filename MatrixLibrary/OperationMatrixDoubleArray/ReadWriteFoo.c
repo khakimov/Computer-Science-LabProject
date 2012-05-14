@@ -5,10 +5,18 @@
     and create it asking to the user to fill it inserting each row.
 */
 
-void creaMatrice( matrice *m, int row, int col )
+int creaMatrice( matrice *m, int row, int col )
 {
-    scriviRighe(m, row);
-    scriviColonne( m, col );
+    if ( ( row <= 0 || row > MAXR ) || ( col <= 0 || col > MAXC ) )
+    	set_error(EMNI);
+    else
+    {
+
+    	scriviRighe(m, row);
+    	scriviColonne( m, col );
+    }
+
+    return ( get_curr_error() == EMNOTF ) ? 1 : 0;
 }
 
 /*
@@ -41,11 +49,15 @@ int leggiColonne( matrice *m )
     structure m.
 
 */
-void scriviRighe( matrice *m, int n_righe )
+int scriviRighe( matrice *m, int n_righe )
 {
 
+	if ( n_righe <= 0 || n_righe > MAXR )
+		set_error(EMROW);
+	else
+		m->righe = n_righe;
 
-  m->righe = n_righe;
+	return ( get_curr_error() == EMNOTF ) ? 1 : 0;
 }
 
 /*
@@ -55,10 +67,15 @@ void scriviRighe( matrice *m, int n_righe )
     structure m.
 
 */
-void scriviColonne( matrice *m, int n_colonne )
+int scriviColonne( matrice *m, int n_colonne )
 {
 
-  m->colonne = n_colonne;
+	if ( n_colonne <= 0 || n_colonne > MAXC )
+		set_error(EMCOL);
+	else
+		m->colonne = n_colonne;
+
+	return ( get_curr_error() == EMNOTF ) ? 1 : 0;
 
 }
 
@@ -99,15 +116,19 @@ void leggiMatriceDaFile( FILE *mat_file, matrice *m )
     float x;
 
     fscanf(mat_file,"%d %d\n", &row, &col );
-    creaMatrice(m, row, col);
-
-    for ( i = 0; i < row; i++ )
+    if ( !creaMatrice(m, row, col) )
+    	mat_error(NULL);
+    else
     {
-        for ( j = 0; j < col; j++ )
-        {
-            fscanf(mat_file,"%f ", &x);
-            scriviElemento( m, i, j, x);
-        }
+
+    	for ( i = 0; i < row; i++ )
+    	{
+    		for ( j = 0; j < col; j++ )
+    		{
+    			fscanf(mat_file,"%f ", &x);
+    			scriviElemento( m, i, j, x);
+    		}
+    	}
     }
 
 }
@@ -184,4 +205,51 @@ int leggiMatriciRisultato( FILE *mat_file, matrice elenco[] )
 		leggiMatriceDaFileBinario(mat_file, &elenco[i++]);
 
 	return i-1;
+}
+
+
+/*
+    Simple function used in order to check the correcteness of the dimension of the matrix
+    that are involved into operation like the sum and the difference, in which the fundamental
+    requirement is that the matrix MUST have the same dimensions.
+*/
+int checkDim( matrice *m, matrice *n )
+{
+
+    if ( leggiRighe(m) == leggiRighe(n) && leggiColonne(m) == leggiColonne(n) )
+    	mat_err = EMNOTF;
+    else
+    	set_error(EMATNEQ);
+
+    return ( mat_err == EMNOTF ) ? 1 : 0;
+}
+
+/*
+    Function that check if the m's colomns and the n'rows are equal
+    in order to grant the possibility to make the vectorial product
+    between the selected matrixs.
+
+*/
+int checkRowCol( matrice *m , matrice *n)
+{
+	if ( leggiColonne(m) == leggiRighe(n) )
+	    	mat_err = EMNOTF;
+	else
+		set_error(EMATPROD);
+
+	return ( mat_err == EMNOTF ) ? 1 : 0;
+}
+
+int matrixExist( matrice *m )
+{
+	if ( get_curr_error() == EMROW || get_curr_error() == EMCOL )
+	{	set_error(EMNI);
+		printf("1");
+
+	}
+	else
+		set_error(EMNOTF);
+
+	return ( get_curr_error() == EMNOTF ) ? 1 : 0;
+
 }

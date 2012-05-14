@@ -1,9 +1,11 @@
 #ifndef _READWRITEFOO_H
 #define _READWRITEFOO_H
 
+#include "ErrorManager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+
 
 #define MAXR 100
 #define MAXC 100
@@ -21,14 +23,17 @@ typedef struct
 int leggiRighe( matrice * );
 int leggiColonne( matrice *);
 float leggiElemento( matrice *, int, int );
-void scriviRighe( matrice *, int );
-void scriviColonne( matrice *, int );
+int scriviRighe( matrice *, int );
+int scriviColonne( matrice *, int );
 void scriviElemento( matrice *, int, int, float );
-void creaMatrice( matrice *, int, int );
+int creaMatrice( matrice *, int, int );
 void leggiMatriceDaFile( FILE *, matrice * );
 void stampaMatriceSuFile( FILE *, matrice * );
 void stampaMatriceSuFileBinario( FILE *, matrice * );
 void leggiMatriceDaFileBinario( FILE *, matrice * );
 int leggiMatriciRisultato( FILE *, matrice [] );
+int checkDim( matrice *, matrice * );
+int checkRowCol( matrice *, matrice *);
+int matrixExist( matrice * );
 
 #endif
