@@ -7,7 +7,7 @@
 
 int creaMatrice( matrice *m, int row, int col )
 {
-    if ( ( row <= 0 || row > MAXR ) || ( col <= 0 || col > MAXC ) )
+    if ( ( row <= 0 || row > MAXR ) && ( col <= 0 || col > MAXC ) )
     	set_error(EMNI);
     else
     {
@@ -26,7 +26,11 @@ int creaMatrice( matrice *m, int row, int col )
 */
 int leggiRighe( matrice *m )
 {
-  return m->righe;
+  if ( m->righe <= 0 || m->righe > MAXR )
+     set_error(EMNI);
+  else
+      return m->righe;
+
 
 }
 
@@ -38,7 +42,10 @@ int leggiRighe( matrice *m )
 
 int leggiColonne( matrice *m )
 {
-  return m->colonne;
+    if( m->colonne <= 0 || m->colonne > MAXC )
+        set_error(EMNI);
+    else
+        return m->colonne;
 
 }
 
@@ -87,7 +94,19 @@ int scriviColonne( matrice *m, int n_colonne )
 */
 float leggiElemento( matrice *m, int i, int j )
 {
-  return m->mat[i][j];
+  if ( !matrixExist(m) )
+  {
+     set_error(EMNI);
+
+  }
+  else
+      if ( ( i < 0 || i > leggiRighe(m) ) || ( j < 0 || j > leggiColonne(m) ) )
+       {
+             set_error(EMCOORD);
+
+       }
+   else
+       return m->mat[i][j];
 
 }
 
@@ -98,7 +117,24 @@ float leggiElemento( matrice *m, int i, int j )
 */
 void scriviElemento( matrice *m, int i, int j, float n )
 {
-    m->mat[i][j] = n;
+    if ( !matrixExist(m) )
+  {
+     set_error(EMNI);
+
+  }
+  else
+      if ( ( i < 0 || i > leggiRighe(m) ) || ( j < 0 || j > leggiColonne(m) ) )
+       {
+
+             set_error(EMCOORD);
+
+       }
+   else
+   {
+
+       m->mat[i][j] = n;
+   }
+
 }
 
 /*
@@ -219,7 +255,7 @@ int checkDim( matrice *m, matrice *n )
     if ( leggiRighe(m) == leggiRighe(n) && leggiColonne(m) == leggiColonne(n) )
     	mat_err = EMNOTF;
     else
-    	set_error(EMATNEQ);
+    	set_error(EMNEQ);
 
     return ( mat_err == EMNOTF ) ? 1 : 0;
 }
@@ -235,18 +271,15 @@ int checkRowCol( matrice *m , matrice *n)
 	if ( leggiColonne(m) == leggiRighe(n) )
 	    	mat_err = EMNOTF;
 	else
-		set_error(EMATPROD);
+		set_error(EMPROD);
 
 	return ( mat_err == EMNOTF ) ? 1 : 0;
 }
 
 int matrixExist( matrice *m )
 {
-	if ( get_curr_error() == EMROW || get_curr_error() == EMCOL )
-	{	set_error(EMNI);
-		printf("1");
-
-	}
+	if ( ( leggiRighe(m) <= 0 || leggiRighe(m) > MAXR ) && (  leggiColonne(m) <= 0 || leggiColonne(m) > MAXC ) )
+	   set_error(EMNI);
 	else
 		set_error(EMNOTF);
 

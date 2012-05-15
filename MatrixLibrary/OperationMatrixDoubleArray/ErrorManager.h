@@ -22,10 +22,12 @@
 /*< ------------ Specific error that could be tracked ----------------------> */
 
 #define EMNI -1 /* Error matrix not initialized */
+#define EMPAR1 -7 
+#define EMPAR2 -8
 #define EMROW -2 /* Error matrix's row not correct */
 #define EMCOL -3 /* Error matrix's col not correct */
-#define EMATNEQ -4 /* Error matrices are not equal */
-#define EMATPROD -5 /* Error the matrices haven't the correct row and col in order to do the vectorial product */
+#define EMNEQ -4 /* Error matrices are not equal */
+#define EMPROD -5 /* Error the matrices haven't the correct row and col in order to do the vectorial product */
 #define EMCOORD -6 /* Error in selecting the position in which will be located the element that will be selected from the matrix */
 #define EMNOTF 0 /* Error not found, everything is ok fortunately :) */
 

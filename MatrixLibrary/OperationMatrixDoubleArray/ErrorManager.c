@@ -1,9 +1,3 @@
-/*
- * ErrorManager.c
- *
- *  Created on: 14/mag/2012
- *      Author: AlexZ
- */
 
 #include "ErrorManager.h"
 
@@ -11,7 +5,9 @@ int mat_err;
 const char *mat_err_list[] =
 	{
 		"The inserted matrix was not initialized\n",
-		"The matrix's row number is incorrect\n"
+		"The first parameter matrix is not initialized\n",
+		"The second parameter matrix is not initialized\n",
+		"The matrix's row number is incorrect\n",
 		"The matrix's col number is incorrect\n",
 		"The selected matrices are not equal, it's impossible this operation\n",
 		"The selected matrices haven't the correct dimensions. THE FIRST MATRIX's COLUMNS MUST BE EQUAL TO THE SECOND MATRIX's ROW\n",
@@ -28,34 +24,42 @@ void mat_error( char *str )
 	switch( curr_error )
 	{
 	case EMNI :
-			pos = 0;
+	    pos = 0;
 		break;
+    case EMPAR1 :
+         pos = 1;
+    break;
+    case EMPAR2 :
+         pos = 2;
+    break;
 	case EMROW :
-		pos = 1;
-		break;
-	case EMCOL:
-		pos = 2;
-		break;
-	case EMATNEQ :
 		pos = 3;
 		break;
-	case EMATPROD:
+	case EMCOL:
 		pos = 4;
 		break;
-	case EMCOORD:
+	case EMNEQ :
 		pos = 5;
 		break;
+	case EMPROD:
+		pos = 6;
+		break;
+	case EMCOORD:
+		pos = 7;
+		break;
 	case EMNOTF :
-		pos  = 6;
+		pos  = 8;
 		break;
 
 	}
 
 	/* Print on the standard error file stream the error found */
-	fprintf(stdout, "ERROR >> %s %s\n", mat_err_list[pos], str);
+	if ( !str )
+	   str = "";
+    fprintf(stdout, "ERROR >> %s %s\n", mat_err_list[pos], str);
 
 	/* Replace the current error that was current managed to the standard value */
-
+    mat_err = EMNOTF;
 
 }
 
