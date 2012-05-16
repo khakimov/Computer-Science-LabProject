@@ -95,17 +95,11 @@ int scriviColonne( matrice *m, int n_colonne )
 float leggiElemento( matrice *m, int i, int j )
 {
   if ( !matrixExist(m) )
-  {
-     set_error(EMNI);
-
-  }
+	  set_error(EMNI);
   else
       if ( ( i < 0 || i > leggiRighe(m) ) || ( j < 0 || j > leggiColonne(m) ) )
-       {
-             set_error(EMCOORD);
-
-       }
-   else
+    	  set_error(EMCOORD);
+  else
        return m->mat[i][j];
 
 }
@@ -117,23 +111,15 @@ float leggiElemento( matrice *m, int i, int j )
 */
 void scriviElemento( matrice *m, int i, int j, float n )
 {
-    if ( !matrixExist(m) )
-  {
-     set_error(EMNI);
+	if ( !matrixExist(m) )
+		set_error(EMNI);
 
-  }
-  else
+	else
       if ( ( i < 0 || i > leggiRighe(m) ) || ( j < 0 || j > leggiColonne(m) ) )
-       {
+    	  set_error(EMCOORD);
+      else
+    	  m->mat[i][j] = n;
 
-             set_error(EMCOORD);
-
-       }
-   else
-   {
-
-       m->mat[i][j] = n;
-   }
 
 }
 
@@ -153,7 +139,7 @@ void leggiMatriceDaFile( FILE *mat_file, matrice *m )
 
     fscanf(mat_file,"%d %d\n", &row, &col );
     if ( !creaMatrice(m, row, col) )
-    	mat_error(NULL);
+    	set_error(EMFNR);
     else
     {
 
@@ -218,7 +204,8 @@ void stampaMatriceSuFileBinario( FILE *mat_file, matrice *m )
  * */
 void leggiMatriceDaFileBinario( FILE *mat_file, matrice *m )
 {
-	fread( m, sizeof(matrice), 1, mat_file);
+	if ( !fread( m, sizeof(matrice), 1, mat_file) )
+		set_error(EMFNR);
 
 }
 
@@ -237,10 +224,11 @@ int leggiMatriciRisultato( FILE *mat_file, matrice elenco[] )
 {
 	int i = 0;
 
-	while( !feof(mat_file))
-		leggiMatriceDaFileBinario(mat_file, &elenco[i++]);
+	while( !feof(mat_file) && get_curr_error() != EMFNR )
+		if ( !leggiMatriceDaFileBinario(mat_file, &elenco[i++]) )
+			set_error(EMFNR);
 
-	return i-1;
+	return ( get_curr_error() == EMNOTF ) ? i-1 : -1;
 }
 
 

@@ -12,6 +12,7 @@ const char *mat_err_list[] =
 		"The selected matrices are not equal, it's impossible this operation\n",
 		"The selected matrices haven't the correct dimensions. THE FIRST MATRIX's COLUMNS MUST BE EQUAL TO THE SECOND MATRIX's ROW\n",
 		"The position that you've specified could not be located in the matrix\n",
+		"Error in reading from file\n",
 		"CORRECT.\n"
 
 	};
@@ -47,8 +48,12 @@ void mat_error( char *str )
 	case EMCOORD:
 		pos = 7;
 		break;
+	case EMFNR :
+			pos  = 9;
+		break;
+
 	case EMNOTF :
-		pos  = 8;
+		pos  = 9;
 		break;
 
 	}

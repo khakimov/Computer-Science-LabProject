@@ -19,7 +19,6 @@ int main()
 {
 	matrice m1;
 	matrice m2;
-    matrice m3;
 
 	creaMatrice(&m1, 2, 2);
 
