@@ -30,7 +30,7 @@ int creaMatrice( matrice *, int, int );
 void leggiMatriceDaFile( FILE *, matrice * );
 void stampaMatriceSuFile( FILE *, matrice * );
 void stampaMatriceSuFileBinario( FILE *, matrice * );
-void leggiMatriceDaFileBinario( FILE *, matrice * );
+int leggiMatriceDaFileBinario( FILE *, matrice * );
 int leggiMatriciRisultato( FILE *, matrice [] );
 int checkDim( matrice *, matrice * );
 int checkRowCol( matrice *, matrice *);

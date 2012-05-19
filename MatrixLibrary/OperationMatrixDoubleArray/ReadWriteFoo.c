@@ -202,10 +202,12 @@ void stampaMatriceSuFileBinario( FILE *mat_file, matrice *m )
  *
  *
  * */
-void leggiMatriceDaFileBinario( FILE *mat_file, matrice *m )
+int leggiMatriceDaFileBinario( FILE *mat_file, matrice *m )
 {
 	if ( !fread( m, sizeof(matrice), 1, mat_file) )
 		set_error(EMFNR);
+
+	return ( get_curr_error() == EMNOTF ) ? 1 : 0;
 
 }
 
@@ -266,7 +268,7 @@ int checkRowCol( matrice *m , matrice *n)
 
 int matrixExist( matrice *m )
 {
-	if ( ( leggiRighe(m) <= 0 || leggiRighe(m) > MAXR ) && (  leggiColonne(m) <= 0 || leggiColonne(m) > MAXC ) )
+	if ( ( leggiRighe(m) <= 0 || leggiRighe(m) > MAXR ) || (  leggiColonne(m) <= 0 || leggiColonne(m) > MAXC ) )
 	   set_error(EMNI);
 	else
 		set_error(EMNOTF);

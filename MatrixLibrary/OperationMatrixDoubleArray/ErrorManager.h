@@ -24,12 +24,15 @@
 #define EMNI -1 /* Error matrix not initialized */
 #define EMROW -2 /* Error matrix's row not correct */
 #define EMCOL -3 /* Error matrix's col not correct */
-#define EMNEQ -4 /* Error matrices are not equal */
-#define EMPROD -5 /* Error the matrices haven't the correct row and col in order to do the vectorial product */
-#define EMCOORD -6 /* Error in selecting the position in which will be located the element that will be selected from the matrix */
-#define EMPAR1 -7 /* The matrix passed as a parameters for the function is incorrect */
-#define EMPAR2 -8 /* The matrix passed as second parameter for the calling function is incorrect */
-#define EMFNR -9 /* Was found an error while reading the file */
+#define EMSUM -4 /* Error matrices are not equal */
+#define EMDIFF -5
+#define EMTRASP -6
+#define EMPROD -7 /* Error the matrices haven't the correct row and col in order to do the vectorial product */
+#define EMCOORD -8 /* Error in selecting the position in which will be located the element that will be selected from the matrix */
+#define EMPAR1 -9 /* The matrix passed as a parameters for the function is incorrect */
+#define EMPAR2 -10 /* The matrix passed as second parameter for the calling function is incorrect */
+#define EMFNR -11 /* Was found an error while reading the file */
+#define EMNEQ -12
 #define EMNOTF 0 /* Error not found, everything is ok fortunately :) */
 
 extern int mat_err;

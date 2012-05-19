@@ -30,8 +30,15 @@ matrice* trasposta( matrice *mt, matrice *m )
   if ( !matrixExist(m) )
   {
     set_error(EMNI);
-    
+    printf("PROVA");
+    mat_error("PROVAAAAA");
   }
+  else
+	  if ( ( leggiRighe(mt) != leggiColonne(m) && leggiColonne(mt) != leggiRighe(m) ) )
+	  {
+		  if (  get_curr_error() == EMNOTF )
+			  set_error(EMTRASP);
+	  }
   else
   {
       
@@ -40,6 +47,7 @@ matrice* trasposta( matrice *mt, matrice *m )
               scriviElemento(mt,i,j,leggiElemento(m,j,i));
   }
   
+
   return ( get_curr_error() == EMNOTF ) ? mt : NULL;
 }
 
@@ -64,7 +72,7 @@ matrice* somma( matrice *sum_mat, matrice *m, matrice *n)
     else
         if ( !checkDim( m , n) )
         {
-             set_error(EMNEQ);
+             set_error(EMSUM);
              
         }
     else          
@@ -120,7 +128,7 @@ matrice* differenza( matrice *diff_mat, matrice *m, matrice *n )
     else
         if ( !checkDim( m , n) )
         {
-             set_error(EMNEQ);
+             set_error(EMDIFF);
              
         }
     else 

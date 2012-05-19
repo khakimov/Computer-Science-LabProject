@@ -9,8 +9,10 @@ const char *mat_err_list[] =
 		"The second parameter matrix is not initialized\n",
 		"The matrix's row number is incorrect\n",
 		"The matrix's col number is incorrect\n",
-		"The selected matrices are not equal, it's impossible this operation\n",
-		"The selected matrices haven't the correct dimensions. THE FIRST MATRIX's COLUMNS MUST BE EQUAL TO THE SECOND MATRIX's ROW\n",
+		"The selected matrices are not equal, it's impossible to do SUM operation\n",
+		"The selected matrices are not equal, it's impossible to do DIFFERENCE operation\n",
+		"The selected matrix has not the correct dimension in order to do the TRANSPOSITION\n",
+		"The selected matrices haven't the correct dimensions. THE FIRST MATRIX's COLUMNS MUST BE EQUAL TO THE SECOND MATRIX's ROW to do the product\n",
 		"The position that you've specified could not be located in the matrix\n",
 		"Error in reading from file\n",
 		"CORRECT.\n"
@@ -39,21 +41,27 @@ void mat_error( char *str )
 	case EMCOL:
 		pos = 4;
 		break;
-	case EMNEQ :
+	case EMSUM :
 		pos = 5;
 		break;
+	case EMDIFF :
+			pos = 6;
+			break;
+	case EMTRASP :
+			pos = 7;
+		break;
 	case EMPROD:
-		pos = 6;
+		pos = 8;
 		break;
 	case EMCOORD:
-		pos = 7;
+		pos = 9;
 		break;
 	case EMFNR :
-			pos  = 9;
+			pos  = 10;
 		break;
 
 	case EMNOTF :
-		pos  = 9;
+		pos  = 11;
 		break;
 
 	}
