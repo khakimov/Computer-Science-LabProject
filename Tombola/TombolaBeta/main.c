@@ -26,8 +26,7 @@ int main()
 
 	for ( i = 0; i < CTR; printf("\n"), i++ )
 		for ( j = 0; j < CTC; j++ )
-			printf("| %2d | ", readNumber( &cart1, i, j ));
-
+			 printf("| %2d | ", readNumber( &cart1, i, j ));
 
 
 

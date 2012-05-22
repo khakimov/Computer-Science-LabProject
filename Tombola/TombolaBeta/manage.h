@@ -5,8 +5,8 @@
 
 int playGame( ListPlayer *);
 void fill_cells( Cart_Tab );
-int rand_num( void );
-void fill_numbers ( int [], int );
+int rand_num( int, int );
+void fill_numbers ( int [], int, int );
 void print_cells( Cartella * );
 void get_row_col( int, int *, int * );
 Cartella *createCartelle( Player * );
@@ -27,5 +27,6 @@ void shuffle( int [], int );
 void printCartTab( Cart_Tab );
 int checkCartTab( Cart_Tab, int );
 void setValueTab( Cart_Tab, int );
+void printNumbers( int [], int );
 
 #endif

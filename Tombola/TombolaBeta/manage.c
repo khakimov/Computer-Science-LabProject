@@ -69,194 +69,43 @@ void printTombolone( void )
 void fill_cells( Cart_Tab tab )
 {
 
-
-    /*
-     *
-     * FIRST METHOD OF GENERATING THE SCHEDULE
-     *
-     * A huge amount of array that are quite inefficient
-     * but they do quite well their work.
-     *
-     *
-     *
-	<---------------------------------------------------------------->
 	int i, j;
-    int take = 0;
-    int flag = 0;
+	int start, end;
 
-    int num1to9[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    int num10to19[10] = { 10, 11, 12, 13, 14, 15, 16, 17,18,19 };
-    int num20to29[10] = { 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
-    int num30to39[10] = { 30, 31, 32, 33,34,35,36,37, 38, 39 };
-    int num40to49[10] = { 40, 41, 42, 43, 44, 45, 46, 47 ,48, 49 };
-    int num50to59[10] = { 50, 51, 52, 53,54,55, 56, 57 , 58 ,59 };
-    int num60to69[10] = { 60, 61, 62, 63, 64, 65, 66, 67 ,68, 69 };
-    int num70to79[10] = { 70, 71, 72, 73,74,75, 76, 77 , 78 ,79 };
-    int num80to90[11] = { 80, 81, 82, 83, 84, 85, 86, 87 ,88, 89, 90 };
+	for ( i = 0; i < CTC; i++ )
+	{
+		switch ( i )
+		{
+		case 8 :
+			start = 80; end = 90;
 
-    srand(time(NULL));
-    shuffle( num1to9, 9);
-    shuffle( num10to19, 10);
-    shuffle( num20to29, 10);
-    shuffle( num30to39, 10);
-    shuffle( num40to49, 10);
-    shuffle( num50to59, 10);
-    shuffle(num60to69, 10);
-    shuffle( num70to79, 10);
-    shuffle( num80to90, 10);
+			break;
+		default :
+			start = 10 * i;
+			end = start + 9;
+		break;
+		}
 
 
-    for ( j = 0; j < CTC; j++ )
-    {
+		for ( j = 0; j < 3; j++ )
+		{
+			tab[j][i].num = rand_num(start, end);
+			tab[j][i].check = NO;
+		}
 
 
-        for ( i = 0; i < CTR; i++ )
-        {
-        	flag = rand() % 4;
-           switch( j )
-           {
-
-           	   case 0 :
-           		   if ( flag == 0 )
-           			tab[i][j].num = 0, tab[i][j].check = NO;
-           		   else
-           		   {
-           			   tab[i][j].num = num1to9[take++];
-           			   tab[i][j].check = NO;
-
-           		   }
-
-        	   break;
-
-           	   case 1 :
-           		   if ( flag == 0 )
-           			tab[i][j].num = 0, tab[i][j].check = NO;
-           		   else
-           		   {
-           		   	   tab[i][j].num = num10to19[take++];
-           		       tab[i][j].check = NO;
-
-           		   }
-           	  break;
-
-           	   case 2 :
-           		    if ( flag == 0 )
-           		    	tab[i][j].num = 0, tab[i][j].check = NO;
-           		    else
-           		    {
-           		   	   tab[i][j].num = num20to29[take++];
-           		       tab[i][j].check = NO;
-
-           		    }
-           		break;
-
-           	   case 3 :
-           		   if ( flag == 0 )
-           			   tab[i][j].num = 0, tab[i][j].check = NO;
-           		   else
-           		   {
-           			   tab[i][j].num = num30to39[take++];
-           			   tab[i][j].check = NO;
-
-           		   }
-           		   break;
-
-           	   case 4 :
-           		   if ( flag == 0 )
-           			tab[i][j].num = 0, tab[i][j].check = NO;
-           		   else
-           	   	   {
-           	   		   tab[i][j].num = num40to49[take++];
-           	   		   tab[i][j].check = NO;
-
-           	   	   }
-           	       break;
-           	case 5 :
-           	        if ( flag == 0 )
-           	        	tab[i][j].num = 0, tab[i][j].check = NO;
-           	        else
-           	        {
-           	        tab[i][j].num = num50to59[take++];
-           	        tab[i][j].check = NO;
-
-           	        }
-         	  break;
-
-           	case 6 :
-           		if ( flag == 0 )
-           			tab[i][j].num = 0, tab[i][j].check = NO;
-           		else
-           		{
-           		tab[i][j].num = num60to69[take++];
-           		tab[i][j].check = NO;
-
-           		}
-           		break;
-
-           	case 7:
-
-           		if ( flag == 0 )
-           			tab[i][j].num = 0, tab[i][j].check = NO;
-           		else
-           		{
-           		tab [i][j].num = num70to79[take++];
-           		tab[i][j].check = NO;
-
-           		}
-           	break;
-           	case 8 :
-
-           		if ( flag == 0 )
-           			tab[i][j].num = 0, tab[i][j].check = NO;
-           		else
-           		{
-           		tab[i][j].num = num80to90[take++];
-           		tab[i][j].check = NO;
-
-           		}
-           		break;
-
-           }
-
-        }
-
-        take = 0;
-    }
-	< ------------------------------------------------------------>
-	*/
-
-    int num_int[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int i, j;
-    int take = 0;
-    int pos_col;
-
-    for ( i = 0; i < CTR; i++ )
-    {
-    	fill_numbers(num_int, 9);
-    	shuffle(num_int, 9);
-    	take = 0;
-
-    	for ( j = 0; j < 5; j++ )
-    	{
+	}
 
 
-    		/* Posizione random all'interno della riga i-esima */
-    		pos_col = num_int[take++];
-    		/* Stabilisco che nella pos_col colonna della riga i-esima
-    		 * andrà un elemento corrispondente alla precisa
-    		 * disposizione dei numeri in colonne nelle cartelle della tombola.
-    		 *
-    		 * */
-    		tab[i][pos_col-1].num = num_int[take] + 10 * pos_col;
-    		printf("NUM ESTRACTED %d\n ", tab[i][pos_col].num);
-    		tab[i][pos_col-1].check = NO;
+}
 
-    	}
+void printNumbers( int num[], int n )
+{
+	int i;
 
-
-
-    }
-
+	for ( i = 0; i < n; i++ )
+		printf("%d ", num[i]);
+	printf("\n");
 }
 
 void printCartTab( Cart_Tab cartella )
@@ -297,11 +146,13 @@ void print_cartelle( Player *p )
 
 */
 
-void fill_numbers ( int num[], int n )
+void fill_numbers ( int num[], int min, int max )
 {
     int i;
+    int k;
 
-    for ( i = 0; i < n; num[i] = i+1, i++ );
+    for ( i = 0, k = min; i < max-min; num[i] = k, i++, k++ );
+
 }
 
 /*
@@ -316,24 +167,25 @@ void fill_numbers ( int num[], int n )
 
 
 */
-int rand_num( void )
+int rand_num( int min, int max )
 {
     static int numbers[TOT_NUM];
     int rand_number;
     static int tot = 0;
+    int i;
 
-    if ( tot == 0 || tot >= 90 )
+    if ( tot == 0 || tot >= 3 )
     {
-        tot = 0;
-        fill_numbers( numbers, TOT_NUM);
-        shuffle(numbers, 90);
-        rand_number = numbers[tot++];
+    	tot = 0;
+    	fill_numbers(numbers, min, max);
+    	shuffle(numbers, max-min);
+    	rand_number = numbers[tot++];
+
     }
     else
-        rand_number = numbers[tot++];
+    	rand_number = numbers[tot++];
 
     return rand_number;
-
 }
 
 
@@ -664,7 +516,7 @@ int playGame( ListPlayer *list_player )
 
     while( isGameFinished(premi) != 1 && cont < TOT_NUM )
     {
-        int estracted = rand_num();
+        int estracted = rand_num(1,90);
         cont++;
         printf("\nESTRATTO NUMERO");
         /*wait(5);*/
