@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+#include <conio2.h>
 
 #define MAX_LEN 512
 
@@ -97,18 +98,13 @@ typedef Cart_Tomb Tombolone[TR][TC];
 
 
 
-//void writeNumCard( Card, int, int, int );
-void swapCell( Cell *c1, Cell *c2 );
-void ord_row( Cell row[] );
 int readNumber( Cartella *, int, int );
 int readId( Player *, int );
 void writeId( Player *, int, int );
 void writeNumber( Player *, int, int, int, int );
 int isChecked( struct Prize * );
 int isGameFinished( struct Prize * );
-void wait ( int );
 int readNumberCartTab( Cart_Tomb , int, int );
-void gotoxy(int , int );
 void writeCheckCard( Cart_Tomb c, int i, int j, is_out flag );
 void writeNumCard( Cart_Tomb c, int i, int j, int num );
 void getNumCard( Cart_Tomb c, int i, int j, int num );

@@ -110,116 +110,6 @@ void printTombolone( Tombolone tomb )
 
 }
 
-void gotoxy(int x, int y)
-{
-	COORD CursorPos = {x, y};
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleCursorPosition(hConsole, CursorPos);
-}
-
-/* ---------------------------------------------------------------------------------        */
-void fill_cells( Card tab )
-{
-
-	int i, j;
-	int start, end;
-	int num_col, num_row;
-	int flag = 0;
-	int tot = 0;
-
-	for ( i = 0; i < CTC; i++ )
-	{
-        for ( j = 0; j < 3; j++ )
-		{
-
-
-		switch ( i )
-            {
-
-                case 0 :
-                    start = 1; end = start + 9;
-                break;
-                case 1 :
-                    start = 10; end = start + 9;
-                break;
-                case 2:
-                    start = 20; end = start + 9;
-                break;
-                case 3:
-                    start = 30; end = start + 9;
-                break;
-                case 4:
-                    start = 40; end = start + 9;
-                break;
-                case 5:
-                    start = 50; end = start + 9;
-                break;
-                case 6:
-                    start = 60; end = start + 9;
-                break;
-                case 7:
-                    start = 70; end = start + 9;
-                break;
-                case 8 :
-                    start = 80; end = 90;
-
-                break;
-
-            }
-
-            tab[j][i].num = rand_num(start, end);
-			tab[j][i].check = NO;
-		}
-
-
-	}
-
-    num_col = 3;
-    num_row = 9;
-    while ( tot != 15 )
-    {
-        printf("tot = %d\n", tot);
-
-        for ( j = 0; j < 9 && num_row >= 5; j++ )
-        {
-
-            for ( i = 0; i < 3 && num_col >= 1; i++ )
-            {
-                flag = rand_num(0,2);
-
-                if ( flag == 0 )
-                {
-                    tab[j][i].num = 0;
-                    tab[j][i].check = NO;
-                    tot++;
-                    num_col--;
-                    num_row--;
-
-
-                }
-
-            }
-            num_col = 3;
-
-        }
-
-        num_row = 9;
-        num_col = 3;
-  }
-
-
-}
-
-
-
-void printNumbers( int num[], int n )
-{
-	int i;
-
-	for ( i = 0; i < n; i++ )
-		printf("%d ", num[i]);
-	printf("\n");
-}
 
 void printCartTab( Cart_Tomb cartella )
 {
@@ -238,93 +128,45 @@ void print_cartelle( Player *p )
 
     for( cont_c = 0; cont_c < p->n_cart; cont_c++ )
     {
-        printf("\tCARTELLA N %d\n", readId(p, cont_c));
+        textcolor(15);
 
-        for ( i = 0; i < CTR; printf("\n"), i++ )
-            for ( j = 0; j < CTC; j++ )
-                printf("%d ", readNumber( (&p->cartelle[cont_c]), i, j));
+        for(j=0;j<9;j++)
+        printf("______");
+        printf("\n\n");
 
+        for(i=0;i<3; i++)
+        {
+            for(j=0;j<9;j++)
+            {
+                if( p->cartelle[cont_c].cart[i][j].check==1)
+                {
 
+                    textcolor(15);
+                    printf("  %2d  ", p->cartelle[cont_c].cart[i][j].num);
+                }
+                else
+                {
+                    printf("  ");
+                    textcolor(204);
+                    printf("  ");
+                    textcolor(10);
+                    printf("  ");
+                }
+            }
+            printf("\n");
+            for(j=0;j<9;j++)
+            {
+                textcolor(15);
+                printf("______");
+            }
+            printf("\n\n");
+        }
 
 
     }
 
 }
 
-/*
-    Function : fill_numbers()
-    Parameters :
-    - int num[] integer array which will contains all the value from 1 to 90
-    - int n array's length
-
-*/
-
-void fill_numbers ( int num[], int min, int max )
-{
-    int i;
-    int k;
-
-    for ( i = 0; i < 90; i++ )
-        num[i] = 0;
-
-    for ( i = 0, k = min; i < max-min; num[i] = k, i++, k++ );
-
-}
-
-/*
-    Function: rand_num()
-    Returns :
-    a random number generate using shuffling
-
-    rand_num() uses a static array in order to
-    shuffle all the ninety value that was contained in it
-    using the modern implementation of Durstenfeld of the
-    Fisher-Yaste's shuffling algorithm.
-
-
-*/
-int rand_num( int min, int max )
-{
-    static int numbers[TOT_NUM];
-    int rand_number;
-    static int tot = 0;
-
-
-    if ( tot == 0 || tot >= 3 )
-    {
-    	tot = 0;
-    	fill_numbers(numbers, min, max);
-    	shuffle(numbers, max-min);
-    	rand_number = numbers[tot++];
-
-    }
-    else
-    	rand_number = numbers[tot++];
-    printf("TOTALE PRELEVATI %d\n", tot);
-    //printNumbers(numbers, max-min);
-
-    return rand_number;
-}
-
-
-
-void shuffle( int numbers[], int n )
-{
-    int i = 0;
-    int n_rand;
-    int temp;
-
-    srand(time(NULL));
-
-
-    for( i = n-1; i > 0; i-- )
-    {
-        n_rand = rand() % i;
-        temp = numbers[i];
-        numbers[i] = numbers[n_rand];
-        numbers[n_rand] = temp;
-    }
-}
 
 /*
     Function : get_row_col()
@@ -404,7 +246,7 @@ Cartella *createCartelle( Player *p )
 
     for ( i = 0; i < p->n_cart; i++ )
     {
-        fill_cells( p->cartelle[i].cart );
+        card_generator( p->cartelle[i].cart );
         writeId(p, i, id_cart++);
     }
     return p->cartelle;
@@ -432,7 +274,7 @@ void initGame( ListPlayer *players )
         printf("Quante Cartelle desideri?\nN.Cartelle : ");
         players->list_player[i].n_cart = readInteger();
         players->list_player[i].cartelle = createCartelle( &(players->list_player[i]));
-        print_cartelle( &(players->list_player[i]) );
+        print_cartelle(&players->list_player[i]);
         cleanBuffer();
 
     }
@@ -549,6 +391,27 @@ int checkCartTomb( Cart_Tomb cart_tab, int in_a_row )
 
     return win;
 }
+
+int extractNumber( void )
+{
+    static int numbers[TOT_NUM];
+    static int tot_num = 0;
+    int rand_number;
+
+    if ( tot_num == 0 || tot_num >= TOT_NUM )
+    {
+        fill_numbers(numbers, 1, TOT_NUM);
+        shuffle( numbers, TOT_NUM );
+        rand_number = numbers[tot_num++];
+
+    }
+    else
+        rand_number = numbers[tot_num++];
+
+    return rand_number;
+}
+
+
 void checkPrize( ListPlayer *list )
 {
     /*
@@ -638,7 +501,7 @@ int playGame( ListPlayer *list_player )
 
     while( isGameFinished(premi) != 1 && cont < TOT_NUM )
     {
-        int estracted = rand_num(1,90);
+        int estracted = extractNumber();
         cont++;
         printf("\nESTRATTO NUMERO");
         /*wait(5);*/
