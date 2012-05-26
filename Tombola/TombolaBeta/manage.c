@@ -143,6 +143,7 @@ void print_cartelle( Player *p )
 
                     textcolor(15);
                     printf("  %2d  ", p->cartelle[cont_c].cart[i][j].num);
+                    p->cartelle[cont_c].cart[i][j].check = NO;
                 }
                 else
                 {
@@ -302,8 +303,8 @@ void setValueTab( Cart_Tomb cart_tab , int num )
 {
     int i, j;
 
-    for( i = 0; i < CTR; i++ )
-        for( j = 0; j < CTC; j++ )
+    for( i = 0; i < 3; i++ )
+        for( j = 0; j < 5; j++ )
             if ( cart_tab[i][j].num  == num )
                 cart_tab[i][j].check = O;
 }
@@ -314,7 +315,10 @@ void setValue( Cartella *cartella, int num )
     for( i = 0; i < CTR; i++ )
         for( j = 0; j < CTC; j++ )
             if ( readNumber( cartella, i, j )  == num )
+            {
                 cartella->cart[i][j].check = O;
+
+            }
 }
 
 void printPrize( int curr_prize, Player *win_player, int cont_c )
@@ -337,26 +341,42 @@ void printPrize( int curr_prize, Player *win_player, int cont_c )
 
 int checkCartella( Cartella *cartella, int in_a_row )
 {
-    int win = 1;
+    int win_row = 0;
+    int win = 0;
     int i,j;
 
 
     if ( in_a_row == 10 )
     {
-        win = 10;
-        for ( i = 0; i < CTR && win != 0; i++ )
-            for ( j = 0; j < CTC && win != 0; j++ )
+        win = 0;
+        for ( i = 0; i < CTR && win != 15; i++ )
+            for ( j = 0; j < CTC; j++ )
                 if ( cartella->cart[i][j].check != O )
-                    win = 0;
+                    win++;
+       /* TUTTI I NUMERI SONO USCITI, SETTO LA TOMBOLA CON  DIECI*/
+        if ( win == 15 )
+            win = 10;
 
     }
     else
     {
-        for( i = 0; i < CTR; i++ )
-            for ( j = 0; j < CTC && win <= in_a_row; j++ )
-                if ( cartella->cart[i][j].check == O )
-                    win++;
+        win = 0;
+
+       for( i = 0; i < CTR && win != in_a_row; i++ )
+       {
+            win_row = 0;
+
+        for ( j = 0; j < CTC && win != in_a_row; j++ )
+        {
+          if ( cartella->cart[i][j].check == O )
+            win_row++;
+          if ( win_row == in_a_row )
+            win = win_row;
+
+        }
+       }
     }
+
 
     return win;
 
@@ -504,7 +524,7 @@ int playGame( ListPlayer *list_player )
         int estracted = extractNumber();
         cont++;
         printf("\nESTRATTO NUMERO");
-        /*wait(5);*/
+        getch();
         printf(" %d\n", estracted);
 
         checkValue( list_player, estracted);

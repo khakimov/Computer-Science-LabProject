@@ -34,7 +34,7 @@
 #define TOT_PRIZE 5
 
 /* Enum variable which grant to understand if a specific number is out or not */
-typedef enum { NO, O } is_out;
+typedef enum { NO, CHECKED, O } is_out;
 
 struct Prize
 {

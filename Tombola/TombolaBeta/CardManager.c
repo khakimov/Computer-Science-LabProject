@@ -41,7 +41,11 @@ void card_generator( Card card )
     for(j=0;j<9;j++)
     {
        for(x=0;x<4;x++)
-        if(j==dark[z][x]) card[i][j].check=0;
+        if(j==dark[z][x])
+        {
+            card[i][j].check=0;
+            card[i][j].num = 0;
+        }
     }
     z++;
   }

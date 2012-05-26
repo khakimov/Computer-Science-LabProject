@@ -3,6 +3,7 @@
 int main()
 {
    ListPlayer list;
+   srand(time(NULL));
 
    initGame(&list);
 
