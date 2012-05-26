@@ -1,41 +1,7 @@
 #include "manage.h"
 
 ListPrize premi = { { "Ambo", 5, NO, 0}, { "Terno", 10, NO, 0}, { "Quaterna", 20, NO, 0}, { "Cinquina", 30, NO, 0 }, { "Bingo", 50, NO, 0} };
-/*
-    PROBLEMA 1
-
-*/
-Tombolone tomb =
-{
-    {
-        {
-            { { 1, NO}, { 2, NO},{ 3, NO},{ 4, NO},{ 5, NO} }, { { 11, NO},{ 12, NO},{ 13, NO},{ 14, NO},{ 15, NO} }, { { 21, NO},{ 22, NO},{ 23, NO},{ 24, NO},{ 25, NO} }
-        },
-        {
-            { { 6, NO}, { 7, NO},{ 8, NO},{ 9, NO},{ 10, NO} }, { { 16, NO},{ 17, NO},{ 18, NO},{ 19, NO},{ 20, NO} }, { { 26, NO},{ 27, NO},{ 28, NO},{ 29, NO},{ 30, NO} }
-        }
-    },
-    {
-        {
-            { { 31, NO}, { 32, NO},{ 33, NO},{ 34, NO},{ 35, NO} },{ { 41, NO},{ 42, NO},{ 43, NO},{ 44, NO},{ 45, NO} },{ { 51, NO},{ 52, NO},{ 53, NO},{ 54, NO},{ 55, NO} }
-        },
-
-        {
-            { { 36, NO}, { 37, NO},{ 38, NO},{ 39, NO},{ 40, NO} },{ { 46, NO},{ 47, NO},{ 48, NO},{ 49, NO},{ 50, NO} },{ { 56, NO},{ 57, NO},{ 58, NO},{ 59, NO},{ 60, NO} }
-        }
-    },
-    {
-
-        {
-            { { 61, NO}, { 62, NO},{ 63, NO},{ 64, NO},{ 65, NO} },{ { 71, NO},{ 72, NO},{ 73, NO},{ 74, NO},{ 75, NO} },{ { 81, NO},{ 82, NO},{ 83, NO},{ 84, NO},{ 85, NO} }
-        },
-        {
-            { { 66, NO}, { 67, NO},{ 68, NO},{ 69, NO},{ 70, NO} },{ { 76, NO},{ 77, NO},{ 78, NO},{ 79, NO},{ 80, NO} },{ { 86, NO},{ 87, NO},{ 88, NO},{ 89, NO},{ 90, NO} }
-        }
-    }
-};
-
-/*      ---------------------------------------------------------------------------------           */
+Tombolone tomb;
 
 void banner( void )
 {
@@ -47,57 +13,204 @@ void banner( void )
            );
 }
 
-/* PROBLEMA 2 */
-void printTombolone( void )
+void initTombolone( Tombolone tomb )
 {
+    int row_tomb, col_tomb;
     int i, j;
-    printf("\n\n%s\n%s\n%s\n\n",
-           "********************************",
-           "******** TOMBOLONE *************",
-           "********************************"
-           );
+    int k = 0;
+    int k1 = 0;
 
-    printf(" --------------------------------------------------------------------\n");
+    for ( row_tomb = 0; row_tomb < TR; row_tomb++ )
+    {
 
-    for( i = 0; i < TR; i++ )
-        for( j = 0; j < TC;j++ )
-            printCartTab(tomb[i][j]);
-    printf(" --------------------------------------------------------------------\n");
+          for ( i = 0; i < 3; i++ )
+            {
+                for ( j = 0; j < 5; j++ )
+                {
+                    tomb[row_tomb][0][i][j].num = j + 1 + ( k * 10);
+                    tomb[row_tomb][0][i][j].check = NO;
+
+                }
+                k++;
+            }
+
+    }
+    k = 0;
+    for ( row_tomb = 0; row_tomb < TR; row_tomb++ )
+    {
+
+            for ( i = 0; i < 3; i++ )
+            {
+                for ( j = 0, k1 = 5; j < 5; j++, k1++ )
+                {
+                    tomb[row_tomb][1][i][j].num = k1 + 1 + ( k * 10);
+                    tomb[row_tomb][1][i][j].check = NO;
+
+                }
+                k++;
+            }
+
+
+
+
+    }
+
+
+
+
+}
+void printTombolone( Tombolone tomb )
+{
+   int row_tomb, col_tomb;
+    int i, j;
+    int posX = 0, posY = 0;
+    int tempX = 0, tempY = 0;
+
+    for ( row_tomb = 0; row_tomb < TR;  row_tomb++)
+    {
+
+       for ( i = 0; i < 3; i++ )
+        {
+            for ( j = 0; j < 5;j++)
+            {
+                printf("| %2d | ", tomb[row_tomb][0][i][j].num);
+
+            }
+            gotoxy(posX,++posY);
+
+
+        }
+        gotoxy(posX, ++posY);
+
+
+    }
+    posX = 40;
+    posY = 0;
+    gotoxy(posX, posY);
+    for ( row_tomb = 0; row_tomb < TR;  row_tomb++)
+    {
+
+       for ( i = 0; i < 3; i++ )
+        {
+            for ( j = 0; j < 5;j++)
+            {
+                printf("| %2d | ", tomb[row_tomb][1][i][j].num);
+
+            }
+            gotoxy(posX,++posY);
+
+
+        }
+        gotoxy(posX, ++posY);
+
+
+    }
+    printf("\n");
+
+
+}
+
+void gotoxy(int x, int y)
+{
+	COORD CursorPos = {x, y};
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(hConsole, CursorPos);
 }
 
 /* ---------------------------------------------------------------------------------        */
-void fill_cells( Cart_Tab tab )
+void fill_cells( Card tab )
 {
 
 	int i, j;
 	int start, end;
+	int num_col, num_row;
+	int flag = 0;
+	int tot = 0;
 
 	for ( i = 0; i < CTC; i++ )
 	{
+        for ( j = 0; j < 3; j++ )
+		{
+
+
 		switch ( i )
-		{
-		case 8 :
-			start = 80; end = 90;
+            {
 
-			break;
-		default :
-			start = 10 * i;
-			end = start + 9;
-		break;
-		}
+                case 0 :
+                    start = 1; end = start + 9;
+                break;
+                case 1 :
+                    start = 10; end = start + 9;
+                break;
+                case 2:
+                    start = 20; end = start + 9;
+                break;
+                case 3:
+                    start = 30; end = start + 9;
+                break;
+                case 4:
+                    start = 40; end = start + 9;
+                break;
+                case 5:
+                    start = 50; end = start + 9;
+                break;
+                case 6:
+                    start = 60; end = start + 9;
+                break;
+                case 7:
+                    start = 70; end = start + 9;
+                break;
+                case 8 :
+                    start = 80; end = 90;
 
+                break;
 
-		for ( j = 0; j < 3; j++ )
-		{
-			tab[j][i].num = rand_num(start, end);
+            }
+
+            tab[j][i].num = rand_num(start, end);
 			tab[j][i].check = NO;
 		}
 
 
 	}
 
+    num_col = 3;
+    num_row = 9;
+    while ( tot != 15 )
+    {
+        printf("tot = %d\n", tot);
+
+        for ( j = 0; j < 9 && num_row >= 5; j++ )
+        {
+
+            for ( i = 0; i < 3 && num_col >= 1; i++ )
+            {
+                flag = rand_num(0,2);
+
+                if ( flag == 0 )
+                {
+                    tab[j][i].num = 0;
+                    tab[j][i].check = NO;
+                    tot++;
+                    num_col--;
+                    num_row--;
+
+
+                }
+
+            }
+            num_col = 3;
+
+        }
+
+        num_row = 9;
+        num_col = 3;
+  }
+
 
 }
+
+
 
 void printNumbers( int num[], int n )
 {
@@ -108,7 +221,7 @@ void printNumbers( int num[], int n )
 	printf("\n");
 }
 
-void printCartTab( Cart_Tab cartella )
+void printCartTab( Cart_Tomb cartella )
 {
     int i,j;
 
@@ -130,10 +243,10 @@ void print_cartelle( Player *p )
         for ( i = 0; i < CTR; printf("\n"), i++ )
             for ( j = 0; j < CTC; j++ )
                 printf("%d ", readNumber( (&p->cartelle[cont_c]), i, j));
-                
-            
-            
-    
+
+
+
+
     }
 
 }
@@ -150,6 +263,9 @@ void fill_numbers ( int num[], int min, int max )
 {
     int i;
     int k;
+
+    for ( i = 0; i < 90; i++ )
+        num[i] = 0;
 
     for ( i = 0, k = min; i < max-min; num[i] = k, i++, k++ );
 
@@ -172,7 +288,7 @@ int rand_num( int min, int max )
     static int numbers[TOT_NUM];
     int rand_number;
     static int tot = 0;
-    int i;
+
 
     if ( tot == 0 || tot >= 3 )
     {
@@ -184,6 +300,8 @@ int rand_num( int min, int max )
     }
     else
     	rand_number = numbers[tot++];
+    printf("TOTALE PRELEVATI %d\n", tot);
+    //printNumbers(numbers, max-min);
 
     return rand_number;
 }
@@ -338,7 +456,7 @@ void checkValue( ListPlayer *list, int num )
 
 
 }
-void setValueTab( Cart_Tab cart_tab , int num )
+void setValueTab( Cart_Tomb cart_tab , int num )
 {
     int i, j;
 
@@ -402,27 +520,31 @@ int checkCartella( Cartella *cartella, int in_a_row )
 
 }
 
-int checkCartTab( Cart_Tab cart_tab, int in_a_row )
+int checkCartTomb( Cart_Tomb cart_tab, int in_a_row )
 {
-    int win = 1;
+    int win = 0;
     int i,j;
 
 
     if ( in_a_row == 10 )
     {
         win = 10;
-        for ( i = 0; i < CTR && win != 0; i++ )
-            for ( j = 0; j < CTC && win != 0; j++ )
+        for ( i = 0; i < 3 && win != 0; i++ )
+            for ( j = 0; j < 5 && win != 0; j++ )
                 if ( cart_tab[i][j].check != O )
                     win = 0;
 
     }
     else
     {
-        for( i = 0; i < CTR; i++ )
-            for ( j = 0; j < CTC && win <= in_a_row; j++ )
+
+        for( i = 0; i < 3; i++ )
+        {
+
+           for ( j = 0; j < 5 && win < in_a_row; j++ )
                 if ( cart_tab[i][j].check == O )
                     win++;
+        }
     }
 
     return win;
@@ -470,7 +592,7 @@ void checkPrize( ListPlayer *list )
         /* Check Tombolone */
         for( i = 0; i < TR; i++ )
             for ( j = 0; j < TC; j++ )
-                if ( checkCartTab( tomb[i][j], in_a_row) == in_a_row )
+                if ( checkCartTomb( tomb[i][j], in_a_row) == in_a_row )
                     printPrize( curr_prize,NULL, 0 );
 
 
@@ -491,7 +613,7 @@ void checkPrize( ListPlayer *list )
         /* Check BINGO prize for the Tombolone */
         for ( i = 0; i < TR; i++ )
             for ( j = 0; j < TC; j++ )
-                if ( checkCartTab( tomb[i][j], in_a_row) == in_a_row )
+                if ( checkCartTomb( tomb[i][j], in_a_row) == in_a_row )
                     printPrize( curr_prize, NULL, 0 );
 
 

@@ -5,6 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #define MAX_LEN 512
 
@@ -54,7 +55,7 @@ typedef struct
 }Cell;
 
 /* New data type which represent a specific tab */
-typedef Cell Cart_Tab[CTR][CTC];
+typedef Cell Card[CTR][CTC];
 
 /*
     New data structure which represent a single table with all the value
@@ -62,7 +63,7 @@ typedef Cell Cart_Tab[CTR][CTC];
 */
 typedef struct
 {
-    Cart_Tab cart;
+    Card cart;
     int id;
 
 }Cartella;
@@ -91,11 +92,12 @@ typedef struct
     int n_player;
 }ListPlayer;
 
-typedef Cart_Tab Tombolone[TR][TC];
+typedef Cell Cart_Tomb[3][5];
+typedef Cart_Tomb Tombolone[TR][TC];
 
 
 
-
+//void writeNumCard( Card, int, int, int );
 void swapCell( Cell *c1, Cell *c2 );
 void ord_row( Cell row[] );
 int readNumber( Cartella *, int, int );
@@ -105,5 +107,11 @@ void writeNumber( Player *, int, int, int, int );
 int isChecked( struct Prize * );
 int isGameFinished( struct Prize * );
 void wait ( int );
+int readNumberCartTab( Cart_Tomb , int, int );
+void gotoxy(int , int );
+void writeCheckCard( Cart_Tomb c, int i, int j, is_out flag );
+void writeNumCard( Cart_Tomb c, int i, int j, int num );
+void getNumCard( Cart_Tomb c, int i, int j, int num );
+void getCheckCard( Cart_Tomb c, int i, int j, is_out );
 
 #endif

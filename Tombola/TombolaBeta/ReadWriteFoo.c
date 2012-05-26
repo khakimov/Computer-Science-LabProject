@@ -15,6 +15,15 @@ void writeId( Player *p, int cont_c, int id )
     p->cartelle[cont_c].id = id;
 }
 
+void writeNumCard( Cart_Tomb c, int i, int j, int num )
+{
+    c[i][j].num = num;
+    c[i][j].check = NO;
+}
+void writeCheckCard( Cart_Tomb c, int i, int j, is_out flag )
+{
+    c[i][j].check = flag;
+}
 void writeNumber( Player *p, int cont_c, int i, int j, int num )
 {
     p->cartelle[cont_c].cart[i][j].num = num;
@@ -62,4 +71,11 @@ void wait ( int seconds )
   clock_t endwait;
   endwait = clock () + seconds * CLOCKS_PER_SEC ;
   while (clock() < endwait) {}
+}
+
+int readNumberCartTab( Cart_Tomb cart, int i, int j )
+{
+    return cart[i][j].num;
+
+
 }

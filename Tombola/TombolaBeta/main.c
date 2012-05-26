@@ -1,32 +1,18 @@
 #include "manage.h"
 
-/*
-    *******************************************************
-    *******************************************************
-    *********************** TODO **************************
-    *******************************************************
-
-    GESTIRE APPROPRIATAMENTE LA STRUTTURA DATI SOPRA RIPORTATA
-    IN MODO TALE DA ESSERE IN GRADO DI INIZIALIZZARLA E DI
-    STAMPARLA CORRETTAMENTE. ( SOPRATTUTTO PER L'INZIALIZZAZIONE
-    E' ALQUANTO SCOMODO AVERE UN TOMBOLONE INIZIALIZZATO A MANO!! )
-
-    VEDI PROBLEMA 1 E PROBLEMA 2
-    File -> manage.c
-*/
-
 int main()
 {
-	Cartella cart1;
+
 	int i, j;
+    initTombolone(tomb);
 
-	fill_cells(cart1.cart);
+    writeCheckCard( tomb[0][0], 1,0, O);
+    writeCheckCard( tomb[0][0], 1,2, O);
+    writeCheckCard( tomb[0][0], 1,5, O);
+    writeCheckCard( tomb[0][0], 1,8, NO);
 
-	printf("\tCARTELLA \n");
-
-	for ( i = 0; i < CTR; printf("\n"), i++ )
-		for ( j = 0; j < CTC; j++ )
-			 printf("| %2d | ", readNumber( &cart1, i, j ));
+    if ( checkCartTomb( tomb[0][0], 4) == 4 )
+        printPrize( 2, NULL, 0);
 
 
 
