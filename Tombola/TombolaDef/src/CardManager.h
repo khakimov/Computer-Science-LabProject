@@ -8,6 +8,25 @@
 #ifndef CARDMANAGER_H_
 #define CARDMANAGER_H_
 
+
+#include "ErrorManager.h"
+#ifndef _STDIO_H_
+#include <stdio.h>
+#endif
+
+#ifndef _STDLIB_H_
+#include <stdlib.h>
+#endif
+
+#include <time.h>
+
+#define TOT_PRIZE 5
+#define CARTC 9
+#define CARTR 3
+
+#define CTOMBR 3
+#define CTOMBC 5
+
 /* Tipo di dato enumerativo che indica se uno specifico numero è uscito o meno
  *
  * Nella generazione dei numeri viene adoperato anche il valore EXIST, per poter
@@ -17,7 +36,7 @@
  *
  *  */
 typedef enum { FALSE, TRUE, EXIST }flag;
-typedef enum { FALSE, TRUE, }boolean;
+typedef enum { F, T }boolean;
 
 /* Struttura che rappresenta una cella della cartella della tombola
  * avente come campi un numero intero che rappresenta il numero della cella
@@ -65,9 +84,9 @@ typedef struct cartella
 */
 
 
-typedef struct giocatore
+typedef struct Giocatore
 {
-	struct giocatore *next_g; /* riferimento prossimo giocatore */
+	struct Giocatore *next_g; /* riferimento prossimo giocatore */
 	Cartella *cart_g; /* elenco di cartelle possedute dal giocatore */
 	int num_cartelle;	/* numero di cartelle facenti parte dell’elenco */
 	int cash; /* montepremi vinto dall’utente */
@@ -81,10 +100,10 @@ typedef struct giocatore
 *	il numero totale  di giocatori attualmente in gioco.
 */
 
-typedef struct lista_giocatori
+typedef struct Lista_giocatori
 {
-	Giocatore *list_g; // elenco di giocatori
-	int num_player; // numero giocatori dell’elenco
+	Giocatore *list_g; /* elenco di giocatori */
+	int num_player; /* numero giocatori dell’elenco */
 }ListaGiocatori;
 /*
  *	Tabellone – Tipo di dato che rappresenta
@@ -100,7 +119,7 @@ typedef Cella Cart_Tomb[3][5];
 
 typedef struct
 {
-	Cart_Tomb ** tomb; /* insieme di cartelle che costituiscono il tombolone */
+	Cart_Tomb **cart_tomb; /* insieme di cartelle che costituiscono il tombolone */
 	int row; /* numero di righe di tale tombolone */
 	int col; /* numero di colonne del tombolone */
 }Tombolone;
@@ -171,8 +190,9 @@ typedef Premio ListaPremi[5];  // insieme di premi presenti nel gioco
  *   */
 typedef struct
 {
- char *nome; // Nome giocatore della topten
- int punteggio; // punteggio collezionato
+    char *nome; /* Nome del giocatore in topten */
+    int punteggio; /* punteggio totalizzato dal giocatore */
+
 }Topten;
 
 /*
@@ -188,11 +208,35 @@ typedef struct
 	ListaPremi lista_premi;
 	int *numbers;
 	int tot_num;
-Impostazioni imp;
+    Impostazioni imp;
 
 }Salvataggio;
 
+const int TOT_NUM;
+int tot;
+int num_gen;
 
-
+void impValore(Cartella *, int );
+int ctrlValore(Giocatore *,Tombolone *, int);
+void genCartella ( Cartella * );
+Cartella *getCartList( Cartella *, int );
+int genBlind( int blind[][4] );
+void wait(float);
+void bubble_sort(int *,int);
+void shuffle(int numbers[], int);
+int rand_num(int, int);
+void fill_numbers(int num[], int ,int);
+Cartella *getNextC(Cartella *);
+void setIdCartella (Cartella *,int);
+int getIdCartella (Cartella *);
+Cartella* initCartella ();
+int leggiNumeroCard( Card, int, int );
+int scriviNumeroCard( Card, int, int, int );
+flag leggiCheckedCard( Card, int, int );
+int scriviCheckedCard( Card, int , int, flag);
+int isSetCartella( Cartella * );
+void controllaNumero( ListaGiocatori *list, Tombolone *t, int num );
+void segnaNumeroUscitoTomb( Cart_Tomb cart_tab , int num );
+void segnaNumeroUscito( Card cartella, int num );
 
 #endif /* CARDMANAGER_H_ */
