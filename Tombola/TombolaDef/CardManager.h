@@ -224,19 +224,19 @@ typedef struct
 
 
 const int TOT_NUM;
-int tot;
-int num_gen;
-int *numbers;
+
 
 void impValore(Cartella *, int );
 int ctrlValore(Giocatore *,Tombolone *, int);
-void genCartella ( Cartella * );
+Cartella *genCartella (Estrazione *);
 Cartella *getCartList( Cartella *, int );
-int genBlind( int blind[][4] );
+void addCartella(Cartella *, Cartella * );
+Cartella *allocCartella();
+int genBlind( int [][4] ,Estrazione *);
 void wait(float);
 void bubble_sort(int *,int);
 void shuffle(int numbers[], int);
-int rand_num(int, int);
+int rand_num(int, int, Estrazione *);
 void fill_numbers(int num[], int ,int);
 Cartella *getNextC(Cartella *);
 void setIdCartella (Cartella *,int);
@@ -250,5 +250,6 @@ int isSetCartella( Cartella * );
 void controllaNumero( ListaGiocatori *list, Tombolone *t, int num );
 void segnaNumeroUscitoTomb( Cart_Tomb cart_tab , int num );
 void segnaNumeroUscito( Card cartella, int num );
-
+int getNumCella ( Cella );
+flag vediFlag ( Cella );
 #endif /* CARDMANAGER_H_ */

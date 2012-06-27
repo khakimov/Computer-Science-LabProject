@@ -19,7 +19,11 @@
 void caricaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp );
 void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp );
 void nuova_partita( Impostazioni *imp );
+void istruzioni();
+void uscita();
+void impostazioni( Impostazioni * );
 void printFile( char *filename );
+void createCartelle( Giocatore *p, Estrazione *estr );
 Cartella *getCartella(Giocatore *);
 int getIdGiocatore(Giocatore *);
 Giocatore *initListaG();
@@ -28,8 +32,10 @@ Giocatore *leggiPrimoGioc( ListaGiocatori *list );
 void addGiocatore(Giocatore *, Giocatore *);
 Giocatore *getNextG(Giocatore *g);
 Giocatore *delGiocatore(Giocatore *, int);
-int setNumCartelle(Giocatore *,int);
-int getNumCartelle(Giocatore *);
+int setNumCartelleGioc(Giocatore *,int);
+int getNumCartelleGioc(Giocatore *);
+int setCashGiocatore( Giocatore *g, int cash );
+int getCashGiocatore( Giocatore *g );
 Giocatore *getNodoG(Giocatore *, int);
 int setTotG(ListaGiocatori *, int);
 int getTotG(ListaGiocatori *);
@@ -44,6 +50,7 @@ int scriviDimImpostazioni( Impostazioni *, int );
 int scriviNumCartelleImpostazioni ( Impostazioni *, int );
 void scriviAudioVImpostazioni( Impostazioni *, boolean);
 void scriviAudioNumImpostazioni( Impostazioni *, boolean );
+void initTombolone( Tombolone *tomb, int dim );
 int scriviNumTombolone( Cart_Tomb, int, int, int );
 int leggiNumTombolone( Cart_Tomb,  int, int );
 int scriviNumFlagTombolone( Cart_Tomb,  int, int, flag );
@@ -62,6 +69,8 @@ int leggiVincitorePremio( Premio *p );
 void scriviNomePremio( Premio *p, char *nome );
 void scriviVincitorePremio( Premio *p, int id );
 void scriviVincitaPremio( Premio *p, int tot_premio );
-
+void printCartelle( Giocatore * );
+void printTombolone( Tombolone *tomb );
+void printCelle( Card cart );
 
 #endif /* TOMBOLAFUNCTION_H_ */

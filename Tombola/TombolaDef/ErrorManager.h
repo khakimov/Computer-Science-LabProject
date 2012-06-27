@@ -27,7 +27,9 @@
 	ERTOMB – errore scrittura righe del Tombolone ( -9)
 	ECTOMB - errore scrittura colonne del Tombolone ( -10 )
 	ENUMT - errore scrittura numeri del Tombolone ( -11 )
-	EDIMT -  errore scrittura numero di elementi del tombolone ( -12 )
+	EIMPD -  errore scrittura numero di elementi del tombolone ( -12 )
+	EIP - errore modifica numero di giocatori delle Impostazioni ( -13 )
+	ECASH - errore modifica campo cash della struttura Giocatore ( -14 )
 
   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  */
@@ -46,6 +48,7 @@
 #define EDIMT -11
 #define EIMPD -12
 #define EIP -13
+#define ECASH -14
 
 /*
  * variabile globale che rappresenta l'errore attualmente riscontrato.

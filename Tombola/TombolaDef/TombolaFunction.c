@@ -171,6 +171,25 @@ void caricaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazion
     }
 }
 
+void uscita()
+{
+    printFile("uscita.txt");
+
+
+}
+
+void istruzioni()
+{
+    printFile("istruzioni.txt");
+
+
+}
+
+void impostazioni( Impostazioni *imp )
+{
+    printFile("impostazioni.txt");
+}
+
 void printFile( char *file )
 {
      FILE *fp;
@@ -238,6 +257,43 @@ int getIdGiocatore(Giocatore *g)
     return g->id;
 }
 
+int getCashGiocatore( Giocatore *g )
+{
+    return g->cash;
+}
+
+int getNumCartelleGioc( Giocatore *g )
+{
+    return g->num_cartelle;
+}
+int setNumCartelleGioc(Giocatore *g, int numc)
+{
+    int segnale = 0;
+
+    if(numc < 1 || numc > 6)
+     set_error(ENUMCART);
+     else
+      g->num_cartelle = numc;
+
+    if ( get_curr_error() == ENOTF )
+     segnale = 1;
+
+    return segnale;
+}
+
+int setCashGiocatore( Giocatore *g, int cash )
+{
+    if ( !isSetGiocatore(g) )
+        set_error(ELPL);
+    else
+        if ( cash < 0 )
+            set_error(ECASH);
+    else
+        g->cash = cash;
+
+    return get_curr_error();
+}
+
 Giocatore *leggiPrimoGioc( ListaGiocatori *list )
 {
     return list->list_g;
@@ -252,18 +308,39 @@ Giocatore *initListaG()
 Giocatore *allocGiocatore()
 {
     return (Giocatore*)malloc(sizeof(Giocatore));
+
+
+}
+
+void createCartelle( Giocatore *p, Estrazione *estr )
+{
+    static int id_cart = 10;
+    Cartella *curr_cart = getCartella(p);
+    int i = 0;
+
+    curr_cart = initCartella();
+
+    while( i < getNumCartelleGioc(p) )
+    {
+
+        addCartella( curr_cart, genCartella(estr) );
+        setIdCartella(curr_cart, id_cart++);
+        curr_cart = getNextC(curr_cart);
+        i++;
+    }
+
 }
 
 void addGiocatore(Giocatore *g,Giocatore *gcomodo)
 {
-
-     if(!isSetGiocatore(g))
+     if(!isSetGiocatore(g->next_g))
      {
-           g = allocGiocatore();
-           g->next_g = initListaG();
-           g = gcomodo;
+       g->next_g = allocGiocatore();
+       g = getNextG(g);
+       memcpy(g,gcomodo, sizeof(Giocatore));
      }
       else addGiocatore(getNextG(g),gcomodo);
+
 }
 
 Giocatore *getNextG(Giocatore *g)
@@ -292,25 +369,6 @@ Giocatore *delGiocatore (Giocatore *g, int id)
     return g;
 }
 
-int setNumCartelle(Giocatore *g, int numc)
-{
-    int segnale = 0;
-
-    if(numc < 1 || numc > 6)
-     set_error(ENUMCART);
-     else
-      g->num_cartelle = numc;
-
-    if ( get_curr_error() == ENOTF )
-     segnale = 1;
-
-    return segnale;
-}
-
-int getNumCartelle(Giocatore *g)
-{
-    return g->num_cartelle;
-}
 
 Giocatore *getNodoG(Giocatore *g, int pos)
 {
@@ -441,6 +499,66 @@ void scriviAudioNumImpostazioni( Impostazioni *imp, boolean flag )
      imp->audiov = flag;
 
 }
+
+/* Funzioni di gestione del Tombolone */
+
+void initTombolone( Tombolone *tomb, int dim )
+{
+    int row_tomb, col_tomb;
+    int i, j;
+    int k = 0;
+    int k1 = 0;
+
+    /*
+        Dovendo avere necessariamente delle cartelle del tombolone che hanno un numero di elementi
+        multiplo di 90( 90 compreso ) ed essendo il numero di elementi di una singola cartella pari a 30,
+        le dimensioni del tombolone saranno pari alla dimensione diviso 30 che rappresenterà il numero di righe
+        e le colonne saranno fisse a 2
+    */
+
+    scriviColTombolone(tomb, 2);
+    scriviRigheTombolone(tomb, dim / 30);
+
+    for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb); row_tomb++ )
+    {
+
+          for ( i = 0; i < CTOMBR; i++ )
+            {
+                for ( j = 0; j < CTOMBC; j++ )
+                {
+                    scriviNumTombolone(tomb->cart_tomb[row_tomb][0],i,j,  j + 1 + ( k * 10) );
+                    scriviNumFlagTombolone(tomb->cart_tomb[row_tomb][0], i,j, FALSE);
+
+                }
+                k++;
+            }
+
+    }
+    k = 0;
+    for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb); row_tomb++ )
+    {
+
+            for ( i = 0; i < 3; i++ )
+            {
+                for ( j = 0, k1 = 5; j < 5; j++, k1++ )
+                {
+                    scriviNumTombolone(tomb->cart_tomb[row_tomb][1], i,j, k1 + 1 + ( k * 10) );
+                    scriviNumFlagTombolone(tomb->cart_tomb[row_tomb][1],i,j,FALSE);
+
+                }
+                k++;
+            }
+
+
+
+
+    }
+
+
+
+
+}
+
 
 int scriviNumTombolone( Cart_Tomb cart_tomb, int i, int j, int num )
 {
@@ -605,4 +723,119 @@ void scriviVincitaPremio( Premio *p, int tot_premio )
 {
     p->tot_cash = tot_premio;
 }
+
+
+/*
+    FUNZIONI DI STAMPA DELLE STRUTTURE DATI
+
+
+*/
+
+void printTombolone( Tombolone *tomb )
+{
+   int row_tomb, col_tomb;
+    int i, j;
+    int posX = 0, posY = 0;
+    int tempX = 0, tempY = 0;
+
+    for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb);  row_tomb++)
+    {
+
+       for ( i = 0; i < CTOMBR; i++ )
+        {
+            for ( j = 0; j < CTOMBC;j++)
+            {
+                printf("| %2d | ", leggiNumTombolone(tomb->cart_tomb[row_tomb][0], i, j ) );
+
+            }
+            gotoxy(posX,++posY);
+
+
+        }
+        gotoxy(posX, ++posY);
+
+
+    }
+    posX = 40;
+    posY = 0;
+    gotoxy(posX, posY);
+    for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb);  row_tomb++)
+    {
+
+       for ( i = 0; i < CTOMBR; i++ )
+        {
+            for ( j = 0; j < CTOMBC;j++)
+            {
+                printf("| %2d | ", leggiNumTombolone(tomb->cart_tomb[row_tomb][1],i,j) ) ;
+
+            }
+            gotoxy(posX,++posY);
+
+
+        }
+        gotoxy(posX, ++posY);
+
+
+    }
+    printf("\n");
+
+
+}
+
+void printCelle( Card cart )
+{
+    int i, j;
+
+    for(j=0;j<CARTC;j++)
+        printf("______");
+        printf("\n\n");
+
+        for(i=0;i<CARTR; i++)
+        {
+            for(j=0;j<CARTC;j++)
+            {
+                if( leggiCheckedCard(cart,i,j) == TRUE )
+                {
+
+                    textcolor(15);
+                    printf("  %2d  ", leggiNumeroCard(cart,i,j));
+                    scriviCheckedCard(cart,i,j,FALSE);
+                }
+                else
+                {
+                    printf("  ");
+                    textcolor(204);
+                    printf("  ");
+                    textcolor(10);
+                    printf("  ");
+                }
+            }
+            printf("\n");
+            for(j=0;j<CARTC;j++)
+            {
+                textcolor(15);
+                printf("______");
+            }
+            printf("\n\n");
+        }
+
+
+
+
+
+
+}
+
+void printCartelle( Giocatore *p )
+{
+    Cartella *curr_cart = getCartella(p);
+
+    while( isSetCartella( curr_cart ) )
+    {
+        printCelle( curr_cart->cart );
+        curr_cart = getNextC(curr_cart);
+    }
+}
+
+
 

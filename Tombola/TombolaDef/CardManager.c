@@ -7,6 +7,7 @@
  #include "CardManager.h"
  #include "TombolaFunction.h"
 
+
 Cartella *initCartella( void )
 {
      return NULL;
@@ -41,47 +42,85 @@ Cartella *getNextC(Cartella *c)
      return c->next_cart;
 }
 
-void genCartella(Cartella *c)
+int getNumCella ( Cella c)
+{
+    return c.num;
+}
+
+flag vediFlag ( Cella c)
+{
+     return c.checked;
+}
+
+Cartella *allocCartella()
+{
+     return (Cartella*)malloc(sizeof(Cartella));
+}
+
+void addCartella(Cartella *c, Cartella *new_cart )
+{
+    Cartella *curr_cart = getNextC(c);
+
+    if ( !isSetCartella( curr_cart ) )
+    {
+        curr_cart = allocCartella();
+
+        memcpy( c, new_cart, sizeof(Cartella));
+    }
+    else
+        addCartella( getNextC(c), new_cart );
+
+}
+
+
+
+Cartella *genCartella(Estrazione *estr)
 {
     int vet[3];
     int i,j,z,x;
-    Cartella comodo;
+    Cartella *comodo = allocCartella();
     int error = 1;
     int blind[3][4];
+    estr->num_gen = 3;
+    estr->tot = 0;
 
-   for( j=0; j<9; j++)
+   for( j=0; j<CARTC; j++)
    {
-    for (i=0; i<3; i++)
+    for (i=0; i<CARTR; i++)
       {
 
-          if( j==0) vet[i] = rand_num (1,9);
-          else if ( j==8 )  vet[i] = rand_num ( 79,90 );
-               else vet[i] = rand_num(0,9)+j*10;
+          if( j==0) vet[i] = rand_num (1,9,estr);
+          else if ( j==8 )  vet[i] = rand_num ( 79,90,estr );
+               else vet[i] = rand_num(0,9,estr)+j*10;
       }
     bubble_sort(vet,3);
-    for(i=0;i<3;i++)
+    for(i=0;i< CARTR;i++)
      {
-       comodo.cart[i][j].num=vet[i];
-       comodo.cart[i][j].checked = EXIST;
+       scriviNumeroCard( comodo->cart,i,j,vet[i] );
+       scriviCheckedCard( comodo->cart,i, j,EXIST);
      }
    }
 
    while(error)
-    error = genBlind( blind );
+    error = genBlind( blind ,estr);
 
 
   z=0;
-  for(i=0;i<3;i++)
+  for(i=0;i< CARTR;i++)
   {
-    for(j=0;j<9;j++)
+    for(j=0;j< CARTC;j++)
     {
        for(x=0;x<4;x++)
-        if(j==blind[z][x]) comodo.cart[i][j].checked = FALSE;
+        if(j==blind[z][x])
+            scriviCheckedCard( comodo->cart, i,j,FALSE);
     }
     z++;
   }
-  memcpy(c,&comodo,sizeof(Cartella));
+  comodo->next_cart=NULL;
+
+  return comodo;
 }
+
 void fill_numbers ( int num[], int min, int max )
 {
     int i;
@@ -92,33 +131,32 @@ void fill_numbers ( int num[], int min, int max )
 
 }
 
-int rand_num( int min, int max)
+int rand_num( int min, int max, Estrazione *estr)
 {
-    static int *numbers;
     int rand_number;
     int i;
 
 
-    if ( !numbers )
+    if ( !estr->numbers )
     {
-        numbers = (int*)malloc( TOT_NUM * sizeof(int));
-        if ( !numbers )
+        estr->numbers = (int*)malloc( estr->total_number * sizeof(int));
+        if ( !estr->numbers )
         {
             perror("MALLOC ERROR >> ");
             getchar();
             exit(-1);
         }
     }
-    if ( tot == 0 || tot >= num_gen )
+    if ( estr->tot == 0 || estr->tot >= estr->num_gen )
     {
-    	tot = 0;
-    	fill_numbers(numbers, min, max);
-    	shuffle(numbers, (max-min)+1);
-    	rand_number = numbers[tot++];
+    	estr->tot = 0;
+    	fill_numbers(estr->numbers, min, max);
+    	shuffle(estr->numbers, (max-min)+1);
+    	rand_number = estr->numbers[estr->tot++];
 
     }
     else
-    	rand_number = numbers[tot++];
+    	rand_number = estr->numbers[estr->tot++];
 
     return rand_number;
 }
@@ -168,7 +206,7 @@ void wait ( float seconds )
   while (clock() < endwait) {}
 }
 
-int genBlind ( int blind[3][4] )
+int genBlind ( int blind[3][4],Estrazione *estr )
 {
   int error = 0;
   int cont = 0;
@@ -177,14 +215,14 @@ int genBlind ( int blind[3][4] )
   int i,j;
   int vet[3][4];
 
-  num_gen = 4;
-  tot = 0;
+  estr->num_gen = 4;
+  estr->tot = 0;
 
 
   for ( i=0; i<3; i++)
   {
    for ( j=0; j<4; j++)
-    vet[i][j] = rand_num (0,8);
+    vet[i][j] = rand_num (0,8,estr);
    bubble_sort(vet[i],4);
 
    if ( vet[i][0] >= 4 || vet[i][3] <= 4 )error = 1;
