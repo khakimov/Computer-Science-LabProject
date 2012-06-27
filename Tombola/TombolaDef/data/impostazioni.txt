@@ -1,0 +1,21 @@
+   _   _   _   _   _   _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ 
+ ( i | m | p | o | s | t | a | z | i | o | n | i )
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ 
+
+-------------------- Gameplay --------------------
+
+->  Numero Giocatori [Min 2]
+    Dimensione Tombolone [Min 90]
+    Cartelle per Giocatore [Min 1/Max 6]
+    Controllo numeri Estratti [Auto/Manual]
+
+-------------------- AUDIO -----------------------
+
+    Suoni Vittoria [ON][OFF]
+    Suoni Estrazione [ON][OFF]
+
+--------------------------------------------------
+
+
+

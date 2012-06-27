@@ -11,8 +11,15 @@
 #include "ErrorManager.h"
 #include "CardManager.h"
 
+#include <direct.h>
+#include <dirent.h>
+#include <unistd.h>
 
+
+void caricaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp );
+void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp );
 void nuova_partita( Impostazioni *imp );
+void printFile( char *filename );
 Cartella *getCartella(Giocatore *);
 int getIdGiocatore(Giocatore *);
 Giocatore *initListaG();

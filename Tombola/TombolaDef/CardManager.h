@@ -19,6 +19,7 @@
 #endif
 
 #include <time.h>
+#include <conio2.h>
 
 #define TOT_PRIZE 5
 #define CARTC 9
@@ -37,6 +38,7 @@
  *  */
 typedef enum { FALSE, TRUE, EXIST }flag;
 typedef enum { F, T }boolean;
+
 
 /* Struttura che rappresenta una cella della cartella della tombola
  * avente come campi un numero intero che rappresenta il numero della cella
@@ -195,6 +197,13 @@ typedef struct
 
 }Topten;
 
+typedef struct
+{
+    int num_gen;
+    int tot;
+    int *numbers;
+    int total_number;
+}Estrazione;
 /*
  * Salvataggio - Struttura necesaria
  * per contenere tutti i dati di gioco
@@ -206,15 +215,18 @@ typedef struct
 	Tombolone t;
 	ListaGiocatori lista;
 	ListaPremi lista_premi;
-	int *numbers;
-	int tot_num;
+	Estrazione estr;
     Impostazioni imp;
 
 }Salvataggio;
 
+
+
+
 const int TOT_NUM;
 int tot;
 int num_gen;
+int *numbers;
 
 void impValore(Cartella *, int );
 int ctrlValore(Giocatore *,Tombolone *, int);

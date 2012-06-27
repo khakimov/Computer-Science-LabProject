@@ -33,6 +33,199 @@ void nuova_partita( Impostazioni *imp )
 
 }
 
+void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp )
+{
+    DIR *dir_fp;
+    struct dirent *ent;
+    Salvataggio save;
+    FILE *fp;
+    char buffer[100];
+    char *filename;
+
+    char *dir_name;
+
+    char *s2;
+
+    s2 = getenv("USERPROFILE");
+
+
+    dir_name = (char*)malloc( ( 1+  strlen(s2) + strlen("\\TombolaSaveGame") ) * sizeof(char) );
+    strcpy(dir_name, s2);
+
+    strcat(dir_name, "\\TombolaSaveGame");
+
+
+
+    if ( ( dir_fp = opendir(dir_name) ) == NULL )
+    {
+       /*
+        Se la directory non esiste
+        allora viene appositamente creata
+
+       */
+        printf("DIRECTORY NON TROVATA, LA STO CREANDO");
+       if ( _mkdir(dir_name) )
+       {
+            printf("\nDIR CREATA!\n");
+            if ( ( dir_fp = opendir(dir_name) ) == NULL ) printf("\n\n\nNON CREATA!");
+
+       }
+
+
+    }
+  else
+    {
+        printFile("salva.txt");
+        printf("Inserisci nome file da salvare : ( MAX 6 caratteri ) \n");
+        fgets( buffer, 6, stdin);
+        save.imp = *imp;
+        save.lista = *list;
+        memcpy( save.lista_premi, p, TOT_PRIZE * sizeof(Premio));
+        save.estr = *estr;
+
+        filename = malloc( ( strlen(dir_name) + strlen(buffer) ) * sizeof(char ));
+
+        strcpy(filename, dir_name);
+        strcat(filename, "\\");
+        buffer[strlen(buffer)-1] = '\0';
+        strcat(filename, buffer);
+
+        if ( ( fp = fopen(filename,"wb")) == NULL )
+        {
+            perror("ERROR FILE ::> ");
+            getchar();
+            exit(-1);
+        }
+        else
+        {
+            printf("Salvataggio %s in corso....", buffer);
+            fwrite(&save, sizeof(Salvataggio), 1, fp);
+        }
+
+        closedir(dir_fp);
+        fclose(fp);
+
+
+    }
+}
+
+void caricaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp )
+{
+   DIR *dir_fp;
+    struct dirent *ent;
+    char **file_names;
+    Salvataggio save;
+    char buffer[100];
+
+    char *dir_name;
+
+    char *s2;
+
+    s2 = getenv("USERPROFILE");
+
+
+    dir_name = (char*)malloc( ( 1+  strlen(s2) + strlen("\\TombolaSaveGame") ) * sizeof(char) );
+    strcpy(dir_name, s2);
+
+    strcat(dir_name, "\\TombolaSaveGame");
+
+
+    if ( ( dir_fp = opendir(dir_name) ) == NULL )
+    {
+       perror("ERROR ::  ");
+       getchar();
+       exit(-1);
+
+    }
+  else
+    {
+      file_names = (char**)malloc(sizeof(char*));
+
+      while( ( ent = readdir(dir_fp) ) != NULL )
+        {
+
+          int len = strlen(ent->d_name);
+          int i = 0;
+          *(file_names+i) = malloc( len * sizeof(char));
+
+            strcpy( *(file_names+i), ent->d_name);
+            gotoxy(20,10);
+             printf("FILE NAME %s\n", *(file_names+i));
+             i++;
+             file_names = realloc( file_names, i * sizeof(char*));
+
+
+          if ( !file_names )
+            {
+              fprintf(stderr, "READING DIRECTORY OCCURRED AN ERROR!\n");
+              exit(-1);
+
+            }
+
+
+
+        }
+      closedir(dir_fp);
+      free(file_names);
+
+    }
+}
+
+void printFile( char *file )
+{
+     FILE *fp;
+     int tot_char = 0;
+     char c;
+     char cwd[300];
+
+     getcwd(cwd, sizeof(cwd));
+
+     char *filename = malloc( (  strlen(cwd)+ strlen("\\data\\") + strlen(file) ) * sizeof(char));
+
+
+     strcpy(filename, cwd);
+     strcat(filename, "\\data\\");
+     strcat(filename, file );
+
+     printf("TEST %s", filename);
+     getchar();
+
+
+     clrscr();
+
+
+     system("COLOR 3F");
+
+
+
+     if ( ( fp = fopen(filename, "r")) == NULL )
+     {
+        perror("ERROR FILE ::> ");
+        getchar();
+
+        exit(-1);
+
+
+     }
+
+
+
+
+    while ( ( c = fgetc(fp) ) != EOF  && tot_char < 1280 )
+    {
+
+       printf("%c", c);
+       tot_char++;
+
+
+    }
+    /*if ( tot_char == 737 )
+        printf("\nPremi INVIO per visualizzare l'altra pagina, ESC per menu' principale\n");
+    printf("\n");
+    getch(); */
+     fclose(fp);
+
+}
 
 
 Cartella *getCartella(Giocatore *g)
