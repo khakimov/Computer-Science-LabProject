@@ -66,11 +66,17 @@ void scriviPunteggioTopTen( Topten *t, int punt );
 char *leggiNomePremio ( Premio *p );
 int leggiVincitaPremio( Premio *p );
 int leggiVincitorePremio( Premio *p );
+boolean leggiUscitoPremio( Premio *p );
+void scriviUscitoPremio( Premio *p, boolean );
 void scriviNomePremio( Premio *p, char *nome );
-void scriviVincitorePremio( Premio *p, int id );
+void scriviVincitorePremio( Premio *p, int  );
+void scriviIdSchedaPremio( Premio *p, int );
+int leggiIdSchedaPremio( Premio *p);
 void scriviVincitaPremio( Premio *p, int tot_premio );
 void printCartelle( Giocatore * );
 void printTombolone( Tombolone *tomb );
 void printCelle( Card cart );
+void printPrize( int curr_prize, Giocatore *win_player, int cont_c );
+void checkPrize( ListaGiocatori *list, ListaPremi premi, Tombolone *tomb );
 
 #endif /* TOMBOLAFUNCTION_H_ */

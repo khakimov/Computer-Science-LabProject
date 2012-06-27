@@ -331,15 +331,16 @@ void createCartelle( Giocatore *p, Estrazione *estr )
 
 }
 
-void addGiocatore(Giocatore *g,Giocatore *gcomodo)
+void addGiocatore(Giocatore *g,Giocatore *new_g)
 {
-     if(!isSetGiocatore(g->next_g))
+     if ( !isSetGiocatore(g) )
      {
-       g->next_g = allocGiocatore();
-       g = getNextG(g);
-       memcpy(g,gcomodo, sizeof(Giocatore));
+         g = new_g;
+         g->next_g = initListaG();
+
      }
-      else addGiocatore(getNextG(g),gcomodo);
+     else
+        addGiocatore(getNextG(g), new_g);
 
 }
 
@@ -724,6 +725,28 @@ void scriviVincitaPremio( Premio *p, int tot_premio )
     p->tot_cash = tot_premio;
 }
 
+void scriviIdSchedaPremio( Premio *p, int id_scheda )
+{
+    p->cart_id = id_scheda;
+
+}
+
+int leggiIdSchedaPremio( Premio *p )
+{
+    return p->cart_id;
+}
+
+boolean leggiUscitoPremio( Premio *p )
+{
+    return p->checked;
+}
+
+void scriviUscitoPremio( Premio *p, boolean f )
+{
+
+    p->checked = f;
+
+}
 
 /*
     FUNZIONI DI STAMPA DELLE STRUTTURE DATI
@@ -835,6 +858,109 @@ void printCartelle( Giocatore *p )
         printCelle( curr_cart->cart );
         curr_cart = getNextC(curr_cart);
     }
+}
+
+void printPrize( int curr_prize, Giocatore *win_player, int cont_c )
+{
+    /* If it not specified the player, the croupier has won */
+    if ( !win_player )
+        printf("Il Croupier ha fatto %s e ha vinto %d\n",
+                premi[curr_prize].nome_premio,
+                premi[curr_prize].tot_cash );
+    /* In  the other case, A specific player has won so I print all the information */
+    else
+    {
+        scriviVincitorePremio( &premi[curr_prize], getIdGiocatore( win_player) );
+        printf("Giocatore %d ha fatto %s e ha vinto %d con la cartella %d\n",
+                leggiVincitorePremio( &premi[curr_prize]), leggiNomePremio(&premi[curr_prize]),
+                leggiVincitaPremio(&premi[curr_prize]), leggiIdSchedaPremio(&premi[curr_prize]) );
+    }
+
+    scriviUscitoPremio( &premi[curr_prize], TRUE);
+}
+
+
+
+void checkPrize( ListaGiocatori *list, ListaPremi premi, Tombolone *tomb )
+{
+    /*
+        PRIZE LIST:
+        AMBO - 2
+        TERNO - 3
+        QUATERNA - 4
+        CINQUINA - 5
+        BINGO(TOMBOLA) - 10
+
+        CARATTERI DI RIFERIMENTO
+        A - Ambo
+        T - Terno
+        Q - Quaterna
+        C - cinquina
+        B - Bingo o Tombola
+
+ */
+
+    int i, j;
+    int in_a_row = 0; /* number of element that will be in a row in order to gain the prize */
+    int curr_prize = 0; /* hold the position in the array prize which represent the current prize that will be checked */
+    Giocatore *curr_gioc = leggiPrimoGioc(list);
+    Cartella *curr_cart;
+
+    for( i = 0; i < TOT_PRIZE && premi[i].checked == TRUE; i++ )
+        ;
+    /* ASSERTION : the actual i value represent the position in which there is the prize that will be analyzed */
+    curr_prize = i;
+
+    switch( premi[i].nome_premio[0] )
+        {
+            case 'A' : in_a_row = 2; break;
+            case 'T' : in_a_row = 3; break;
+            case 'Q' : in_a_row = 4; break;
+            case 'C' : in_a_row = 5; break;
+            case 'B' : in_a_row = 10; break;
+        }
+
+    if ( in_a_row != 10 )
+    {
+
+        /* Check Tombolone */
+        for( i = 0; i < leggiRigheTombolone(tomb); i++ )
+            for ( j = 0; j < leggiColTombolone(tomb); j++ )
+                if ( checkCartTomb( tomb->cart_tomb[i][j], in_a_row) == in_a_row )
+                    printPrize( curr_prize,NULL, 0 );
+
+
+
+
+        for( ; isSetGiocatore(curr_gioc);  curr_gioc = getNextG(curr_gioc) )
+            for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
+                if ( checkCartella( curr_cart, in_a_row) == in_a_row )
+                    printPrize( curr_prize, curr_gioc, getIdGiocatore(curr_gioc) );
+
+
+
+
+    }
+    else
+    {
+
+        /* Check BINGO prize for the Tombolone */
+        for ( i = 0; i < leggiRigheTombolone(tomb); i++ )
+            for ( j = 0; j < leggiColTombolone(tomb); j++ )
+                if ( checkCartTomb( tomb->cart_tomb[i][j], in_a_row) == in_a_row )
+                    printPrize( curr_prize, NULL, 0 );
+
+
+
+        for( ; isSetGiocatore(curr_gioc);  curr_gioc = getNextG(curr_gioc) )
+            for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
+                if ( checkCartella( curr_cart, in_a_row) == in_a_row )
+                    printPrize( curr_prize, curr_gioc, getIdGiocatore(curr_gioc) );
+
+
+
+    }
+
 }
 
 

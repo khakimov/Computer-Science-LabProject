@@ -348,3 +348,85 @@ void segnaNumeroUscito( Card cartella, int num )
 
 
 }
+
+int checkCartella( Cartella *cartella, int in_a_row )
+{
+    int win_row = 0;
+    int win = 0;
+    int i,j;
+
+
+    if ( in_a_row == 10 )
+    {
+        win = 0;
+        for ( i = 0; i < CARTR && win != 15; i++ )
+            for ( j = 0; j < CARTC; j++ )
+                if ( leggiCheckedCard(cartella->cart,i,j) != TRUE )
+                    win++;
+       /* TUTTI I NUMERI SONO USCITI, SETTO LA TOMBOLA CON  DIECI*/
+        if ( win == 15 )
+            win = 10;
+
+    }
+    else
+    {
+        win = 0;
+
+       for( i = 0; i < CARTR && win != in_a_row; i++ )
+       {
+            win_row = 0;
+
+        for ( j = 0; j < CARTC && win != in_a_row; j++ )
+        {
+          if ( leggiCheckedCard(cartella->cart,i,j ) == TRUE )
+            win_row++;
+          if ( win_row == in_a_row )
+            win = win_row;
+
+        }
+       }
+    }
+
+
+    return win;
+
+}
+
+int checkCartTomb( Cart_Tomb cart_tab, int in_a_row )
+{
+    int win = 0;
+    int win_row = 0;
+    int i,j;
+
+
+    if ( in_a_row == 10 )
+    {
+        win = 10;
+        for ( i = 0; i < CTOMBR && win != 15; i++ )
+            for ( j = 0; j < CTOMBC; j++ )
+                if ( leggiNumFlagTombolone(cart_tab, i,j ) != TRUE )
+                    win = 0;
+        if ( win == 15 )
+            win = 10;
+
+    }
+    else
+    {
+
+        for( i = 0; i < CTOMBR; i++ )
+        {
+            win_row = 0;
+
+           for ( j = 0; j < CTOMBC && win < in_a_row; j++ )
+           {
+
+               if ( leggiNumFlagTombolone(cart_tab,i,j) == TRUE )
+                    win++;
+            if ( win_row == in_a_row )
+                win = win_row;
+           }
+        }
+    }
+
+    return win;
+}

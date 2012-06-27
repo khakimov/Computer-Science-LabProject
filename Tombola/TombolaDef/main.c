@@ -17,6 +17,7 @@ int main(void)
     ListaPremi lista_premi;
     Estrazione estr;
     Impostazioni imp;
+    Giocatore new_g;
 
     system("COLOR 3F");
 
@@ -25,12 +26,16 @@ int main(void)
     estr.total_number = 90;
     estr.numbers = NULL;
 
-    list.list_g = allocGiocatore();
-    setTotG(&list, 1);
-    setNumCartelleGioc(leggiPrimoGioc(&list), 2);
+    new_g.cart_g = initCartella();
+    new_g.cash = 200;
+    new_g.id = 1;
+    new_g.next_g = initListaG();
+    new_g.num_cartelle = 2;
 
 
-    createCartelle(leggiPrimoGioc(&list), &estr);
+    addGiocatore( leggiPrimoGioc(&list), &new_g );
+
+    //createCartelle(leggiPrimoGioc(&list), &estr);
     /*
     printCartelle( leggiPrimoGioc(&list));
     */

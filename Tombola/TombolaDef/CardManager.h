@@ -164,6 +164,8 @@ typedef struct premio
 	char *nome_premio; // nome del premio corrente
 	int tot_cash;// totale vincita del premio
 	int winner_id; // id del vincitore di quell premio
+	int cart_id; // cartella vincente
+	flag checked;
 }Premio;
 
 
@@ -222,7 +224,7 @@ typedef struct
 
 
 
-
+ListaPremi premi;
 const int TOT_NUM;
 
 
@@ -250,6 +252,8 @@ int isSetCartella( Cartella * );
 void controllaNumero( ListaGiocatori *list, Tombolone *t, int num );
 void segnaNumeroUscitoTomb( Cart_Tomb cart_tab , int num );
 void segnaNumeroUscito( Card cartella, int num );
+int checkCartella( Cartella *cartella, int in_a_row );
+int checkCartTomb( Cart_Tomb cart_tab, int in_a_row );
 int getNumCella ( Cella );
 flag vediFlag ( Cella );
 #endif /* CARDMANAGER_H_ */
