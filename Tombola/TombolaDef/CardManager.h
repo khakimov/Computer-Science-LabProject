@@ -28,6 +28,8 @@
 #define CTOMBR 3
 #define CTOMBC 5
 
+#define MAXG 6
+#define MAXC 6
 /* Tipo di dato enumerativo che indica se uno specifico numero è uscito o meno
  *
  * Nella generazione dei numeri viene adoperato anche il valore EXIST, per poter
@@ -134,10 +136,10 @@ typedef struct
  *
  */
 
-typedef struct impostazioni
+typedef struct Impostazioni
 {
 	int num_tot_player; /* numero totale di giocatori impostati */
-	int  dim_tombolone; /* valore numerico che rappresenta i numeri presenti nel tombolone */
+	int dim_tombolone; /* valore numerico che rappresenta i numeri presenti nel tombolone */
 	int max_cartelle; /* numero Massimo di cartelle che un giocatore può scegliere */
 	char mod_game; /* modalità di gioco scelta dall’utente */
 	boolean audiov; /* audio per vittoria di un premio */
@@ -161,11 +163,11 @@ typedef struct impostazioni
 
 typedef struct premio
 {
-	char *nome_premio; // nome del premio corrente
-	int tot_cash;// totale vincita del premio
-	int winner_id; // id del vincitore di quell premio
-	int cart_id; // cartella vincente
-	flag checked;
+	char *nome_premio; /* nome del premio */
+	int tot_cash;/* Totale vincita premio */
+	int winner_id; /* Id del premio vincitore */
+	boolean checked; /* Flag che notifica se un premio è stato vinto o meno */
+    int id_scheda; /* numero della scheda vincente */
 }Premio;
 
 
@@ -180,7 +182,7 @@ typedef struct premio
  *
  */
 
-typedef Premio ListaPremi[5];  // insieme di premi presenti nel gioco
+typedef Premio ListaPremi[5];  /* insieme di premi presenti nel gioco */
 
 /*
  *
@@ -201,10 +203,10 @@ typedef struct
 
 typedef struct
 {
-    int num_gen;
-    int tot;
-    int *numbers;
-    int total_number;
+    int num_gen; /* Numeri attualmente generati*/
+    int tot_numeri_estr; /* Totale numeri estratti dall'inzio del gioco */
+    int *numbers; /* Vettore di interi contenente i numeri da estrarre */
+    int tot_numeri; /* Totale numeri da gestire */
 }Estrazione;
 /*
  * Salvataggio - Struttura necesaria
@@ -223,18 +225,15 @@ typedef struct
 }Salvataggio;
 
 
-
-ListaPremi premi;
 const int TOT_NUM;
-
+Estrazione estr;
 
 void impValore(Cartella *, int );
 int ctrlValore(Giocatore *,Tombolone *, int);
 Cartella *genCartella (Estrazione *);
 Cartella *getCartList( Cartella *, int );
-void addCartella(Cartella *, Cartella * );
-Cartella *allocCartella();
-int genBlind( int [][4] ,Estrazione *);
+Cartella *allocCartella( void );
+int genBlind( int blind[][4] ,Estrazione *);
 void wait(float);
 void bubble_sort(int *,int);
 void shuffle(int numbers[], int);
@@ -252,8 +251,9 @@ int isSetCartella( Cartella * );
 void controllaNumero( ListaGiocatori *list, Tombolone *t, int num );
 void segnaNumeroUscitoTomb( Cart_Tomb cart_tab , int num );
 void segnaNumeroUscito( Card cartella, int num );
-int checkCartella( Cartella *cartella, int in_a_row );
-int checkCartTomb( Cart_Tomb cart_tab, int in_a_row );
-int getNumCella ( Cella );
-flag vediFlag ( Cella );
+void addCartella(Cartella *, Cartella *);
+int controllaCartTomb( Cart_Tomb cart_tab, int in_a_row );
+int controllaCartella( Cartella *cartella, int in_a_row );
+
+
 #endif /* CARDMANAGER_H_ */

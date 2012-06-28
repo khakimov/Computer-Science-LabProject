@@ -9,6 +9,10 @@
  */
 
 #include "TombolaFunction.h"
+#include "CardManager.h"
+#include "conio2.h"
+
+
 
 int main(void)
 {
@@ -17,28 +21,19 @@ int main(void)
     ListaPremi lista_premi;
     Estrazione estr;
     Impostazioni imp;
-    Giocatore new_g;
 
-    system("COLOR 3F");
-
-    estr.num_gen = 0;
-    estr.tot = 0;
-    estr.total_number = 90;
-    estr.numbers = NULL;
-
-    new_g.cart_g = initCartella();
-    new_g.cash = 200;
-    new_g.id = 1;
-    new_g.next_g = initListaG();
-    new_g.num_cartelle = 2;
-
-
-    addGiocatore( leggiPrimoGioc(&list), &new_g );
-
-    //createCartelle(leggiPrimoGioc(&list), &estr);
-    /*
-    printCartelle( leggiPrimoGioc(&list));
-    */
-
+    
+    textcolor(15);
+    srand(time(NULL));
+    
+    imp.max_cartelle = 6;
+    imp.num_tot_player = 6;
+    imp.dim_tombolone = 90;
+    imp.audiov = T;
+    imp.audionum = F;
+    
+    //nuova_partita(&imp);
+    impostazioni_gioco(&imp);
+    getch();
 	return EXIT_SUCCESS;
 }

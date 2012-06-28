@@ -15,13 +15,15 @@
 #include <dirent.h>
 #include <unistd.h>
 
-
-void caricaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp );
-void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi *p, Estrazione *estr, Impostazioni *imp );
-void nuova_partita( Impostazioni *imp );
 void istruzioni();
 void uscita();
-void impostazioni( Impostazioni * );
+void initEstrazione ( Estrazione *, Impostazioni * );
+void initGiocatore(Giocatore *, Impostazioni *, int *);
+void caricaPartita( ListaGiocatori *, Tombolone *, ListaPremi *, Estrazione *, Impostazioni * );
+void salvaPartita( ListaGiocatori *, Tombolone *, ListaPremi *, Estrazione *, Impostazioni * );
+void nuova_partita( Impostazioni * );
+void impostazioni_gioco (Impostazioni * );
+void Stampaimpostazioni ( Impostazioni *, int);
 void printFile( char *filename );
 void createCartelle( Giocatore *p, Estrazione *estr );
 Cartella *getCartella(Giocatore *);
@@ -61,22 +63,36 @@ int scriviColTombolone( Tombolone *, int );
 int leggiColTombolone( Tombolone * );
 char *leggiNomeTopTen( Topten * );
 int leggiPuntTopTen( Topten * );
-void scriviNomeTopTen ( Topten *t, char *nome );
-void scriviPunteggioTopTen( Topten *t, int punt );
-char *leggiNomePremio ( Premio *p );
-int leggiVincitaPremio( Premio *p );
-int leggiVincitorePremio( Premio *p );
-boolean leggiUscitoPremio( Premio *p );
-void scriviUscitoPremio( Premio *p, boolean );
-void scriviNomePremio( Premio *p, char *nome );
-void scriviVincitorePremio( Premio *p, int  );
-void scriviIdSchedaPremio( Premio *p, int );
-int leggiIdSchedaPremio( Premio *p);
-void scriviVincitaPremio( Premio *p, int tot_premio );
+void scriviNomeTopTen ( Topten *, char * );
+void scriviPunteggioTopTen( Topten *, int );
+char *leggiNomePremio ( Premio * );
+int leggiVincitaPremio( Premio * );
+int leggiVincitorePremio( Premio * );
+boolean leggiUscitoPremio( Premio * );
+void scriviUscitoPremio( Premio *, boolean );
+void scriviNomePremio( Premio *, char * );
+void scriviVincitorePremio( Premio *, int  );
+void scriviIdSchedaPremio( Premio *, int );
+int leggiIdSchedaPremio( Premio *);
+void scriviVincitaPremio( Premio *, int );
 void printCartelle( Giocatore * );
-void printTombolone( Tombolone *tomb );
+void printTombolone( Tombolone * );
 void printCelle( Card cart );
-void printPrize( int curr_prize, Giocatore *win_player, int cont_c );
-void checkPrize( ListaGiocatori *list, ListaPremi premi, Tombolone *tomb );
+void printPrize( int, Giocatore *, int );
+void checkPrize( ListaGiocatori *, ListaPremi, Tombolone * );
+int estraiNumero( Estrazione * );
+
+/* Accesso alla struttura Estrazione */
+void initVettoreNumeri( Estrazione * );
+int leggiNumGen( Estrazione * );
+int scriviNumGen( Estrazione *, int );
+int leggiTotNumEstratti( Estrazione * );
+int scriviTotNumEstratti( Estrazione *, int );
+int leggiTotNumeri( Estrazione * );
+int scriviTotNumeri( Estrazione *, int );
+int *getVettoreNumeri( Estrazione * );
+int *setVettoreNumeri( Estrazione *, int dim );
+
+
 
 #endif /* TOMBOLAFUNCTION_H_ */

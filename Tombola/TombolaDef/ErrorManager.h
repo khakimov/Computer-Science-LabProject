@@ -30,6 +30,10 @@
 	EIMPD -  errore scrittura numero di elementi del tombolone ( -12 )
 	EIP - errore modifica numero di giocatori delle Impostazioni ( -13 )
 	ECASH - errore modifica campo cash della struttura Giocatore ( -14 )
+	ENUMESTR - errore accesso al campo totale numeri estratti della struttura Estrazione ( -15 )
+	EDIMVET - errore accesso al campo dimensione del vettore della struttura Estrazione (-16)
+	ENUMGEN - errore accesso al campo numeri generati della struttura Estrazione ( -17)
+	EVET - errore nella modifica del vettore di numeri della struttura Estrazione ( -18 )
 
   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  */
@@ -49,6 +53,10 @@
 #define EIMPD -12
 #define EIP -13
 #define ECASH -14
+#define ENUMESTR -15
+#define EDIMVET -16
+#define ENUMGEN -17
+#define EVET -18
 
 /*
  * variabile globale che rappresenta l'errore attualmente riscontrato.

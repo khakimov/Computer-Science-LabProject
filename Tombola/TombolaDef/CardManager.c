@@ -7,7 +7,6 @@
  #include "CardManager.h"
  #include "TombolaFunction.h"
 
-
 Cartella *initCartella( void )
 {
      return NULL;
@@ -42,47 +41,29 @@ Cartella *getNextC(Cartella *c)
      return c->next_cart;
 }
 
-int getNumCella ( Cella c)
-{
-    return c.num;
-}
-
-flag vediFlag ( Cella c)
-{
-     return c.checked;
-}
-
 Cartella *allocCartella()
 {
      return (Cartella*)malloc(sizeof(Cartella));
 }
-
-void addCartella(Cartella *c, Cartella *new_cart )
+/* Inserisce in coda il nodo passato per parametro */
+void addCartella(Cartella *c, Cartella *comodo)
 {
-    Cartella *curr_cart = getNextC(c);
-
-    if ( !isSetCartella( curr_cart ) )
-    {
-        curr_cart = allocCartella();
-
-        memcpy( c, new_cart, sizeof(Cartella));
-    }
-    else
-        addCartella( getNextC(c), new_cart );
-
+    if(!isSetCartella(c->next_cart))
+       c->next_cart = comodo;
+     else addCartella(getNextC(c),comodo);
 }
 
 
 
-Cartella *genCartella(Estrazione *estr)
+Cartella * genCartella(Estrazione *estr)
 {
     int vet[3];
     int i,j,z,x;
     Cartella *comodo = allocCartella();
     int error = 1;
     int blind[3][4];
-    estr->num_gen = 3;
-    estr->tot = 0;
+    scriviNumGen(estr, 3);
+    scriviTotNumEstratti(estr, 0);
 
    for( j=0; j<CARTC; j++)
    {
@@ -93,11 +74,13 @@ Cartella *genCartella(Estrazione *estr)
           else if ( j==8 )  vet[i] = rand_num ( 79,90,estr );
                else vet[i] = rand_num(0,9,estr)+j*10;
       }
+
     bubble_sort(vet,3);
-    for(i=0;i< CARTR;i++)
+
+    for(i=0;i<3;i++)
      {
-       scriviNumeroCard( comodo->cart,i,j,vet[i] );
-       scriviCheckedCard( comodo->cart,i, j,EXIST);
+       scriviNumeroCard(comodo->cart,i,j,vet[i]);
+       scriviCheckedCard(comodo->cart,i,j, EXIST);
      }
    }
 
@@ -106,18 +89,16 @@ Cartella *genCartella(Estrazione *estr)
 
 
   z=0;
-  for(i=0;i< CARTR;i++)
+  for(i=0;i<3;i++)
   {
-    for(j=0;j< CARTC;j++)
+    for(j=0;j<9;j++)
     {
        for(x=0;x<4;x++)
-        if(j==blind[z][x])
-            scriviCheckedCard( comodo->cart, i,j,FALSE);
+        if(j==blind[z][x]) scriviCheckedCard(comodo->cart,i,j, FALSE);
     }
     z++;
   }
-  comodo->next_cart=NULL;
-
+  comodo->next_cart = initCartella();
   return comodo;
 }
 
@@ -134,29 +115,21 @@ void fill_numbers ( int num[], int min, int max )
 int rand_num( int min, int max, Estrazione *estr)
 {
     int rand_number;
-    int i;
 
+    if ( !getVettoreNumeri(estr) )
+        setVettoreNumeri(estr, leggiTotNumeri(estr));
 
-    if ( !estr->numbers )
+    if ( leggiTotNumEstratti(estr) == 0 || leggiTotNumEstratti(estr) >= leggiNumGen(estr) )
     {
-        estr->numbers = (int*)malloc( estr->total_number * sizeof(int));
-        if ( !estr->numbers )
-        {
-            perror("MALLOC ERROR >> ");
-            getchar();
-            exit(-1);
-        }
-    }
-    if ( estr->tot == 0 || estr->tot >= estr->num_gen )
-    {
-    	estr->tot = 0;
-    	fill_numbers(estr->numbers, min, max);
-    	shuffle(estr->numbers, (max-min)+1);
-    	rand_number = estr->numbers[estr->tot++];
+    	scriviTotNumEstratti(estr, 0);
+    	fill_numbers( getVettoreNumeri(estr), min, max);
+    	shuffle(getVettoreNumeri(estr), (max-min)+1);
+
+    	rand_number = estr->numbers[estr->tot_numeri];
 
     }
     else
-    	rand_number = estr->numbers[estr->tot++];
+    	rand_number = estr->numbers[estr->tot_numeri++];
 
     return rand_number;
 }
@@ -215,8 +188,8 @@ int genBlind ( int blind[3][4],Estrazione *estr )
   int i,j;
   int vet[3][4];
 
-  estr->num_gen = 4;
-  estr->tot = 0;
+  scriviNumGen(estr,4);
+  scriviTotNumEstratti(estr, 0);
 
 
   for ( i=0; i<3; i++)
@@ -235,13 +208,13 @@ int genBlind ( int blind[3][4],Estrazione *estr )
 
   }
 
-   while(comodo<9 && !error)
+   while(comodo < CARTC && !error)
    {
     for ( i=0; i<3; i++)
      for ( j=0; j<4; j++)
         if(vet[i][j]==comodo) cont++;
 
-    if(cont==0 || cont>=3)
+    if(cont==0 || cont>= CARTR )
     {
       error = 1;
       comodo=9;
@@ -349,7 +322,7 @@ void segnaNumeroUscito( Card cartella, int num )
 
 }
 
-int checkCartella( Cartella *cartella, int in_a_row )
+int controllaCartella( Cartella *cartella, int in_a_row )
 {
     int win_row = 0;
     int win = 0;
@@ -392,7 +365,7 @@ int checkCartella( Cartella *cartella, int in_a_row )
 
 }
 
-int checkCartTomb( Cart_Tomb cart_tab, int in_a_row )
+int controllaCartTomb( Cart_Tomb cart_tab, int in_a_row )
 {
     int win = 0;
     int win_row = 0;
@@ -430,3 +403,4 @@ int checkCartTomb( Cart_Tomb cart_tab, int in_a_row )
 
     return win;
 }
+
