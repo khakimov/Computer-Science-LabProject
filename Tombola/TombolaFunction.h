@@ -15,12 +15,24 @@
 #include <dirent.h>
 #include <unistd.h>
 
+#define chomp( buffer ) buffer[strlen(buffer)-1] = '\0';
+
+char * leggiNomeVincitorePremio (Premio *);
+void scriviNomeVincitorePremio ( Premio *, char *);
+void getTopten( Topten *list );
+void printClassifica( ListaGiocatori * );
+void bgcolor( int );
+int controllaEstensione( char * );
+int finePartita( void );
 void istruzioni();
 void uscita();
+int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, Tombolone *tomb);
+void topten( ListaGiocatori *listag );
 void initEstrazione ( Estrazione *, Impostazioni * );
 void initGiocatore(Giocatore *, Impostazioni *, int *);
-void caricaPartita( ListaGiocatori *, Tombolone *, ListaPremi *, Estrazione *, Impostazioni * );
-void salvaPartita( ListaGiocatori *, Tombolone *, ListaPremi *, Estrazione *, Impostazioni * );
+Topten *initTopten( void );
+void caricaPartita( void );
+void salvaPartita( ListaGiocatori *, Tombolone *, ListaPremi , Estrazione *, Impostazioni * );
 void nuova_partita( Impostazioni * );
 void impostazioni_gioco (Impostazioni * );
 void Stampaimpostazioni ( Impostazioni *, int);
@@ -50,8 +62,8 @@ int leggiAudioNumImpostazioni( Impostazioni * );
 int scriviTotGiocImpostazioni( Impostazioni *, int );
 int scriviDimImpostazioni( Impostazioni *, int );
 int scriviNumCartelleImpostazioni ( Impostazioni *, int );
-void scriviAudioVImpostazioni( Impostazioni *, boolean);
-void scriviAudioNumImpostazioni( Impostazioni *, boolean );
+void scriviAudioVImpostazioni( Impostazioni *, Boolean);
+void scriviAudioNumImpostazioni( Impostazioni *, Boolean );
 void initTombolone( Tombolone *tomb, int dim );
 int scriviNumTombolone( Cart_Tomb, int, int, int );
 int leggiNumTombolone( Cart_Tomb,  int, int );
@@ -68,8 +80,8 @@ void scriviPunteggioTopTen( Topten *, int );
 char *leggiNomePremio ( Premio * );
 int leggiVincitaPremio( Premio * );
 int leggiVincitorePremio( Premio * );
-boolean leggiUscitoPremio( Premio * );
-void scriviUscitoPremio( Premio *, boolean );
+Boolean leggiUscitoPremio( Premio * );
+void scriviUscitoPremio( Premio *, Boolean );
 void scriviNomePremio( Premio *, char * );
 void scriviVincitorePremio( Premio *, int  );
 void scriviIdSchedaPremio( Premio *, int );
@@ -77,9 +89,10 @@ int leggiIdSchedaPremio( Premio *);
 void scriviVincitaPremio( Premio *, int );
 void printCartelle( Giocatore * );
 void printTombolone( Tombolone * );
-void printCelle( Card cart );
+void printTopTen( Topten *toplist );
+void printCelle( Card cart , int , int);
 void printPrize( int, Giocatore *, int );
-void checkPrize( ListaGiocatori *, ListaPremi, Tombolone * );
+void checkPrize( ListaGiocatori *, Tombolone * );
 int estraiNumero( Estrazione * );
 
 /* Accesso alla struttura Estrazione */
@@ -92,6 +105,15 @@ int leggiTotNumeri( Estrazione * );
 int scriviTotNumeri( Estrazione *, int );
 int *getVettoreNumeri( Estrazione * );
 int *setVettoreNumeri( Estrazione *, int dim );
+
+/* Accesso alla struttura Topten */
+Topten* getNextTop( Topten *top );
+int isSetTopten( Topten *top );
+Topten *allocTopten( void );
+void addTopten( Topten *top, Topten *new_gioc );
+void insOrdTopten( Topten *top, Topten *new_gioc );
+Topten *checkTopten( Topten *top, Giocatore *new_gioc );
+Topten *initTopten( void );
 
 
 

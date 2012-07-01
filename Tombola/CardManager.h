@@ -21,6 +21,8 @@
 #include <time.h>
 #include <conio2.h>
 
+#define SAVE_KEY 's'
+
 #define TOT_PRIZE 5
 #define CARTC 9
 #define CARTR 3
@@ -30,6 +32,13 @@
 
 #define MAXG 6
 #define MAXC 6
+
+#define NEW_GAME 10
+#define LOAD 14
+#define SETTINGS 18
+#define TOP 22
+#define ISTR 26
+#define EXIT 30
 /* Tipo di dato enumerativo che indica se uno specifico numero è uscito o meno
  *
  * Nella generazione dei numeri viene adoperato anche il valore EXIST, per poter
@@ -39,7 +48,7 @@
  *
  *  */
 typedef enum { FALSE, TRUE, EXIST }flag;
-typedef enum { F, T }boolean;
+typedef enum { F, T }Boolean;
 
 
 /* Struttura che rappresenta una cella della cartella della tombola
@@ -95,6 +104,7 @@ typedef struct Giocatore
 	int num_cartelle;	/* numero di cartelle facenti parte dell’elenco */
 	int cash; /* montepremi vinto dall’utente */
 	int id; /* id corrispondente all’utente */
+	char nome[10]; /*nome dell'utente */
 }Giocatore;
 
 /*
@@ -141,9 +151,8 @@ typedef struct Impostazioni
 	int num_tot_player; /* numero totale di giocatori impostati */
 	int dim_tombolone; /* valore numerico che rappresenta i numeri presenti nel tombolone */
 	int max_cartelle; /* numero Massimo di cartelle che un giocatore può scegliere */
-	char mod_game; /* modalità di gioco scelta dall’utente */
-	boolean audiov; /* audio per vittoria di un premio */
-	boolean audionum; /* audio estrazione di un numero */
+	Boolean audiov; /* audio per vittoria di un premio */
+	Boolean audionum; /* audio estrazione di un numero */
 }Impostazioni;
 
 /* Premi – Struttura che rappresenta un premio
@@ -166,7 +175,7 @@ typedef struct premio
 	char *nome_premio; /* nome del premio */
 	int tot_cash;/* Totale vincita premio */
 	int winner_id; /* Id del premio vincitore */
-	boolean checked; /* Flag che notifica se un premio è stato vinto o meno */
+	Boolean checked; /* Flag che notifica se un premio è stato vinto o meno */
     int id_scheda; /* numero della scheda vincente */
 }Premio;
 
@@ -182,7 +191,7 @@ typedef struct premio
  *
  */
 
-typedef Premio ListaPremi[5];  /* insieme di premi presenti nel gioco */
+typedef Premio ListaPremi[TOT_PRIZE];  /* insieme di premi presenti nel gioco */
 
 /*
  *
@@ -194,11 +203,11 @@ typedef Premio ListaPremi[5];  /* insieme di premi presenti nel gioco */
  *
  *
  *   */
-typedef struct
+typedef struct topten
 {
     char *nome; /* Nome del giocatore in topten */
     int punteggio; /* punteggio totalizzato dal giocatore */
-
+    struct topten *next_top; /* puntatore al prossimo elemento della topten */
 }Topten;
 
 typedef struct
@@ -225,8 +234,7 @@ typedef struct
 }Salvataggio;
 
 
-const int TOT_NUM;
-Estrazione estr;
+extern ListaPremi premi;
 
 void impValore(Cartella *, int );
 int ctrlValore(Giocatore *,Tombolone *, int);

@@ -7,6 +7,9 @@
  #include "CardManager.h"
  #include "TombolaFunction.h"
 
+ ListaPremi premi = { { "Ambo", 50, 0, F, 0 }, { "Terno", 70, 0, F, 0 }, { "Quaterna", 90, 0, F,0 },
+                    { "Cinquina", 100, 0, F, 0 }, { "Bingo", 120, 0, F, 0 } };
+
 Cartella *initCartella( void )
 {
      return NULL;
@@ -59,11 +62,13 @@ Cartella * genCartella(Estrazione *estr)
 {
     int vet[3];
     int i,j,z,x;
+    static int id_cart = 1;
     Cartella *comodo = allocCartella();
     int error = 1;
     int blind[3][4];
     scriviNumGen(estr, 3);
     scriviTotNumEstratti(estr, 0);
+
 
    for( j=0; j<CARTC; j++)
    {
@@ -94,11 +99,13 @@ Cartella * genCartella(Estrazione *estr)
     for(j=0;j<9;j++)
     {
        for(x=0;x<4;x++)
-        if(j==blind[z][x]) scriviCheckedCard(comodo->cart,i,j, FALSE);
+        if(j==blind[z][x])
+         scriviCheckedCard(comodo->cart,i,j, FALSE);
     }
     z++;
   }
-  comodo->next_cart = initCartella();
+  comodo->next_cart = NULL;
+  setIdCartella(comodo, id_cart++);
   return comodo;
 }
 
@@ -125,11 +132,11 @@ int rand_num( int min, int max, Estrazione *estr)
     	fill_numbers( getVettoreNumeri(estr), min, max);
     	shuffle(getVettoreNumeri(estr), (max-min)+1);
 
-    	rand_number = estr->numbers[estr->tot_numeri];
+    	rand_number = estr->numbers[estr->tot_numeri_estr++];
 
     }
     else
-    	rand_number = estr->numbers[estr->tot_numeri++];
+    	rand_number = estr->numbers[estr->tot_numeri_estr++];
 
     return rand_number;
 }
@@ -285,15 +292,9 @@ void controllaNumero( ListaGiocatori *list, Tombolone *t, int num )
     Giocatore *curr_g = leggiPrimoGioc(list);
     Cartella *curr_card = getCartella(curr_g);
 
-    while( isSetGiocatore( curr_g ) )
-    {
-        while( isSetCartella(curr_card ) )
-        {
+    for ( curr_g = leggiPrimoGioc(list); isSetGiocatore(curr_g); curr_g = getNextG(curr_g) )
+        for ( curr_card = getCartella(curr_g); isSetCartella(curr_card); curr_card = getNextC(curr_card) )
             segnaNumeroUscito( curr_card->cart, num);
-            curr_card = getNextC(curr_card );
-        }
-        curr_g = getNextG(curr_g);
-    }
 
     for ( i = 0; i < leggiRigheTombolone(t); i++ )
         for ( j = 0; j < leggiColTombolone(t); j++ )
@@ -305,10 +306,12 @@ void segnaNumeroUscitoTomb( Cart_Tomb cart_tab , int num )
 {
     int i, j;
 
-    for( i = 0; i < 3; i++ )
-        for( j = 0; j < 5; j++ )
-            if ( leggiNumTombolone(cart_tab, i, j )  == num )
+    for( i = 0; i < CTOMBR; i++ )
+        for( j = 0; j < CTOMBC; j++ )
+            if( ( leggiNumFlagTombolone( cart_tab, i, j ) == EXIST ) && ( leggiNumTombolone(cart_tab, i, j )  == num ) )
                 scriviNumFlagTombolone( cart_tab, i, j,  TRUE);
+
+
 }
 void segnaNumeroUscito( Card cartella, int num )
 {
@@ -316,7 +319,7 @@ void segnaNumeroUscito( Card cartella, int num )
 
     for( i = 0; i < CARTR; i++ )
         for( j = 0; j < CARTC; j++ )
-            if ( leggiNumeroCard( cartella, i, j )  == num )
+            if ( ( leggiNumeroCard( cartella, i, j )  == num ) && ( leggiCheckedCard( cartella, i, j ) == EXIST ) )
                 scriviCheckedCard(cartella, i, j, TRUE);
 
 
@@ -324,83 +327,74 @@ void segnaNumeroUscito( Card cartella, int num )
 
 int controllaCartella( Cartella *cartella, int in_a_row )
 {
-    int win_row = 0;
-    int win = 0;
+    int num_usciti = 0;
     int i,j;
 
 
     if ( in_a_row == 10 )
     {
-        win = 0;
-        for ( i = 0; i < CARTR && win != 15; i++ )
-            for ( j = 0; j < CARTC; j++ )
-                if ( leggiCheckedCard(cartella->cart,i,j) != TRUE )
-                    win++;
+        num_usciti = 15;
+        for ( i = 0; i < CARTR && num_usciti == 15; i++ )
+            for ( j = 0; j < CARTC && num_usciti == 15; j++ )
+                if ( leggiCheckedCard(cartella->cart,i,j) == EXIST )
+                    num_usciti = 0;
        /* TUTTI I NUMERI SONO USCITI, SETTO LA TOMBOLA CON  DIECI*/
-        if ( win == 15 )
-            win = 10;
+        if ( num_usciti == 15 )
+            num_usciti = 10;
 
     }
     else
     {
-        win = 0;
-
-       for( i = 0; i < CARTR && win != in_a_row; i++ )
+       for ( i = 0; i < CARTR && num_usciti != in_a_row; i++ )
        {
-            win_row = 0;
+            num_usciti = 0;
 
-        for ( j = 0; j < CARTC && win != in_a_row; j++ )
-        {
-          if ( leggiCheckedCard(cartella->cart,i,j ) == TRUE )
-            win_row++;
-          if ( win_row == in_a_row )
-            win = win_row;
+            for ( j = 0; j < CARTC && num_usciti != in_a_row; j++ )
+                if ( leggiCheckedCard( cartella->cart, i, j ) == TRUE )
+                    num_usciti++;
 
-        }
        }
     }
 
 
-    return win;
+    return num_usciti;
 
 }
 
 int controllaCartTomb( Cart_Tomb cart_tab, int in_a_row )
 {
-    int win = 0;
-    int win_row = 0;
+    int num_usciti = 0;
     int i,j;
 
 
     if ( in_a_row == 10 )
     {
-        win = 10;
-        for ( i = 0; i < CTOMBR && win != 15; i++ )
+        num_usciti = 15;
+        for ( i = 0; i < CTOMBR && num_usciti == 15; i++ )
             for ( j = 0; j < CTOMBC; j++ )
-                if ( leggiNumFlagTombolone(cart_tab, i,j ) != TRUE )
-                    win = 0;
-        if ( win == 15 )
-            win = 10;
+                if ( leggiNumFlagTombolone(cart_tab, i,j ) == EXIST )
+                    num_usciti = 0;
+        if ( num_usciti == 15 )
+            num_usciti = 10;
 
     }
     else
     {
 
-        for( i = 0; i < CTOMBR; i++ )
+        for( i = 0; i < CTOMBR && num_usciti != in_a_row; i++ )
         {
-            win_row = 0;
+            num_usciti = 0;
 
-           for ( j = 0; j < CTOMBC && win < in_a_row; j++ )
+           for ( j = 0; j < CTOMBC && num_usciti != in_a_row; j++ )
            {
 
                if ( leggiNumFlagTombolone(cart_tab,i,j) == TRUE )
-                    win++;
-            if ( win_row == in_a_row )
-                win = win_row;
+                    num_usciti++;
+
            }
         }
     }
 
-    return win;
+    return num_usciti;
 }
 
