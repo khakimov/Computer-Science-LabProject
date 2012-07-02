@@ -104,7 +104,7 @@ int scriviTotNumEstratti( Estrazione *, int );
 int leggiTotNumeri( Estrazione * );
 int scriviTotNumeri( Estrazione *, int );
 int *getVettoreNumeri( Estrazione * );
-int *setVettoreNumeri( Estrazione *, int dim );
+void setVettoreNumeri( Estrazione *, int dim );
 
 /* Accesso alla struttura Topten */
 Topten* getNextTop( Topten *top );

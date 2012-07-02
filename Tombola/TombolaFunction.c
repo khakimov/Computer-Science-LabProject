@@ -79,7 +79,7 @@ int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, 
     int num_estr = 0;
     int car;
     int exit  = 0;
-    int x = 1, y = 1;
+    int x = 1;
 
     initEstrazione ( estr, imp );
     scriviNumGen(estr, leggiDimImpostazioni(imp));
@@ -135,7 +135,6 @@ int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, 
     if ( finePartita() )
     {
         clrscr();
-        //printFile("tombola.txt");
         printf("PUNTEGGI PARTITA CORRENTE \nGIOCATORE\t\tPUNTEGGIO\n");
         printClassifica(listag);
         getch();
@@ -152,7 +151,7 @@ void printClassifica( ListaGiocatori *listag )
     int *punt_gioc = malloc( getTotG(listag) * sizeof(int) ) ;
     int *id_gioc = malloc( getTotG(listag) * sizeof(int));
     int i;
-    int j, comodo_punt, comodo_id, scambio;
+    int comodo_punt, comodo_id, scambio;
     Giocatore *curr_gioc;
 
     for ( curr_gioc = leggiPrimoGioc(listag), i = 0;
@@ -350,8 +349,6 @@ void bgcolor( int color )
 void impostazioni_gioco (Impostazioni *imp )
 {
     char comando;
-    char buffer[100];
-    FILE *fp;
     int posizione = 1;
     int random = rand()%2;
     textcolor(58+random);
@@ -643,7 +640,6 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
 {
     DIR *dir_fp;
     struct dirent *ent;
-    Salvataggio save;
     FILE *fp;
     char buffer[100];
     char *filename;
@@ -687,10 +683,6 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
         printf("Inserisci nome file da salvare ( MAX 6 caratteri ) : ");
         fgets( buffer, 10, stdin);
         chomp(buffer);
-        save.imp = *imp;
-        save.lista = *list;
-        memcpy( save.lista_premi, p, sizeof(ListaPremi));
-        save.estr = *estr;
 
         filename = malloc( ( 1 + strlen(dir_name) + strlen(buffer) + strlen(".sav") ) * sizeof(char ));
 
@@ -709,8 +701,38 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
         }
         else
         {
+            Giocatore *curr_gioc;
+            Cartella *curr_cart;
+            int i, row_tomb, col_tomb;
+
             printf("Salvataggio %s.sav in corso....", buffer);
-            fwrite(&save, sizeof(Salvataggio), 1, fp);
+            /* Salvataggio struttura ListaGiocatore */
+
+            fwrite( list, sizeof(ListaGiocatori), 1, fp );
+            for ( curr_gioc = leggiPrimoGioc(list); isSetGiocatore(curr_gioc); curr_gioc = getNextG(curr_gioc) )
+            {
+                fwrite(curr_gioc, sizeof(Giocatore), 1, fp);
+
+                for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
+                    fwrite( curr_cart, sizeof(Cartella), 1, fp);
+            }
+
+            /* Salvataggio struttura Impostazioni */
+            fwrite(imp, sizeof(Impostazioni), 1, fp);
+
+            /* Salvataggio ListaPremi */
+            for ( i = 0; i < TOT_PRIZE; fwrite( &p[i], sizeof(Premio), 1, fp ),i++ );
+
+            /* Salvataggio struttura Estrazione */
+
+            fwrite( estr, sizeof(Estrazione), 1, fp );
+
+            /* Salvataggio struttura Tombolone */
+            fwrite(t, sizeof(Tombolone), 1, fp);
+
+            for ( row_tomb = 0; row_tomb < leggiRigheTombolone(t); row_tomb++ )
+                for ( col_tomb = 0; col_tomb < leggiColTombolone(t); col_tomb++ )
+                    fwrite( &t->cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
         }
 
         closedir(dir_fp);
@@ -733,8 +755,6 @@ void caricaPartita( void )
     char **file_names;
     int num_files;
     int i = 0;
-    Salvataggio save;
-    char buffer[100];
     char *dir_name;
     char *dir_principale;
     int choice;
@@ -831,8 +851,6 @@ void caricaPartita( void )
     strcat(dir_name, "\\");
     strcat(dir_name,*(file_names+(choice-1)));
 
-    printf("TEST DIR %s\n", dir_name);
-
     if ( ( fp = fopen(dir_name,"rb") ) == NULL )
     {
         perror("FILE ERROR ::>  ");
@@ -842,25 +860,100 @@ void caricaPartita( void )
     else
     {
 
-        fread( &save, sizeof(Salvataggio), 1, fp );
-        estr = save.estr;
-        t = save.t;
-        list = save.lista;
-        memcpy(p, save.lista_premi, 5 * sizeof(Premio));
-        imp = save.imp;
+        Giocatore *curr_gioc;
+        Cartella *curr_cart;
+        int i, j, row_tomb, col_tomb;
 
-        printf("LEGGI PREMIO %s\n", leggiNomePremio(&p[0]));
+            printf("Caricamento %s in corso....", dir_name);
+            /* Lettura struttura ListaGiocatore */
+
+            fread(&list, sizeof(ListaGiocatori), 1, fp );
+
+            list.list_g = initListaG();
 
 
-        fclose(fp);
+            for ( curr_gioc = allocGiocatore(), i = 0; i < getTotG(&list); i++ )
+            {
+
+                fread( curr_gioc, sizeof(Giocatore), 1, fp);
+                for ( curr_cart = allocCartella(),j = 0; j < getNumCartelleGioc(curr_gioc); j++, curr_cart = allocCartella() )
+                {
+                    fread( curr_cart, sizeof(Cartella), 1, fp);
+                    if ( j > 0 )
+                    {
+                        curr_cart->next_cart = initCartella();
+                        addCartella(getCartella(curr_gioc), curr_cart);
+
+                    }
+                    else
+                    {
+                        curr_cart->next_cart = initCartella();
+                        curr_gioc->cart_g = curr_cart;
+                    }
+
+                }
+                if ( i > 0 )
+                {
+                    curr_gioc->next_g = initListaG();
+                    addGiocatore( list.list_g, curr_gioc);
+
+                }
+                else
+                {
+                    curr_gioc->next_g = initListaG();
+                    list.list_g = curr_gioc;
+                }
+            }
+
+            /* Caricamento struttura Impostazioni */
+            fread( &imp, sizeof(Impostazioni), 1, fp);
+
+            /* Caricamento ListaPremi */
+            for ( i = 0; i < TOT_PRIZE; fread( &p[i], sizeof(Premio), 1, fp ),i++ );
+
+            /* Caricamento struttura Estrazione */
+
+            fread( &estr, sizeof(Estrazione), 1, fp );
+
+            /* Caricamento struttura Tombolone */
+            fread( &t, sizeof(Tombolone), 1, fp);
+
+            t.cart_tomb = (Cart_Tomb**)malloc( leggiRigheTombolone(&t) * sizeof(Cart_Tomb*));
+            if ( !t.cart_tomb )
+            {
+                perror("MALLOC ERROR ::> ");
+                getch();
+                exit(-1);
+
+            }
+            for ( i = 0; i < leggiRigheTombolone(&t); i++ )
+            {
+                *(t.cart_tomb+i) = (Cart_Tomb*)malloc( leggiColTombolone(&t) * sizeof(Cart_Tomb));
+                if ( !( *(t.cart_tomb+i ) ) )
+                {
+                    perror("MALLOC ERROR ::> ");
+                    getch();
+                    exit(-1);
+
+                }
+            }
+
+            for ( row_tomb = 0; row_tomb < leggiRigheTombolone(&t); row_tomb++ )
+                for ( col_tomb = 0; col_tomb < leggiColTombolone(&t); col_tomb++ )
+                    fread( &t.cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
 
         printf("CARICAMENTO COMPLETATO!!\n");
 
-        //GiocaPartita(list, imp, estr, t);
+        clrscr();
+        printCartelle(leggiPrimoGioc(&list));
+        //GiocaPartita(&list, &imp, &estr, &t);
 
     }
 
-    free(file_names);
+   /* for ( i = 0; i < num_files; i++ )
+        free(file_names[i]);
+    free(file_names);*/
+
   }
 }
 
@@ -1159,7 +1252,7 @@ void scriviAudioNumImpostazioni( Impostazioni *imp, Boolean flag )
 
 void initTombolone( Tombolone *tomb, int dim )
 {
-    int row_tomb, col_tomb;
+    int row_tomb;
     int i, j;
     int k = 0;
     int k1 = 0;
@@ -1705,7 +1798,7 @@ int *getVettoreNumeri( Estrazione *estr )
     return estr->numbers;
 }
 
-int *setVettoreNumeri( Estrazione *estr, int dim )
+void setVettoreNumeri( Estrazione *estr, int dim )
 {
     int stato = 1;
     if ( dim < 0 )
@@ -1722,6 +1815,8 @@ int *setVettoreNumeri( Estrazione *estr, int dim )
             exit(-1);
         }
     }
+
+
 }
 
 void initVettoreNumeri( Estrazione *estr )
@@ -1752,7 +1847,7 @@ int scriviNumGen( Estrazione *estr, int num_gen )
 
 void printTombolone( Tombolone *tomb )
 {
-   int row_tomb, col_tomb;
+   int row_tomb;
     int i, j;
     int posX = 1, posY = 1;
     int num_pagine_tot = leggiRigheTombolone(tomb) / 3;
@@ -1841,7 +1936,6 @@ void printFile( char *file )
      FILE *fp;
      int tot_char = 0;
      char c;
-     char cwd[300];
      char *filename;
      int key;
 
@@ -2000,7 +2094,6 @@ void printTopTen( Topten *toplist )
 {
     Topten *curr_top;
     int cont_gioc;
-    int i;
     FILE *top_file;
 
     /*while ( i++ < 90 )

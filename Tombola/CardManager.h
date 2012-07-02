@@ -104,7 +104,6 @@ typedef struct Giocatore
 	int num_cartelle;	/* numero di cartelle facenti parte dell’elenco */
 	int cash; /* montepremi vinto dall’utente */
 	int id; /* id corrispondente all’utente */
-	char nome[10]; /*nome dell'utente */
 }Giocatore;
 
 /*

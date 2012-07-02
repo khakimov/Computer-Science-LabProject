@@ -137,8 +137,8 @@ int main(void)
     }*/
 
     //printFile("impostazioni.txt");
-    nuova_partita(&imp);
-    //caricaPartita( &list, &t, lista_premi, &estr, &imp);
+    //nuova_partita(&imp);
+    caricaPartita( );
     //impostazioni_gioco(&imp);
     /*initEstrazione(&estr, &imp);
     list.list_g = allocGiocatore();

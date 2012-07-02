@@ -51,7 +51,7 @@ Cartella *allocCartella()
 /* Inserisce in coda il nodo passato per parametro */
 void addCartella(Cartella *c, Cartella *comodo)
 {
-    if(!isSetCartella(c->next_cart))
+    if(!isSetCartella( getNextC(c)))
        c->next_cart = comodo;
      else addCartella(getNextC(c),comodo);
 }
