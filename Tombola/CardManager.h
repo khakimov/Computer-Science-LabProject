@@ -22,6 +22,7 @@
 #include <conio2.h>
 
 #define SAVE_KEY 's'
+#define ESC_KEY 27
 
 #define TOT_PRIZE 5
 #define CARTC 9
@@ -216,23 +217,8 @@ typedef struct
     int *numbers; /* Vettore di interi contenente i numeri da estrarre */
     int tot_numeri; /* Totale numeri da gestire */
 }Estrazione;
-/*
- * Salvataggio - Struttura necesaria
- * per contenere tutti i dati di gioco
- * che devon esser salvati.
- *
- */
-typedef struct
-{
-	Tombolone t;
-	ListaGiocatori lista;
-	ListaPremi lista_premi;
-	Estrazione estr;
-    Impostazioni imp;
 
-}Salvataggio;
-
-
+/* Variabile globale che contiene i premi a disposizione dei giocatori */
 extern ListaPremi premi;
 
 void impValore(Cartella *, int );

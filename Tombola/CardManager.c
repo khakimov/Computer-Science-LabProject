@@ -10,16 +10,33 @@
  ListaPremi premi = { { "Ambo", 50, 0, F, 0 }, { "Terno", 70, 0, F, 0 }, { "Quaterna", 90, 0, F,0 },
                     { "Cinquina", 100, 0, F, 0 }, { "Bingo", 120, 0, F, 0 } };
 
+
+/*
+    Ritorna un puntatore a Cartella
+    settato  a NULL.
+
+*/
 Cartella *initCartella( void )
 {
      return NULL;
 }
+
+/*
+    Ritorna il campo id della struttura Cartella.
+
+*/
 
 int getIdCartella(Cartella *c)
 {
      return c->id;
 }
 
+/*
+    Controlla se la lista di cartelle e' piena o meno.
+    Se è piena ritorna 1 altrimenti setta la varibile
+    globale tomb_err con ELCART( Errore Lista Cartelle )
+    ritornando 0.
+*/
 int isSetCartella( Cartella *cart )
 {
     int controllo = 0;
@@ -31,6 +48,13 @@ int isSetCartella( Cartella *cart )
 
     return controllo;
 }
+
+/*
+    Provvede ad impostare con il valore presente
+    in id, il campo id della struttura Cartella
+    denotata da c.
+
+*/
 void setIdCartella(Cartella *c, int id)
 {
      if(!isSetCartella(c))
@@ -39,11 +63,16 @@ void setIdCartella(Cartella *c, int id)
          c->id = id;
 }
 
+/*
+    Ritorna campo della struttura cartella che identifica il nodo
+    successivo a quello passato come parametro.
+*/
 Cartella *getNextC(Cartella *c)
 {
      return c->next_cart;
 }
 
+/* Alloca memoria per un nuovo nodo di tipo Cartella */
 Cartella *allocCartella()
 {
      return malloc(sizeof(Cartella));
@@ -80,6 +109,7 @@ Cartella * genCartella(Estrazione *estr)
                else vet[i] = rand_num(0,9,estr)+j*10;
       }
 
+
     bubble_sort(vet,3);
 
     for(i=0;i<3;i++)
@@ -109,6 +139,10 @@ Cartella * genCartella(Estrazione *estr)
   return comodo;
 }
 
+
+/*
+    Riempie il vettore num con valori interi che vanno da min a max.
+*/
 void fill_numbers ( int num[], int min, int max )
 {
     int i;
@@ -149,8 +183,6 @@ void shuffle( int numbers[], int n )
     int n_rand;
     int temp;
 
-
-
     for( i = n-1; i > 0; i-- )
     {
         n_rand = rand() % n;
@@ -161,22 +193,20 @@ void shuffle( int numbers[], int n )
 }
 void bubble_sort( int *vet, int n)
 {
-     int scambio = 1,i,comodo;
+    int scambio = 1, i, comodo;
 
-     while( scambio )
-     {
-      scambio = 0;
-      for (i = 0; i < n-1; i++)
-       if( vet[i] > vet[i+1])
-        {
-          comodo = vet[i];
-          vet[i]=vet[i+1];
-          vet[i+1]=comodo;
-          scambio = 1;
-        }
+    while( scambio )
+    {
+        scambio = 0;
+        for (i = 0; i < n-1; i++)
+            if( vet[i] > vet[i+1])
+            {
+                comodo = vet[i];
+                vet[i] = vet[i+1];
+                vet[i+1] = comodo;
+                scambio = 1;
+            }
      }
-
-
 
 }
 void wait ( float seconds )
@@ -188,54 +218,58 @@ void wait ( float seconds )
 
 int genBlind ( int blind[3][4],Estrazione *estr )
 {
-  int error = 0;
-  int cont = 0;
-  int comodo = 0;
+    int error = 0;
+    int cont = 0;
+    int comodo = 0;
 
-  int i,j;
-  int vet[3][4];
+    int i,j;
+    int vet[3][4];
 
-  scriviNumGen(estr,4);
-  scriviTotNumEstratti(estr, 0);
+    scriviNumGen(estr,4);
+    scriviTotNumEstratti(estr, 0);
 
 
-  for ( i=0; i<3; i++)
-  {
-   for ( j=0; j<4; j++)
-    vet[i][j] = rand_num (0,8,estr);
-   bubble_sort(vet[i],4);
-
-   if ( vet[i][0] >= 4 || vet[i][3] <= 4 )error = 1;
-
-   if(!error)
-   {
-    for ( j=0; j<4 ; j++)
-      if((vet[i][j+1]-vet[i][j])>=5)error = 1;
-   }
-
-  }
-
-   while(comodo < CARTC && !error)
-   {
-    for ( i=0; i<3; i++)
-     for ( j=0; j<4; j++)
-        if(vet[i][j]==comodo) cont++;
-
-    if(cont==0 || cont>= CARTR )
+    for (i = 0; i < 3; i++)
     {
-      error = 1;
-      comodo=9;
-    }
-    else
-    {
-         cont = 0;
-         comodo++;
+        for (j = 0; j < 4; j++)
+            vet[i][j] = rand_num (0,8,estr);
+
+        bubble_sort(vet[i],4);
+
+        if ( vet[i][0] >= 4 || vet[i][3] <= 4 )
+            error = 1;
+
+        if( !error )
+        {
+
+            for (j = 0; j < 3; j++)
+                if( ( vet[i][j+1]-vet[i][j]) >= 5 )
+                    error = 1;
+        }
+
     }
 
-  }
+    while(comodo < CARTC && !error)
+    {
+        for(i = 0; i < 3; i++)
+            for(j = 0; j < 4; j++)
+                if(vet[i][j] == comodo) cont++;
+
+        if(cont == 0 || cont >= CARTR )
+        {
+            error = 1;
+            comodo=9;
+        }
+        else
+        {
+            cont = 0;
+            comodo++;
+        }
+
+    }
 
 
-  memcpy(blind,vet,sizeof(int)*12);
+    memcpy(blind,vet,sizeof(int)*12);
 
   return error;
 

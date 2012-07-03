@@ -114,44 +114,44 @@ int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, 
          printf("INIVIO/SPAZIO - Estrai Numero     ESC - Esci     s - Salva Partita");
          gotoxy(1,13);
         }
-        if( (car = getch()) == 13 )
-         {
-             num_estr = estraiNumero(estr);
-             clrscr();
-             printTombolone(tomb);
-             gotoxy(1,13);
-             printf("NUMERO ESTRATTO : %3d ", num_estr);
-             gotoxy(x,33);
-             printf("INIVIO/SPAZIO - Estrai Numero     ESC - Esci     s - Salva Partita");
-             gotoxy(1,13);
-             /*
-                Nel momento in cui viene caricata la partita e si passa ad effettuare il controllo c'è qualcosa che non va.
-                Sembra che nonostante i vari nodi abbiano tutti il next settato a NULL, i vari nodi in fase di caricamento non ce l'abbiano
-                e di conseguenza nel momento in cui effettuo il controllo, non si raggiunge mai la fine della lista e tutto va a farsi benedire.
+        switch( ( car = getch() ) )
+        {
+            case 13 :
+                num_estr = estraiNumero(estr);
+                clrscr();
+                printTombolone(tomb);
+                gotoxy(1,13);
+                printf("NUMERO ESTRATTO : %3d ", num_estr);
+                gotoxy(x,33);
+                printf("INIVIO/SPAZIO - Estrai Numero     ESC - Esci     s - Salva Partita");
+                gotoxy(1,13);
+                controllaNumero(listag, tomb, num_estr);
+                clrscr();
+                printTombolone(tomb);
+                gotoxy(1,13);
+                printf("NUMERO ESTRATTO : %3d ", num_estr);
+                gotoxy(x,33);
+                printf("INIVIO/SPAZIO - Estrai Numero     ESC - Esci     s - Salva Partita");
+                gotoxy(1,13);
+                if( leggiTotNumEstratti(estr) >= 2)
+                    checkPrize(listag,tomb);
 
-             */
-             controllaNumero(listag, tomb, num_estr);
-             clrscr();
-             printTombolone(tomb);
-             gotoxy(1,13);
-             printf("NUMERO ESTRATTO : %3d ", num_estr);
-             gotoxy(x,33);
-             printf("INIVIO/SPAZIO - Estrai Numero     ESC - Esci     s - Salva Partita");
-             gotoxy(1,13);
-             if( leggiTotNumEstratti(estr) >= 2)
-              checkPrize(listag,tomb);
-         }
-         else
-            if(car == SAVE_KEY )
-              salvaPartita(listag, tomb, premi, estr, imp);
-         else
-            exit = 1;
+            break;
 
+            case SAVE_KEY:
+                salvaPartita(listag, tomb, premi, estr, imp);
+            break;
+
+            case ESC_KEY:
+                exit = 1;
+            break;
+        }
     }
 
     if ( finePartita() )
     {
         clrscr();
+        printFile("tombola.txt");
         printf("PUNTEGGI PARTITA CORRENTE \nGIOCATORE\t\tPUNTEGGIO\n");
         printClassifica(listag);
         getch();
@@ -659,22 +659,32 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
     struct dirent *ent;
     FILE *fp;
     char buffer[100];
-    char *filename;
-
-    char *dir_name;
-
+    char filename[MAX_PATH];
+    char dir_name[MAX_PATH];
     char *dir_principale;
 
     /* Prelevo la homepath del sistema corrente */
-    dir_principale = getenv("USERPROFILE");
-
-    /* Setto quella che è la cartella specifica nella quale salverò i file */
-    dir_name = (char*)malloc( ( 1 +  strlen(dir_principale) + strlen("\\TombolaSaveGame") ) * sizeof(char) );
-    strcpy(dir_name, dir_principale);
-
-    strcat(dir_name, "\\TombolaSaveGame");
 
 
+
+    if ( ( dir_principale = getenv("USERPROFILE") ) != NULL )
+    {
+        if ( ( strcpy( dir_principale,dir_principale) ) != NULL )
+        {
+            if ( !snprintf(dir_name, MAX_PATH, "%s\\TombolaSaveGame", dir_principale)  )
+            {
+                perror("ERRORE CREAZIONE PATHNAME :: > ");
+                getch();
+                exit(-1);
+            }
+        }
+    }
+    else
+    {
+        perror("ERROR GETENV ::> ");
+        getch();
+        exit(-1);
+    }
 
     if ( ( dir_fp = opendir(dir_name) ) == NULL )
     {
@@ -701,14 +711,27 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
         fgets( buffer, 10, stdin);
         chomp(buffer);
 
-        filename = malloc( ( 1 + strlen(dir_name) + strlen(buffer) + strlen(".sav") ) );
+        /*filename = malloc( ( 1 + strlen(dir_name) + strlen(buffer) + strlen(".sav") ) );
+        if ( !filename )
+        {
+            perror("MALLOC ERROR ::> ");
+            getch();
+            exit(-1);
+        }
 
         strcpy(filename, dir_name);
         strcat(filename, "\\");
         strcat(filename, buffer);
         strcat(filename, ".sav");
 
+        */
 
+        if ( !snprintf( filename, MAX_PATH, "%s\\%s.sav", dir_name, buffer) )
+        {
+            perror("ERRORE CREAZIONE NOME FILE ::> ");
+            getch();
+            exit(-1);
+        }
 
         if ( ( fp = fopen(filename,"wb")) == NULL )
         {
@@ -739,7 +762,8 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
             fwrite(imp, sizeof(Impostazioni), 1, fp);
 
             /* Salvataggio ListaPremi */
-            for ( i = 0; i < TOT_PRIZE; fwrite( &p[i], sizeof(Premio), 1, fp ),i++ );
+            /*for ( i = 0; i < TOT_PRIZE; fwrite( &p[i], sizeof(Premio), 1, fp ),i++ );*/
+            fwrite( p, sizeof(Premio), TOT_PRIZE, fp);
 
             /* Salvataggio struttura Estrazione */
 
@@ -778,18 +802,36 @@ void caricaPartita( void )
     char **file_names;
     int num_files;
     int i = 0;
-    char *dir_name;
+    char dir_name[MAX_PATH];
     char *dir_principale;
+
     int choice;
 
-    dir_principale = getenv("USERPROFILE");
+    /*
+        Controlla che la variabile d'ambiente USERPROFILE Sia settata
+        e possa essere acquisita in modo corretto.
+        Dopodichè provvede a generare il nome della directory
+        nella quale salvare i vari file di salvataggio.
 
-
-    dir_name = (char*)malloc( ( 1+  strlen(dir_principale) + strlen("\\TombolaSaveGame") ) );
-    strcpy(dir_name, dir_principale);
-
-    strcat(dir_name, "\\TombolaSaveGame");
-
+    */
+    if ( ( dir_principale = getenv("USERPROFILE") ) != NULL )
+    {
+        if ( ( strcpy( dir_principale,dir_principale) ) != NULL )
+        {
+            if ( !snprintf(dir_name, MAX_PATH, "%s\\TombolaSaveGame", dir_principale)  )
+            {
+                perror("ERRORE CREAZIONE PATHNAME :: > ");
+                getch();
+                exit(-1);
+            }
+        }
+    }
+    else
+    {
+        perror("ERROR GETENV ::> ");
+        getch();
+        exit(-1);
+    }
 
     if ( ( dir_fp = opendir(dir_name) ) == NULL )
     {
@@ -798,18 +840,18 @@ void caricaPartita( void )
        exit(-1);
 
     }
-  else
+    else
     {
 
-      file_names = (char**)malloc(sizeof(char*));
-      if ( !file_names )
-      {
-        perror("MALLOC ERROR 1::> ");
-        getch();
-        exit(-1);
-      }
-      printFile("carica.txt");
-      printf("SALVATAGGI ATTUALMENTE CARICATI \n");
+        file_names = (char**)malloc(sizeof(char*));
+        if ( !file_names )
+        {
+            perror("MALLOC ERROR 1::> ");
+            getch();
+            exit(-1);
+        }
+        printFile("carica.txt");
+        printf("SALVATAGGI ATTUALMENTE CARICATI \n");
 
         /*
             Usando la funzione readdir, scorro l'intera directory
@@ -817,158 +859,181 @@ void caricaPartita( void )
             che verranno mostrati all'utente.
 
         */
-      num_files = 1;
-      i = 0;
+        num_files = 1;
+        i = 0;
 
-      while( ( ent = readdir(dir_fp) ) != NULL )
-      {
+        while( ( ent = readdir(dir_fp) ) != NULL )
+        {
 
-        /* Controllo che il file abbia estensione .sav */
-         if ( controllaEstensione(ent->d_name) )
-         {
-
-            *(file_names+i) = malloc( ent->d_namlen+1 );
-            if ( !( file_names+i ) )
+            /* Controllo che il file abbia estensione .sav */
+            if ( controllaEstensione(ent->d_name) )
             {
-                perror("MALLOC ERROR 2::> ");
-                getch();
-                exit(-1);
-            }
 
-            strncpy( *(file_names+i), ent->d_name, ent->d_namlen+1);
+                *(file_names+i) = malloc( ent->d_namlen+1 );
+                if ( !( file_names+i ) )
+                {
+                    perror("MALLOC ERROR 2::> ");
+                    getch();
+                    exit(-1);
+                }
+
+                strncpy( *(file_names+i), ent->d_name, ent->d_namlen+1);
 
 
-            printf("%d) %s\n", num_files, *(file_names+i));
+                printf("%d) %s\n", num_files, *(file_names+i));
 
-            file_names = (char**)realloc( file_names, ++num_files * sizeof(char*));
+                file_names = (char**)realloc( file_names, ++num_files * sizeof(char*));
 
 
-            i++;
-            if ( !file_names )
-            {
-                perror("REALLOC ERROR 4::> ");
-                getch();
-                exit(-1);
+                i++;
+                if ( !file_names )
+                {
+                    perror("REALLOC ERROR 4::> ");
+                    getch();
+                    exit(-1);
+
+                }
+
 
             }
 
 
         }
 
-    }
-
-    do
-    {
-        printf("Scelta salvataggio : ");
-        scanf("%d", &choice);
-        if ( choice < 0 || choice > num_files )
-            printf("ERRORE SCELTA!ATTENZIONE NUMERO SALVATAGGIO NON VALIDO!\n");
-    }
-    while( choice <= 0 || choice > num_files );
-
-    printf("Salvataggio selezionato %s\n", *(file_names+(choice-1)));
-    /*
-        Compongo il pathname del salvataggio selezionato
-    */
-    dir_name = realloc( dir_name,  1 + strlen(dir_name) + strlen("\\") + strlen(*(file_names+(choice-1))));
-    strcat(dir_name, "\\");
-    strcat(dir_name,*(file_names+(choice-1)));
-
-    if ( ( fp = fopen(dir_name,"rb") ) == NULL )
-    {
-        perror("FILE ERROR ::>  ");
-        getch();
-        exit(-1);
-    }
-    else
-    {
-
-        Giocatore *curr_gioc = NULL;
-        Cartella *curr_cart = NULL;
-        int i, j, row_tomb, col_tomb;
-
-        printf("Caricamento %s in corso....", dir_name);
-        /* Lettura struttura ListaGiocatore */
-        fread(&list, sizeof(ListaGiocatori), 1, fp );
-
-        list.list_g = initListaG();
-
-
-        for ( curr_gioc = allocGiocatore(), i = 0; i < getTotG(&list); i++, curr_gioc = allocGiocatore() )
+        /* SE I = 0 , NESSUN FILE SARA' STATO TROVATO! */
+        if ( i == 0)
         {
-            fread( curr_gioc, sizeof(Giocatore), 1, fp);
-            curr_gioc->next_g = initListaG();
-            curr_gioc->cart_g = initCartella();
+            printf(" NESSUN FILE DI SALVATAGGIO TROVATO!!\nSTO USCENDO!\n");
 
-            for ( curr_cart = allocCartella(), j = 0; j < getNumCartelleGioc(curr_gioc); curr_cart = allocCartella(), j++ )
+        }
+        else
+        {
+
+
+            do
             {
-                fread(curr_cart, sizeof(Cartella), 1, fp);
-                curr_cart->next_cart = initCartella();
+                printf("Scelta salvataggio : ");
+                scanf("%d", &choice);
+                if ( choice < 0 || choice > num_files )
+                    printf("ERRORE SCELTA!ATTENZIONE NUMERO SALVATAGGIO NON VALIDO!\n");
+            }
+            while( choice <= 0 || choice > num_files );
 
-                if ( j == 0 )
-                    curr_gioc->cart_g = curr_cart;
-                else
-                    addCartella(curr_gioc->cart_g, curr_cart);
+            printf("Salvataggio selezionato %s\n", *(file_names+(choice-1)));
+            /*
+                Compongo il pathname del salvataggio selezionato
+            */
+
+            if ( !snprintf(dir_name, MAX_PATH, "%s\\%s", dir_name, *(file_names+(choice-1)) ) )
+            {
+                perror("ERRORE CREAZIONE NOME FILE ::> ");
+                getch();
+                exit(-1);
             }
 
-
-            if ( i == 0 )
-                list.list_g = curr_gioc;
+            if ( ( fp = fopen(dir_name,"rb") ) == NULL )
+            {
+                perror("FILE ERROR ::>  ");
+                getch();
+                exit(-1);
+            }
             else
-                addGiocatore(list.list_g, curr_gioc);
-        }
-
-        /* Caricamento struttura Impostazioni */
-        fread( &imp, sizeof(Impostazioni), 1, fp);
-
-        /* Caricamento ListaPremi */
-        for ( i = 0; i < TOT_PRIZE; fread( &p[i], sizeof(Premio), 1, fp ),i++ );
-
-        /* Caricamento struttura Estrazione */
-        fread( &estr, sizeof(Estrazione), 1, fp );
-
-        estr.numbers = malloc( leggiTotNumeri(&estr) * sizeof(int));
-        fread( estr.numbers, sizeof(int), leggiTotNumeri(&estr), fp);
-
-
-        /* Caricamento struttura Tombolone */
-        fread( &t, sizeof(Tombolone), 1, fp);
-
-        t.cart_tomb = (Cart_Tomb**)malloc( leggiRigheTombolone(&t) * sizeof(Cart_Tomb*));
-        if ( !t.cart_tomb )
-        {
-            perror("MALLOC ERROR ::> ");
-            getch();
-            exit(-1);
-
-        }
-
-        for ( i = 0; i < leggiRigheTombolone(&t); i++ )
-        {
-            *(t.cart_tomb+i) = (Cart_Tomb*)malloc( leggiColTombolone(&t) * sizeof(Cart_Tomb));
-            if ( !( *(t.cart_tomb+i ) ) )
             {
-                perror("MALLOC ERROR ::> ");
-                getch();
-                exit(-1);
 
+                Giocatore *curr_gioc = NULL;
+                Cartella *curr_cart = NULL;
+                int i, j, row_tomb, col_tomb;
+
+                printf("Caricamento %s in corso....", dir_name);
+                /* Lettura struttura ListaGiocatore */
+                fread(&list, sizeof(ListaGiocatori), 1, fp );
+
+                list.list_g = initListaG();
+
+
+                for ( curr_gioc = allocGiocatore(), i = 0; i < getTotG(&list); i++, curr_gioc = allocGiocatore() )
+                {
+                    fread( curr_gioc, sizeof(Giocatore), 1, fp);
+                    curr_gioc->next_g = initListaG();
+                    curr_gioc->cart_g = initCartella();
+
+                    for ( curr_cart = allocCartella(), j = 0; j < getNumCartelleGioc(curr_gioc); curr_cart = allocCartella(), j++ )
+                    {
+                        fread(curr_cart, sizeof(Cartella), 1, fp);
+                        curr_cart->next_cart = initCartella();
+
+                        if ( j == 0 )
+                            curr_gioc->cart_g = curr_cart;
+                        else
+                            addCartella(curr_gioc->cart_g, curr_cart);
+                    }
+
+                    if ( i == 0 )
+                        list.list_g = curr_gioc;
+                    else
+                        addGiocatore(list.list_g, curr_gioc);
+                }
+
+                /* Caricamento struttura Impostazioni */
+                fread( &imp, sizeof(Impostazioni), 1, fp);
+
+                /* Caricamento ListaPremi */
+                fread( p, sizeof(Premio), TOT_PRIZE, fp );
+                /*
+                for ( i = 0; i < TOT_PRIZE; fread( &p[i], sizeof(Premio), 1, fp ),i++ );*/
+
+                /* Caricamento struttura Estrazione */
+                fread( &estr, sizeof(Estrazione), 1, fp );
+
+                estr.numbers = malloc( leggiTotNumeri(&estr) * sizeof(int));
+                fread( estr.numbers, sizeof(int), leggiTotNumeri(&estr), fp);
+
+
+                /* Caricamento struttura Tombolone */
+                fread( &t, sizeof(Tombolone), 1, fp);
+
+                t.cart_tomb = (Cart_Tomb**)malloc( leggiRigheTombolone(&t) * sizeof(Cart_Tomb*));
+                if ( !t.cart_tomb )
+                {
+                    perror("MALLOC ERROR ::> ");
+                    getch();
+                    exit(-1);
+
+                }
+
+                for ( i = 0; i < leggiRigheTombolone(&t); i++ )
+                {
+                    *(t.cart_tomb+i) = (Cart_Tomb*)malloc( leggiColTombolone(&t) * sizeof(Cart_Tomb));
+                    if ( !( *(t.cart_tomb+i ) ) )
+                    {
+                        perror("MALLOC ERROR ::> ");
+                        getch();
+                        exit(-1);
+
+                    }
+                }
+
+                for ( row_tomb = 0; row_tomb < leggiRigheTombolone(&t); row_tomb++ )
+                    for ( col_tomb = 0; col_tomb < leggiColTombolone(&t); col_tomb++ )
+                        fread( &t.cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
+
+                printf("CARICAMENTO COMPLETATO!!\n");
+
+                clrscr();
+
+                GiocaPartita(&list, &imp, &estr, &t);
             }
-        }
-
-        for ( row_tomb = 0; row_tomb < leggiRigheTombolone(&t); row_tomb++ )
-            for ( col_tomb = 0; col_tomb < leggiColTombolone(&t); col_tomb++ )
-                fread( &t.cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
-
-        printf("CARICAMENTO COMPLETATO!!\n");
-
-        clrscr();
-
-        GiocaPartita(&list, &imp, &estr, &t);
-
     }
 
-   for ( i = 0; i < num_files; i++ )
+    /*
+        Dealloca memoria per l'array di stringhe adoperato
+        per salvare i nomi dei file.
+    */
+   if ( num_files > 1 )
+    {
+        for ( i = 0; i < num_files; i++ )
         free(file_names[i]);
+    }
     free(file_names);
 
   }
@@ -1953,15 +2018,22 @@ void printFile( char *file )
      FILE *fp;
      int tot_char = 0;
      char c;
-     char *filename;
+     char filename[MAX_PATH];
      int key;
 
-
+    /*
      filename = malloc( ( strlen("data\\") + strlen(file) ) + 1);
 
     strcpy(filename, "data\\");
     strcat(filename, file);
+    */
 
+    if ( !snprintf(filename, MAX_PATH, "data\\%s", file) )
+    {
+        perror("ERRORE CREAZIONE DEL PATHNAME ::> ");
+        getch();
+        exit(-1);
+    }
     clrscr();
      system("COLOR 3F");
 
@@ -2092,7 +2164,7 @@ Topten *checkTopten( Topten *top, Giocatore *new_gioc )
         if ( leggiPuntTopTen(curr_gioc) < getCashGiocatore(new_gioc) )
         {
             while( getchar() != '\n');
-            printf("Nuovo record. Inserisci Nickname per entrare nella topten ( MAX 6 caratteri ) : ");
+            printf("Nuovo record.\nInserisci Nickname per entrare nella topten ( MAX 6 caratteri ) : ");
             fgets(buffer,8, stdin);
             chomp(buffer);
             /* crea nuova struttura di tipo topten per effettuare l'inserimento nella lista*/

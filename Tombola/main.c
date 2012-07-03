@@ -43,8 +43,8 @@ int main(void)
 
     srand(time(NULL));
 
-    scriviNumCartelleImpostazioni(&imp,2);
-    scriviTotGiocImpostazioni( &imp,2);
+    scriviNumCartelleImpostazioni(&imp,6);
+    scriviTotGiocImpostazioni( &imp,6);
     scriviDimImpostazioni( &imp, 90);
     scriviAudioVImpostazioni( &imp, T);
     scriviAudioNumImpostazioni( &imp, F);
@@ -144,8 +144,8 @@ int main(void)
     }*/
 
     //printFile("tombola.txt");
-    //nuova_partita(&imp);
-    caricaPartita();
+    nuova_partita(&imp);
+    //caricaPartita();
     //impostazioni_gioco(&imp);
     /*initEstrazione(&estr, &imp);
     list.list_g = allocGiocatore();
