@@ -1,4 +1,6 @@
 AMOR1 210
+ 120
+Pippo 120
 Peppep 100
 Paolop 90
 Franco 85
@@ -6,5 +8,3 @@ Antone 77
 Alessa 75
 Giusep 70
 Andrea 69
-Ernest 60
-Johnan 45

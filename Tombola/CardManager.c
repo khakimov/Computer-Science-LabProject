@@ -46,7 +46,7 @@ Cartella *getNextC(Cartella *c)
 
 Cartella *allocCartella()
 {
-     return (Cartella*)malloc(sizeof(Cartella));
+     return malloc(sizeof(Cartella));
 }
 /* Inserisce in coda il nodo passato per parametro */
 void addCartella(Cartella *c, Cartella *comodo)
@@ -70,13 +70,13 @@ Cartella * genCartella(Estrazione *estr)
     scriviTotNumEstratti(estr, 0);
 
 
-   for( j=0; j<CARTC; j++)
+   for( j = 0; j < CARTC; j++)
    {
-    for (i=0; i<CARTR; i++)
+    for ( i = 0; i < CARTR; i++)
       {
 
-          if( j==0) vet[i] = rand_num (1,9,estr);
-          else if ( j==8 )  vet[i] = rand_num ( 79,90,estr );
+          if( j == 0) vet[i] = rand_num (1,9,estr);
+          else if ( j == 8 )  vet[i] = rand_num ( 79,90,estr );
                else vet[i] = rand_num(0,9,estr)+j*10;
       }
 

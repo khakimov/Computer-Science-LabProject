@@ -81,9 +81,16 @@ int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, 
     int exit  = 0;
     int x = 1;
 
+    /*
+        E' necessario controllare e differenziare il caso in cui si sta iniziando una nuova parita
+        nella quale è necessario inizializzare la struttura, e il caso in cui si sta riprendendo la partita
+        e in quel caso, non bisogna toccare nulla!
+    */
+
     initEstrazione ( estr, imp );
     scriviNumGen(estr, leggiDimImpostazioni(imp));
     scriviTotNumEstratti(estr, 0);
+
 
     clrscr();
     printTombolone(tomb);
@@ -113,6 +120,12 @@ int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, 
              gotoxy(x,33);
              printf("INIVIO/SPAZIO - Estrai Numero     ESC - Esci     s - Salva Partita");
              gotoxy(1,13);
+             /*
+                Nel momento in cui viene caricata la partita e si passa ad effettuare il controllo c'è qualcosa che non va.
+                Sembra che nonostante i vari nodi abbiano tutti il next settato a NULL, i vari nodi in fase di caricamento non ce l'abbiano
+                e di conseguenza nel momento in cui effettuo il controllo, non si raggiunge mai la fine della lista e tutto va a farsi benedire.
+
+             */
              controllaNumero(listag, tomb, num_estr);
              clrscr();
              printTombolone(tomb);
@@ -684,7 +697,7 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
         fgets( buffer, 10, stdin);
         chomp(buffer);
 
-        filename = malloc( ( 1 + strlen(dir_name) + strlen(buffer) + strlen(".sav") ) * sizeof(char ));
+        filename = malloc( ( 1 + strlen(dir_name) + strlen(buffer) + strlen(".sav") ) );
 
         strcpy(filename, dir_name);
         strcat(filename, "\\");
@@ -705,7 +718,7 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
             Cartella *curr_cart;
             int i, row_tomb, col_tomb;
 
-            printf("Salvataggio %s.sav in corso....", buffer);
+            printf("Salvataggio %s in corso....", filename);
             /* Salvataggio struttura ListaGiocatore */
 
             fwrite( list, sizeof(ListaGiocatori), 1, fp );
@@ -716,6 +729,7 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
                 for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
                     fwrite( curr_cart, sizeof(Cartella), 1, fp);
             }
+            printf("STAMPA TUTTO!!\n");
 
             /* Salvataggio struttura Impostazioni */
             fwrite(imp, sizeof(Impostazioni), 1, fp);
@@ -727,15 +741,20 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, ListaPremi p, Estrazione 
 
             fwrite( estr, sizeof(Estrazione), 1, fp );
 
+            fwrite(estr->numbers, sizeof(int), leggiTotNumeri(estr), fp);
+            //for ( i = 0; i < leggiTotNumEstratti(estr); fwrite( &estr->numbers[i], sizeof(int), 1, fp ), i++ );
+
             /* Salvataggio struttura Tombolone */
             fwrite(t, sizeof(Tombolone), 1, fp);
 
             for ( row_tomb = 0; row_tomb < leggiRigheTombolone(t); row_tomb++ )
                 for ( col_tomb = 0; col_tomb < leggiColTombolone(t); col_tomb++ )
                     fwrite( &t->cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
+
+
         }
 
-        closedir(dir_fp);
+        //closedir(dir_fp);
         fclose(fp);
 
 
@@ -750,7 +769,7 @@ void caricaPartita( void )
     Estrazione estr;
     Impostazioni imp;
     DIR *dir_fp;
-    struct dirent *ent;
+    struct dirent *ent = malloc( sizeof(struct dirent));;
     FILE *fp;
     char **file_names;
     int num_files;
@@ -762,7 +781,7 @@ void caricaPartita( void )
     dir_principale = getenv("USERPROFILE");
 
 
-    dir_name = (char*)malloc( ( 1+  strlen(dir_principale) + strlen("\\TombolaSaveGame") ) * sizeof(char) );
+    dir_name = (char*)malloc( ( 1+  strlen(dir_principale) + strlen("\\TombolaSaveGame") ) );
     strcpy(dir_name, dir_principale);
 
     strcat(dir_name, "\\TombolaSaveGame");
@@ -795,6 +814,7 @@ void caricaPartita( void )
 
         */
       num_files = 1;
+      i = 0;
 
       while( ( ent = readdir(dir_fp) ) != NULL )
       {
@@ -803,9 +823,7 @@ void caricaPartita( void )
          if ( controllaEstensione(ent->d_name) )
          {
 
-            int len = strlen(ent->d_name);
-
-            *(file_names+i) = malloc( len * sizeof(char));
+            *(file_names+i) = malloc( ent->d_namlen+1 );
             if ( !( file_names+i ) )
             {
                 perror("MALLOC ERROR 2::> ");
@@ -813,7 +831,7 @@ void caricaPartita( void )
                 exit(-1);
             }
 
-            strcpy( *(file_names+i), ent->d_name);
+            strncpy( *(file_names+i), ent->d_name, ent->d_namlen+1);
 
 
             printf("%d) %s\n", num_files, *(file_names+i));
@@ -848,6 +866,7 @@ void caricaPartita( void )
     /*
         Compongo il pathname del salvataggio selezionato
     */
+    dir_name = realloc( dir_name,  1 + strlen(dir_name) + strlen("\\") + strlen(*(file_names+(choice-1))));
     strcat(dir_name, "\\");
     strcat(dir_name,*(file_names+(choice-1)));
 
@@ -860,93 +879,104 @@ void caricaPartita( void )
     else
     {
 
-        Giocatore *curr_gioc;
-        Cartella *curr_cart;
+        Giocatore *curr_gioc = NULL;
+        Cartella *curr_cart = NULL;
         int i, j, row_tomb, col_tomb;
 
-            printf("Caricamento %s in corso....", dir_name);
-            /* Lettura struttura ListaGiocatore */
+        printf("Caricamento %s in corso....", dir_name);
+        /* Lettura struttura ListaGiocatore */
+        fread(&list, sizeof(ListaGiocatori), 1, fp );
 
-            fread(&list, sizeof(ListaGiocatori), 1, fp );
-
-            list.list_g = initListaG();
+        list.list_g = initListaG();
 
 
-            for ( curr_gioc = allocGiocatore(), i = 0; i < getTotG(&list); i++ )
+        for ( curr_gioc = allocGiocatore(), i = 0; i < getTotG(&list); i++ )
+        {
+
+            fread( curr_gioc, sizeof(Giocatore), 1, fp);
+
+            for ( curr_cart = allocCartella(),j = 0; j < getNumCartelleGioc(curr_gioc); j++, curr_cart = allocCartella() )
             {
-
-                fread( curr_gioc, sizeof(Giocatore), 1, fp);
-                for ( curr_cart = allocCartella(),j = 0; j < getNumCartelleGioc(curr_gioc); j++, curr_cart = allocCartella() )
+                fread( curr_cart, sizeof(Cartella), 1, fp);
+                if ( j > 0 )
                 {
-                    fread( curr_cart, sizeof(Cartella), 1, fp);
-                    if ( j > 0 )
-                    {
-                        curr_cart->next_cart = initCartella();
-                        addCartella(getCartella(curr_gioc), curr_cart);
+                    curr_cart->next_cart = initCartella();
 
-                    }
-                    else
-                    {
-                        curr_cart->next_cart = initCartella();
-                        curr_gioc->cart_g = curr_cart;
-                    }
-
-                }
-                if ( i > 0 )
-                {
-                    curr_gioc->next_g = initListaG();
-                    addGiocatore( list.list_g, curr_gioc);
+                    addCartella(getCartella(curr_gioc), curr_cart);
 
                 }
                 else
                 {
-                    curr_gioc->next_g = initListaG();
-                    list.list_g = curr_gioc;
+                    curr_cart->next_cart = initCartella();
+                    curr_gioc->cart_g = curr_cart;
                 }
+
             }
 
-            /* Caricamento struttura Impostazioni */
-            fread( &imp, sizeof(Impostazioni), 1, fp);
+            if ( i > 0 )
+            {
+                curr_gioc->next_g = initListaG();
+                addGiocatore( list.list_g, curr_gioc);
 
-            /* Caricamento ListaPremi */
-            for ( i = 0; i < TOT_PRIZE; fread( &p[i], sizeof(Premio), 1, fp ),i++ );
+            }
+            else
+            {
+                curr_gioc->next_g = initListaG();
+                list.list_g = curr_gioc;
+            }
+        }
 
-            /* Caricamento struttura Estrazione */
+        /* Caricamento struttura Impostazioni */
+        fread( &imp, sizeof(Impostazioni), 1, fp);
 
-            fread( &estr, sizeof(Estrazione), 1, fp );
+        /* Caricamento ListaPremi */
+        for ( i = 0; i < TOT_PRIZE; fread( &p[i], sizeof(Premio), 1, fp ),i++ );
 
-            /* Caricamento struttura Tombolone */
-            fread( &t, sizeof(Tombolone), 1, fp);
+        /* Caricamento struttura Estrazione */
+        fread( &estr, sizeof(Estrazione), 1, fp );
+        printf("LEGGI TOT NUM ESTRATTI %d\n", leggiTotNumEstratti(&estr));
 
-            t.cart_tomb = (Cart_Tomb**)malloc( leggiRigheTombolone(&t) * sizeof(Cart_Tomb*));
-            if ( !t.cart_tomb )
+        estr.numbers = malloc( leggiTotNumeri(&estr) * sizeof(int));
+        fread( estr.numbers, sizeof(int), leggiTotNumeri(&estr), fp);
+        for ( i = 0; i < leggiTotNumEstratti(&estr); i++ )
+            printf("%d ", estr.numbers[i]);
+        getch();
+
+        /* Caricamento struttura Tombolone */
+        fread( &t, sizeof(Tombolone), 1, fp);
+
+        t.cart_tomb = (Cart_Tomb**)malloc( leggiRigheTombolone(&t) * sizeof(Cart_Tomb*));
+        if ( !t.cart_tomb )
+        {
+            perror("MALLOC ERROR ::> ");
+            getch();
+            exit(-1);
+
+        }
+
+        for ( i = 0; i < leggiRigheTombolone(&t); i++ )
+        {
+            *(t.cart_tomb+i) = (Cart_Tomb*)malloc( leggiColTombolone(&t) * sizeof(Cart_Tomb));
+            if ( !( *(t.cart_tomb+i ) ) )
             {
                 perror("MALLOC ERROR ::> ");
                 getch();
                 exit(-1);
 
             }
-            for ( i = 0; i < leggiRigheTombolone(&t); i++ )
-            {
-                *(t.cart_tomb+i) = (Cart_Tomb*)malloc( leggiColTombolone(&t) * sizeof(Cart_Tomb));
-                if ( !( *(t.cart_tomb+i ) ) )
-                {
-                    perror("MALLOC ERROR ::> ");
-                    getch();
-                    exit(-1);
+        }
 
-                }
-            }
+        for ( row_tomb = 0; row_tomb < leggiRigheTombolone(&t); row_tomb++ )
+            for ( col_tomb = 0; col_tomb < leggiColTombolone(&t); col_tomb++ )
+                fread( &t.cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
 
-            for ( row_tomb = 0; row_tomb < leggiRigheTombolone(&t); row_tomb++ )
-                for ( col_tomb = 0; col_tomb < leggiColTombolone(&t); col_tomb++ )
-                    fread( &t.cart_tomb[row_tomb][col_tomb], sizeof(Cart_Tomb), 1, fp );
-
-        printf("CARICAMENTO COMPLETATO!!\n");
+       printf("CARICAMENTO COMPLETATO!!\n");
 
         clrscr();
-        printCartelle(leggiPrimoGioc(&list));
-        //GiocaPartita(&list, &imp, &estr, &t);
+
+        printCartelle( list.list_g->next_g->next_g->next_g->next_g->next_g);
+
+        GiocaPartita(&list, &imp, &estr, &t);
 
     }
 
@@ -1066,7 +1096,7 @@ Giocatore *initListaG()
 
 Giocatore *allocGiocatore()
 {
-    return (Giocatore*)malloc(sizeof(Giocatore));
+    return malloc(sizeof(Giocatore));
 
 
 }
@@ -1727,9 +1757,9 @@ int estraiNumero( Estrazione *estr )
         }
     }
 
-    if(leggiTotNumEstratti(estr) < leggiNumGen(estr) )
+    /*if(leggiTotNumEstratti(estr) < leggiNumGen(estr) )
     {
-
+    */
     if ( leggiTotNumEstratti(estr) == 0 )
     {
         scriviTotNumEstratti( estr, 0);
@@ -1744,13 +1774,13 @@ int estraiNumero( Estrazione *estr )
 
 
     return rand_number;
-    }
+   /* }
     else
     {
         /*printf("Numeri estr %d, Numeri totali %d",leggiTotNumEstratti(estr), leggiNumGen(estr));
-        getch();*/
+        getch();
         return -1;
-    }
+    } */
 }
 
 int leggiTotNumEstratti( Estrazione *estr )
@@ -1940,7 +1970,7 @@ void printFile( char *file )
      int key;
 
 
-     filename = malloc( ( strlen("data\\") + strlen(file) ) * sizeof(char));
+     filename = malloc( ( strlen("data\\") + strlen(file) ) + 1);
 
     strcpy(filename, "data\\");
     strcat(filename, file);
@@ -1990,11 +2020,11 @@ void printFile( char *file )
                 tot_char++;
         }
 
-        fclose(fp);
+
      }
 
 
-
+    fclose(fp);
 
 }
 

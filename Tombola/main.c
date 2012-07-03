@@ -10,16 +10,22 @@
 
 /*
     TODO LIST
-    - Risolvere problema del carica partita.
-    provvedere a reallocare tutte le varie strutture dati appropriatamente.
-    - Risolvere problema della PrintFile. FILE TOMBOLA.TXT NON FUNZIONANTE.
     - Aggiornare la funzione genCartella() garantendo la sua correttezza anche
     con un tombolone avente dimensione maggiore di 90.
+    - Carica partita da corregere, ultimo nodo dei giocatori e delle cartelle non è
+    settato a NULL.
+    - Correggere Gioca Partita in modo tale che ad ogni avvio si riconosca che si sta
+    ripredendo una vecchia partita oppure si sta iniziando una nuova partita.
+    Questo è necessario poichè le funzioni commentate in Gioca Partita inizializzano
+    la struttura Estrazione che viene caricata e che consente l'estrazione dei numeri restanti.
+
 
     Aggiornamenti
     Gestione della topten completamente funzionante con stampa della classifica
     della partita attuale
+    Salva Partita funzionante
 
+    Risolto problema della printFile() il carattere terminatore non veniva incluso corretamente.
 
 */
 #include "TombolaFunction.h"
@@ -36,8 +42,8 @@ int main(void)
     Impostazioni imp;
 
 
-    scriviNumCartelleImpostazioni(&imp,6);
-    scriviTotGiocImpostazioni( &imp,6);
+    scriviNumCartelleImpostazioni(&imp,2);
+    scriviTotGiocImpostazioni( &imp,2);
     scriviDimImpostazioni( &imp, 90);
     scriviAudioVImpostazioni( &imp, T);
     scriviAudioNumImpostazioni( &imp, F);
@@ -136,9 +142,9 @@ int main(void)
     getch();
     }*/
 
-    //printFile("impostazioni.txt");
-    //nuova_partita(&imp);
-    caricaPartita( );
+    //printFile("tombola.txt");
+    nuova_partita(&imp);
+   // caricaPartita();
     //impostazioni_gioco(&imp);
     /*initEstrazione(&estr, &imp);
     list.list_g = allocGiocatore();
