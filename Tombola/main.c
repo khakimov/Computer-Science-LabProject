@@ -41,6 +41,7 @@ int main(void)
     Estrazione estr;
     Impostazioni imp;
 
+    srand(time(NULL));
 
     scriviNumCartelleImpostazioni(&imp,2);
     scriviTotGiocImpostazioni( &imp,2);
@@ -143,8 +144,8 @@ int main(void)
     }*/
 
     //printFile("tombola.txt");
-    nuova_partita(&imp);
-   // caricaPartita();
+    //nuova_partita(&imp);
+    caricaPartita();
     //impostazioni_gioco(&imp);
     /*initEstrazione(&estr, &imp);
     list.list_g = allocGiocatore();
