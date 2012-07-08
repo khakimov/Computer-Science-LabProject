@@ -17,9 +17,9 @@
   		      VALORI DI RITORNO IN CASO DI ERRORE
   -----------------------------------------------------------
 	ENOTF – nessun errore rilevato nel corso dell’esecuzione ( 1 )
-	ERNUM – errore lettura campo intero della struttura Cell ( -1 )
-	EWNUM – errore scrittura campo intero della struttura Cell (-2)
-	ERCHEK – errore lettura campo boolean della struttura Cell (-3)
+	ERNUM – errore lettura campo intero della struttura Cella ( -1 )
+	EWNUM – errore scrittura campo intero della struttura Cella (-2)
+	ERCHEK – errore lettura campo boolean della struttura Cella (-3)
 	ENLPL – errore lista giocatori vuota ( -4 )
  	ENLCART – errore lista cartelle vuota ( -5 )
 	ENUMCART – errore scrittura campo numero cartella della struttura Giocatore ( -6 )
@@ -34,6 +34,7 @@
 	EDIMVET - errore accesso al campo dimensione del vettore della struttura Estrazione (-16)
 	ENUMGEN - errore accesso al campo numeri generati della struttura Estrazione ( -17)
 	EVET - errore nella modifica del vettore di numeri della struttura Estrazione ( -18 )
+	EITOMB - errore inizializzazione del tombolone ( -19 )
 
   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  */
@@ -57,6 +58,7 @@
 #define EDIMVET -16
 #define ENUMGEN -17
 #define EVET -18
+#define EITOMB -19
 
 /*
  * variabile globale che rappresenta l'errore attualmente riscontrato.

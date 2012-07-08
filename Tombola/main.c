@@ -9,81 +9,69 @@
  */
 
 /*
-    TODO LIST
-    - Aggiornare la funzione genCartella() garantendo la sua correttezza anche
-    con un tombolone avente dimensione maggiore di 90.
-    - Carica partita da corregere, ultimo nodo dei giocatori e delle cartelle non è
-    settato a NULL.
-    - Correggere Gioca Partita in modo tale che ad ogni avvio si riconosca che si sta
-    ripredendo una vecchia partita oppure si sta iniziando una nuova partita.
-    Questo è necessario poichè le funzioni commentate in Gioca Partita inizializzano
-    la struttura Estrazione che viene caricata e che consente l'estrazione dei numeri restanti.
+    AGGIORNAMENTI
 
-
-    Aggiornamenti
-    Gestione della topten completamente funzionante con stampa della classifica
-    della partita attuale
-    Salva Partita funzionante
-
-    Risolto problema della printFile() il carattere terminatore non veniva incluso corretamente.
+    La funzione caricaPartita() è stata divisa in più funzioni per poter
+    garantire una più facile lettura del codice ed inoltre una notevole
+    facilità di gestione dello stesso.
+    Controllo errori in fase di caricamento e controllo che il file non sia
+    vuoto.
+    Controllo sulla dimensione del tombolone ed in caso tale dimensione sia
+    incoretta viene prevista una gestione dello stesso garantendo la continuazione
+    del gioco.
 
 */
 #include "TombolaFunction.h"
 
+void ResizeWindows( void );
+
 int main(void)
 {
     bgcolor(63);
-    system( "mode con: cols=120 lines=33" );
+    system( "mode con: cols=80 lines=40" );
 
-    Tombolone t;
-    ListaGiocatori list;
-    ListaPremi lista_premi;
-    Estrazione estr;
+
     Impostazioni imp;
 
+    set_error(ENOTF);
     srand(time(NULL));
 
-    scriviNumCartelleImpostazioni(&imp,6);
-    scriviTotGiocImpostazioni( &imp,6);
-    scriviDimImpostazioni( &imp, 90);
-    scriviAudioVImpostazioni( &imp, T);
-    scriviAudioNumImpostazioni( &imp, F);
-   /* int cont = 0;
+
+    int cont = 0;
     int locX = 10, locY = 10;
     int cursX = 7, cursY = 10;
     int key;
     int scelta = 1;
 
 
-    srand(time(NULL));
 
 
-    gotoxy(locX, locY);
-    printf("NUOVA PARTITA");
-    gotoxy(locX, locY+=4);
-    printf("CARICA PARTITA");
-    gotoxy(locX, locY+=4);
-    printf("IMPOSTAZIONI");
-    gotoxy(locX, locY+=4);
-    printf("TOT TEN");
-    gotoxy(locX, locY+=4);
-    printf("ISTRUZIONI");
-    gotoxy(locX, locY+=4);
-    printf("USCITA");
-    gotoxy(cursX, cursY);
-    printf("->");
-    gotoxy(cursX, cursY);
-
-
-    while( 1 )
+    while( scelta != 0 )
     {
-
+        clrscr();
+        locX = 10, locY = 10;
+        printFile("tombola.txt");
+        gotoxy(locX, locY);
+        printf("NUOVA PARTITA");
+        gotoxy(locX, locY+=4);
+        printf("CARICA PARTITA");
+        gotoxy(locX, locY+=4);
+        printf("IMPOSTAZIONI");
+        gotoxy(locX, locY+=4);
+        printf("TOP TEN");
+        gotoxy(locX, locY+=4);
+        printf("ISTRUZIONI");
+        gotoxy(locX, locY+=4);
+        printf("USCITA");
+        gotoxy(cursX, cursY);
+        printf("->");
+        gotoxy(cursX, cursY);
 
         key = getch();
 
         switch ( key )
         {
-            case 'H' :
+            case 72 :
                 gotoxy(cursX, cursY);
                 printf("  ");
                 if ( cursY < 12 )
@@ -93,7 +81,7 @@ int main(void)
                 printf("->");
 
             break;
-            case 'P' :
+            case 80 :
                 gotoxy(cursX, cursY);
                 printf("  ");
                 if ( cursY > 26 )
@@ -134,18 +122,18 @@ int main(void)
     }
 
 
-    /*int i = 0;
+   /* int i = 0;
     while (++i)
     {
 
     textcolor(i);
     printf("PROVA %d  ", i);
     getch();
-    }*/
+    }
 
     //printFile("tombola.txt");
     nuova_partita(&imp);
-    //caricaPartita();
+    caricaPartita();
     //impostazioni_gioco(&imp);
     /*initEstrazione(&estr, &imp);
     list.list_g = allocGiocatore();
@@ -155,5 +143,8 @@ int main(void)
     /*initTombolone(&t, 270);
     printTombolone(&t);*/
 
+
+
 	return EXIT_SUCCESS;
 }
+

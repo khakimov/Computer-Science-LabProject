@@ -21,25 +21,40 @@
 #include <time.h>
 #include <conio2.h>
 
+/* Alcune costanti che identificano i vari comandi che è possibile utilizzare durante il gioco */
+/*--------------------------*/
 #define SAVE_KEY 's'
 #define ESC_KEY 27
+#define RIGHT_KEY 77
+#define LEFT_KEY 75
+#define ENTER_KEY 13
+/*---------------------------*/
 
-#define TOT_PRIZE 5
-#define CARTC 9
-#define CARTR 3
+/* Constanti relative alla dimensione di alcune strutture dati utilizzate */
+/*-------------------------------------------------------------------------------------------*/
+#define TOT_PRIZE 5 /* Lunghezza del vettore di premi */
+#define NAME_PRIZE_LEN 8 /* Lunghezza massima della stringa che contiene il nome del premio*/
+#define CARTC 9 /* Numero di colonne di una cartella */
+#define CARTR 3 /* Numero di righe di una cartella */
 
-#define CTOMBR 3
-#define CTOMBC 5
+#define CTOMBR 3 /* Numero di righe di una cartella del Tombolone */
+#define CTOMBC 5 /* Numero di righe di una cartella del Tombolone */
 
-#define MAXG 6
+#define MAXG 6 /* Numero massimo di giocatori */
 #define MAXC 6
 
+/*-------------------------------------------------------------------------------------------*/
+
+/* Constati che determinano la posizione sulla console nel menu principale */
+/*--------------------*/
 #define NEW_GAME 10
 #define LOAD 14
 #define SETTINGS 18
 #define TOP 22
 #define ISTR 26
 #define EXIT 30
+
+/*-------------------*/
 /* Tipo di dato enumerativo che indica se uno specifico numero è uscito o meno
  *
  * Nella generazione dei numeri viene adoperato anche il valore EXIST, per poter
@@ -108,8 +123,8 @@ typedef struct Giocatore
 }Giocatore;
 
 /*
-*	ListaGiocatori – struttura dati concatenata che contiene un puntatore
-*	ad una struttura di tipo Giocatore  che rappresenta il prossimo
+*	ListaGiocatori – struttura dati che contiene un puntatore
+*	ad una struttura di tipo Giocatore  che rappresenta il primo
 *	giocatore nella lista e un campo di tipo intero che rappresenta
 *	il numero totale  di giocatori attualmente in gioco.
 */
@@ -117,11 +132,11 @@ typedef struct Giocatore
 typedef struct Lista_giocatori
 {
 	Giocatore *list_g; /* elenco di giocatori */
-	int num_player; /* numero giocatori dell’elenco */
+	int num_giocatori; /* numero giocatori dell’elenco */
 }ListaGiocatori;
 /*
  *	Tabellone – Tipo di dato che rappresenta
- *	un doppio puntatore a Card che concretamente
+ *	un doppio puntatore a Cart_Tomb che concretamente
  *	rappresenta il  tombolone di gioco
  *	( allocato dinamicamente in base all’opzione dell’utente ).
  *
@@ -134,7 +149,7 @@ typedef Cella Cart_Tomb[3][5];
 typedef struct
 {
 	Cart_Tomb **cart_tomb; /* insieme di cartelle che costituiscono il tombolone */
-	int row; /* numero di righe di tale tombolone */
+	int righe; /* numero di righe di tale tombolone */
 	int col; /* numero di colonne del tombolone */
 }Tombolone;
 
@@ -148,7 +163,7 @@ typedef struct
 
 typedef struct Impostazioni
 {
-	int num_tot_player; /* numero totale di giocatori impostati */
+	int num_tot_giocatori; /* numero totale di giocatori impostati */
 	int dim_tombolone; /* valore numerico che rappresenta i numeri presenti nel tombolone */
 	int max_cartelle; /* numero Massimo di cartelle che un giocatore può scegliere */
 	Boolean audiov; /* audio per vittoria di un premio */
@@ -172,7 +187,7 @@ typedef struct Impostazioni
 
 typedef struct premio
 {
-	char *nome_premio; /* nome del premio */
+	char nome_premio[9]; /* nome del premio */
 	int tot_cash;/* Totale vincita premio */
 	int winner_id; /* Id del premio vincitore */
 	Boolean checked; /* Flag che notifica se un premio è stato vinto o meno */
@@ -221,17 +236,16 @@ typedef struct
 /* Variabile globale che contiene i premi a disposizione dei giocatori */
 extern ListaPremi premi;
 
-void impValore(Cartella *, int );
-int ctrlValore(Giocatore *,Tombolone *, int);
+
 Cartella *genCartella (Estrazione *);
 Cartella *getCartList( Cartella *, int );
 Cartella *allocCartella( void );
 int genBlind( int blind[][4] ,Estrazione *);
 void wait(float);
 void bubble_sort(int *,int);
-void shuffle(int numbers[], int);
-int rand_num(int, int, Estrazione *);
-void fill_numbers(int num[], int ,int);
+void mischia(int numbers[], int);
+int num_casuale(int, int, Estrazione *);
+void riempi_num(int num[], int ,int);
 Cartella *getNextC(Cartella *);
 void setIdCartella (Cartella *,int);
 int getIdCartella (Cartella *);

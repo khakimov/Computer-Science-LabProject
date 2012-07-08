@@ -14,15 +14,18 @@
 #include <direct.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <windows.h>
 
 #define chomp( buffer ) buffer[strlen(buffer)-1] = '\0';
 
-char * leggiNomeVincitorePremio (Premio *);
-void scriviNomeVincitorePremio ( Premio *, char *);
+void liberaMemoria( ListaGiocatori *listag, Tombolone *t, Estrazione *estr );
 void getTopten( Topten *list );
+void play_sound( int );
 void printClassifica( ListaGiocatori * );
 void bgcolor( int );
 int controllaEstensione( char * );
+int prelevaDatiDaFile( FILE *fp, ListaGiocatori *list, Tombolone *t, Estrazione *estr, Impostazioni *imp );
+int leggiFileDatiGiocatori( FILE *fp, ListaGiocatori *list );
 int finePartita( void );
 void istruzioni();
 void uscita();
@@ -32,7 +35,8 @@ void initEstrazione ( Estrazione *, Impostazioni * );
 void initGiocatore(Giocatore *, Impostazioni *, int *);
 Topten *initTopten( void );
 void caricaPartita( void );
-void salvaPartita( ListaGiocatori *, Tombolone *, ListaPremi , Estrazione *, Impostazioni * );
+void salvaPartita( ListaGiocatori *, Tombolone *, Estrazione *, Impostazioni * );
+int leggiFileSalvataggio( char *nuovo_file );
 void nuova_partita( Impostazioni * );
 void impostazioni_gioco (Impostazioni * );
 void Stampaimpostazioni ( Impostazioni *, int);
@@ -57,8 +61,8 @@ int isSetGiocatore (Giocatore *);
 int leggiTotGiocImpostazioni( Impostazioni * );
 int leggiDimImpostazioni( Impostazioni * );
 int leggiNumCartelleImpostazioni( Impostazioni * );
-int leggiAudiovImpostazioni( Impostazioni * );
-int leggiAudioNumImpostazioni( Impostazioni * );
+Boolean leggiAudiovImpostazioni( Impostazioni * );
+Boolean leggiAudioNumImpostazioni( Impostazioni * );
 int scriviTotGiocImpostazioni( Impostazioni *, int );
 int scriviDimImpostazioni( Impostazioni *, int );
 int scriviNumCartelleImpostazioni ( Impostazioni *, int );
@@ -87,12 +91,12 @@ void scriviVincitorePremio( Premio *, int  );
 void scriviIdSchedaPremio( Premio *, int );
 int leggiIdSchedaPremio( Premio *);
 void scriviVincitaPremio( Premio *, int );
-void printCartelle( Giocatore * );
-void printTombolone( Tombolone * );
+void printCartelle( Giocatore *, Estrazione * );
+void printTombolone( Tombolone *, int  );
 void printTopTen( Topten *toplist );
-void printCelle( Card cart , int , int);
+void printCelle( Card cart , int , int, int );
 void printPrize( int, Giocatore *, int );
-void checkPrize( ListaGiocatori *, Tombolone * );
+void checkPrize( ListaGiocatori *, Tombolone *, Estrazione * );
 int estraiNumero( Estrazione * );
 
 /* Accesso alla struttura Estrazione */

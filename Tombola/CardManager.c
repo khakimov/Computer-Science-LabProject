@@ -87,7 +87,7 @@ void addCartella(Cartella *c, Cartella *comodo)
 
 
 
-Cartella * genCartella(Estrazione *estr)
+Cartella *genCartella(Estrazione *estr)
 {
     int vet[3];
     int i,j,z,x;
@@ -97,16 +97,26 @@ Cartella * genCartella(Estrazione *estr)
     int blind[3][4];
     scriviNumGen(estr, 3);
     scriviTotNumEstratti(estr, 0);
+    int decina = leggiTotNumeri(estr) / 90;
 
 
    for( j = 0; j < CARTC; j++)
    {
     for ( i = 0; i < CARTR; i++)
       {
+        if ( decina > 1)
+        {
+          if( j == 0) vet[i] = num_casuale(1,((decina-1)*10)+9,estr);
+          else if ( j == 8 )  vet[i] = num_casuale(0,(decina*10),estr)+10*(decina)*j;
+               else vet[i] = num_casuale(0,((decina-1)*10)+9,estr)+10*(decina)*j;
+        }
+        else
+        {
+          if( j == 0) vet[i] = num_casuale(1,9,estr);
+          else if ( j == 8 )  vet[i] = num_casuale( 79,90,estr );
+               else vet[i] = num_casuale(0,9,estr)+j*10;
+        }
 
-          if( j == 0) vet[i] = rand_num (1,9,estr);
-          else if ( j == 8 )  vet[i] = rand_num ( 79,90,estr );
-               else vet[i] = rand_num(0,9,estr)+j*10;
       }
 
 
@@ -143,7 +153,7 @@ Cartella * genCartella(Estrazione *estr)
 /*
     Riempie il vettore num con valori interi che vanno da min a max.
 */
-void fill_numbers ( int num[], int min, int max )
+void riempi_num( int num[], int min, int max )
 {
     int i;
     int k;
@@ -153,7 +163,7 @@ void fill_numbers ( int num[], int min, int max )
 
 }
 
-int rand_num( int min, int max, Estrazione *estr)
+int num_casuale( int min, int max, Estrazione *estr)
 {
     int rand_number;
 
@@ -163,8 +173,8 @@ int rand_num( int min, int max, Estrazione *estr)
     if ( leggiTotNumEstratti(estr) == 0 || leggiTotNumEstratti(estr) >= leggiNumGen(estr) )
     {
     	scriviTotNumEstratti(estr, 0);
-    	fill_numbers( getVettoreNumeri(estr), min, max);
-    	shuffle(getVettoreNumeri(estr), (max-min)+1);
+    	riempi_num( getVettoreNumeri(estr), min, max);
+    	mischia(getVettoreNumeri(estr), (max-min)+1);
 
     	rand_number = estr->numbers[estr->tot_numeri_estr++];
 
@@ -177,7 +187,7 @@ int rand_num( int min, int max, Estrazione *estr)
 
 
 
-void shuffle( int numbers[], int n )
+void mischia( int numbers[], int n )
 {
     int i = 0;
     int n_rand;
@@ -232,7 +242,7 @@ int genBlind ( int blind[3][4],Estrazione *estr )
     for (i = 0; i < 3; i++)
     {
         for (j = 0; j < 4; j++)
-            vet[i][j] = rand_num (0,8,estr);
+            vet[i][j] = num_casuale (0,8,estr);
 
         bubble_sort(vet[i],4);
 
@@ -274,6 +284,7 @@ int genBlind ( int blind[3][4],Estrazione *estr )
   return error;
 
 }
+
 
 Cartella *getCartList(Cartella *c, int pos)
 {
