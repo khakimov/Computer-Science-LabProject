@@ -8,64 +8,37 @@
  ============================================================================
  */
 
-/*
-    AGGIORNAMENTI
-
-    La funzione caricaPartita() è stata divisa in più funzioni per poter
-    garantire una più facile lettura del codice ed inoltre una notevole
-    facilità di gestione dello stesso.
-    Controllo errori in fase di caricamento e controllo che il file non sia
-    vuoto.
-    Controllo sulla dimensione del tombolone ed in caso tale dimensione sia
-    incoretta viene prevista una gestione dello stesso garantendo la continuazione
-    del gioco.
-
-*/
 #include "TombolaFunction.h"
 
-void ResizeWindows( void );
 
 int main(void)
 {
-    bgcolor(63);
+    /*Imposto i parametri per lo sfondo, grandezza finestra e titolo finestra */
+
+    coloraSfondo(63);
+    nascondiCursore();
     system( "mode con: cols=80 lines=40" );
 
+    SetConsoleTitle("IL GIOCO DELLA TOMBOLA - Created by Alessandro Suglia & Nazar Chekalin");
 
     Impostazioni imp;
 
-    set_error(ENOTF);
+
     srand(time(NULL));
 
-
-    int cont = 0;
-    int locX = 10, locY = 10;
     int cursX = 7, cursY = 10;
     int key;
     int scelta = 1;
 
+    stampaMenu();
 
-
+  /*  Ciclo per la gestione del cursore nel menu' e per
+      la selezione dell'opzione scelta dal giocatore in base
+      alle coordinate su schermo */
 
     while( scelta != 0 )
     {
-        clrscr();
-        locX = 10, locY = 10;
-        printFile("tombola.txt");
-        gotoxy(locX, locY);
-        printf("NUOVA PARTITA");
-        gotoxy(locX, locY+=4);
-        printf("CARICA PARTITA");
-        gotoxy(locX, locY+=4);
-        printf("IMPOSTAZIONI");
-        gotoxy(locX, locY+=4);
-        printf("TOP TEN");
-        gotoxy(locX, locY+=4);
-        printf("ISTRUZIONI");
-        gotoxy(locX, locY+=4);
-        printf("USCITA");
-        gotoxy(cursX, cursY);
-        printf("->");
-        gotoxy(cursX, cursY);
+
 
         key = getch();
 
@@ -94,19 +67,19 @@ int main(void)
             case '\r':
                     switch ( cursY )
                         {
-                            case NEW_GAME : nuova_partita(&imp);
+                            case NEW_GAME : nuovaPartita(&imp); cursX = 7; cursY = 10; stampaMenu();
                             break;
 
-                            case LOAD : caricaPartita();
+                            case LOAD : mostraCursore(); caricaPartita(); cursX = 7; cursY = 10;  stampaMenu();
                             break;
 
-                            case SETTINGS : impostazioni_gioco(&imp);
+                            case SETTINGS :  impostazioniGioco(&imp); cursX = 7; cursY = 10;  stampaMenu();
                             break;
 
-                            case TOP : topten(NULL);
+                            case TOP :  topten(NULL); cursX = 7; cursY = 10;  stampaMenu();
                             break;
 
-                            case ISTR : istruzioni();
+                            case ISTR :  istruzioni(); cursX = 7; cursY = 10;  stampaMenu();
                             break;
 
                             case EXIT : uscita(); scelta = 0;
@@ -121,30 +94,6 @@ int main(void)
 
     }
 
-
-   /* int i = 0;
-    while (++i)
-    {
-
-    textcolor(i);
-    printf("PROVA %d  ", i);
-    getch();
-    }
-
-    //printFile("tombola.txt");
-    nuova_partita(&imp);
-    caricaPartita();
-    //impostazioni_gioco(&imp);
-    /*initEstrazione(&estr, &imp);
-    list.list_g = allocGiocatore();
-    initGiocatore(list.list_g, &imp, &cont);
-    createCartelle ( list.list_g, &estr);
-    printCartelle(list.list_g);*/
-    /*initTombolone(&t, 270);
-    printTombolone(&t);*/
-
-
-
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
 

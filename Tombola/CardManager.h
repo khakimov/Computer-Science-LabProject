@@ -2,7 +2,7 @@
  * CardManager.h
  *
  *  Created on: 14/giu/2012
- *      Author: AlexZ
+ *
  */
 
 #ifndef CARDMANAGER_H_
@@ -20,6 +20,7 @@
 
 #include <time.h>
 #include <conio2.h>
+#include <ctype.h>
 
 /* Alcune costanti che identificano i vari comandi che è possibile utilizzare durante il gioco */
 /*--------------------------*/
@@ -38,9 +39,10 @@
 #define CARTR 3 /* Numero di righe di una cartella */
 
 #define CTOMBR 3 /* Numero di righe di una cartella del Tombolone */
-#define CTOMBC 5 /* Numero di righe di una cartella del Tombolone */
+#define CTOMBC 5 /* Numero di colonne di una cartella del Tombolone */
 
-#define MAXG 6 /* Numero massimo di giocatori */
+#define MAX_NUM_ID 1000000000
+#define MAXG 6
 #define MAXC 6
 
 /*-------------------------------------------------------------------------------------------*/
@@ -189,7 +191,7 @@ typedef struct premio
 {
 	char nome_premio[9]; /* nome del premio */
 	int tot_cash;/* Totale vincita premio */
-	int winner_id; /* Id del premio vincitore */
+	int id_vincitore; /* Id del premio vincitore */
 	Boolean checked; /* Flag che notifica se un premio è stato vinto o meno */
     int id_scheda; /* numero della scheda vincente */
 }Premio;
@@ -233,34 +235,34 @@ typedef struct
     int tot_numeri; /* Totale numeri da gestire */
 }Estrazione;
 
-/* Variabile globale che contiene i premi a disposizione dei giocatori */
-extern ListaPremi premi;
 
 
 Cartella *genCartella (Estrazione *);
-Cartella *getCartList( Cartella *, int );
+Cartella *leggiCartLista( Cartella *, int );
 Cartella *allocCartella( void );
 int genBlind( int blind[][4] ,Estrazione *);
 void wait(float);
-void bubble_sort(int *,int);
-void mischia(int numbers[], int);
-int num_casuale(int, int, Estrazione *);
-void riempi_num(int num[], int ,int);
-Cartella *getNextC(Cartella *);
-void setIdCartella (Cartella *,int);
-int getIdCartella (Cartella *);
+void ordinaCelle( Card, int );
+void leggiSchemi( Cartella [] );
+void impostaValori( Cartella [], Estrazione * );
+void mischiaNumeri(int [], int);
+int numCasuale(int, int, Estrazione *);
+void riempiNumeri(int [], int ,int);
+Cartella *leggiSuccC(Cartella *);
+int scriviIdCartella (Cartella *,int);
+int leggiIdCartella (Cartella *);
 Cartella* initCartella ();
 int leggiNumeroCard( Card, int, int );
 int scriviNumeroCard( Card, int, int, int );
 flag leggiCheckedCard( Card, int, int );
 int scriviCheckedCard( Card, int , int, flag);
 int isSetCartella( Cartella * );
-void controllaNumero( ListaGiocatori *list, Tombolone *t, int num );
-void segnaNumeroUscitoTomb( Cart_Tomb cart_tab , int num );
-void segnaNumeroUscito( Card cartella, int num );
-void addCartella(Cartella *, Cartella *);
-int controllaCartTomb( Cart_Tomb cart_tab, int in_a_row );
-int controllaCartella( Cartella *cartella, int in_a_row );
+void controllaNumero( ListaGiocatori *, Tombolone *, int  );
+void segnaNumeroUscitoTomb( Cart_Tomb, int );
+void segnaNumeroUscito( Card, int );
+void aggCartella(Cartella *, Cartella *);
+int controllaCartTomb( Cart_Tomb, int  );
+int controllaCartella( Cartella *, int  );
 
 
 #endif /* CARDMANAGER_H_ */

@@ -7,11 +7,75 @@
 #include "CardManager.h"
 #include "TombolaFunction.h"
 
+/* Stampa il layout del menuì principale */
+void stampaMenu( void )
+{
+       int locX = 10, locY = 10;
+
+       clrscr();
+       stampaFile("tombola.txt");
+        gotoxy(locX, locY);
+        printf("NUOVA PARTITA");
+        gotoxy(locX, locY+=4);
+        printf("CARICA PARTITA");
+        gotoxy(locX, locY+=4);
+        printf("IMPOSTAZIONI");
+        gotoxy(locX, locY+=4);
+        printf("TOP TEN");
+        gotoxy(locX, locY+=4);
+        printf("ISTRUZIONI");
+        gotoxy(locX, locY+=4);
+        printf("USCITA");
+        gotoxy(7, 10);
+        printf("->");
+        nascondiCursore();
+
+
+}
+/*Nasconde il cursore nella schermata  */
+void nascondiCursore( void )
+{
+    HANDLE hOut;
+    CONSOLE_CURSOR_INFO ConCurInf;
+
+    hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    ConCurInf.dwSize = 10;
+    ConCurInf.bVisible = FALSE;
+
+    SetConsoleCursorInfo(hOut, &ConCurInf);
+}
+
+
+/* mostra il cursore nella schermata */
+void mostraCursore( void )
+{
+    HANDLE hOut;
+    CONSOLE_CURSOR_INFO ConCurInf;
+
+    hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    ConCurInf.dwSize = 10;
+    ConCurInf.bVisible = TRUE;
+
+    SetConsoleCursorInfo(hOut, &ConCurInf);
+}
+
+
+/*
+    ///////////////////////////////////////
+    // Funzione: liberaMemoria() /////////
+    /////////////////////////////////////
+    Provvede a deallocare tutta la memoria
+    che è stata allocata mediante chiamate a
+    malloc().
+
+*/
 void liberaMemoria( ListaGiocatori *listag, Tombolone *t, Estrazione *estr )
 {
     int i,j;
-    Giocatore *curr_gioc = NULL, *temp_gioc = NULL;
-    Cartella *curr_cart = NULL, *temp_cart = NULL;
+    Giocatore *gioc_corr = NULL, *temp_gioc = NULL;
+    Cartella *cart_corr = NULL, *temp_cart = NULL;
 
     /*
         Libera memoria assegnata al tombolone.
@@ -28,8 +92,8 @@ void liberaMemoria( ListaGiocatori *listag, Tombolone *t, Estrazione *estr )
         Libera la memoria assegnata al vettore presente in Estrazione.
 
     */
-    if ( getVettoreNumeri(estr) != NULL )
-        free(getVettoreNumeri(estr));
+    if ( leggiVettoreNumeri(estr) != NULL )
+        free(leggiVettoreNumeri(estr));
 
     /*
         Delloca ogni singolo nodo che rappresenta un giocatore,
@@ -39,25 +103,30 @@ void liberaMemoria( ListaGiocatori *listag, Tombolone *t, Estrazione *estr )
     if ( leggiPrimoGioc(listag) != NULL )
     {
 
+        /*
+            Per ogni giocatore della lista, salva il nodo corrente in un nodo
+            temporaneo, scorri di un elemento la lista salvando il giocatore successivo
+            a quello temporaneo e provvedi a deallocare il nodo temporaneo.
 
-        for ( i = 0, curr_gioc = leggiPrimoGioc(listag);
-                i < getTotG(listag);
+        */
+        for ( i = 0, gioc_corr = leggiPrimoGioc(listag);
+                i < leggiTotG(listag);
                 i++ )
         {
 
-            for ( j = 0, curr_cart = getCartella(curr_gioc);
-                    j < getNumCartelleGioc(curr_gioc);
+            for ( j = 0, cart_corr = leggiCartella(gioc_corr);
+                    j < leggiNumCartelleGioc(gioc_corr);
                     j++ )
             {
 
-                temp_cart = curr_cart;
-                curr_cart = getNextC(curr_cart);
+                temp_cart = cart_corr;
+                cart_corr = leggiSuccC(cart_corr);
                 free(temp_cart);
 
             }
 
-            temp_gioc = curr_gioc;
-            curr_gioc = getNextG(curr_gioc);
+            temp_gioc = gioc_corr;
+            gioc_corr = leggiSuccG(gioc_corr);
             free(temp_gioc);
 
 
@@ -66,22 +135,121 @@ void liberaMemoria( ListaGiocatori *listag, Tombolone *t, Estrazione *estr )
 }
 
 
-void getTopten( Topten *list )
+
+/*
+    Funzione che provvede ad inizializzare nuovamente
+    il file topten.txt nel caso questo fosse stato
+    eliminato o fosse stato cancellato il suo contenuto.
+
+*/
+void ricreaTopten( FILE *top_file )
+{
+    int cont_gioc;
+    char buffer[30];
+    int tot = 200;
+
+
+    /* Ora provvedo a riaprirlo in modalità scrittura per poterlo ricreare correttamente */
+
+    /* Controlla eventuale impossibilità nel creare il file */
+    if (  ( top_file = fopen("topten.txt", "w") ) == NULL )
+    {
+        perror("ERRORE CREAZIONE FILE TOPTEN.txt ::> ");
+        getch();
+        exit(-1);
+
+    }
+    else
+    {
+        /* File creato correttamente, ora provvedo a rimpinguarlo dei vari giocatori vincenti */
+        for ( cont_gioc = 1; cont_gioc <= 10; cont_gioc++, tot -= 20 )
+        {
+            snprintf(buffer, 30, "Gioc%d %d\n", cont_gioc, tot );
+            fprintf(top_file, "%s", buffer);
+            strcpy(buffer, "\0");
+        }
+
+
+        fclose(top_file);
+
+
+    }
+
+
+}
+
+
+/*
+    Legge dal file topten.txt tutti i dati relativi
+    alla topten e li salva correttamente nella lista
+    di tipo Topten  passata come parametro.
+
+*/
+void leggiTopten( Topten *list )
 {
     int cont_gioc;
     Topten *curr_top; /* Nodo topten attuale */
     FILE *top_file;
     char buffer[30]; /* Stringa contenente il nome del giocatore appena letto dal file*/
     int punt;/* valore intero che rappresenta il punteggio del giocare corrente */
+    int file_creato = 0;
 
     if ( ( top_file = fopen("topten.txt", "r") ) == NULL )
     {
-        perror("ERROR FILE ::>  topten2");
+        fprintf(stderr,"\nFILE TOPTEN.txt NON PRESENTE\n");
+        printf("Il File verra' ricreato, premere un tasto per continuare...");
+        getch();
+        clrscr();
+        stampaFile("topten.txt");
+        ricreaTopten( top_file );
+        file_creato = 1;
+
+    }
+
+    else
+    {
+
+        if ( file_creato == 0 )
+        {
+            /*
+                Posiziono il File Pointer alla fine del file in modo da
+                poter correttamente richiamare la funzione ftell
+                per poter conoscere la dimensione del file.
+            */
+            fseek( top_file, 0, SEEK_END);
+
+
+            /* Il file topten.txt risulta essere vuoto, qualcosa non va. Ricrealo */
+            if ( ftell(top_file) == 0 )
+            {
+
+                printf("IL FILE TOPTEN.txt E' VUOTO, LO RICREO!\n");
+                getch();
+                clrscr();
+                stampaFile("topten.txt");
+
+                ricreaTopten(top_file);
+
+
+            }
+        }
+    }
+
+    /*
+        Lo riapro in modalità lettura in modo tale che si possa nuovamente
+        utilizzare la topten in modo corretto.
+    */
+
+    if ( ( top_file = fopen("topten.txt", "r") )  == NULL )
+    {
+        perror("ERRORE APERTURA FILE TOPTEN.txt ::> ");
         getch();
         exit(-1);
     }
     else
     {
+
+
         curr_top = list;
 
         for ( curr_top = list, cont_gioc = 0;
@@ -95,226 +263,344 @@ void getTopten( Topten *list )
 
 
             if ( cont_gioc > 0 )
-                addTopten(list, curr_top);
+                aggTopten(list, curr_top);
 
         }
 
-
-    }
 
     fclose(top_file);
 
+    }
 }
 
+
+/*
+    Funzione che gestisce l'intera elaborazione
+    relativa all'inserimento dei giocatori in topten
+    o alla stampa delle classifica.
+
+*/
 void topten( ListaGiocatori *listag )
 {
-    Giocatore *max_gioc, *curr_gioc;
-    Topten toplist, *new_gioc;
+    Giocatore *max_gioc, /* Giocatore con punteggio più alto*/
+              *gioc_corr; /* Giocatore correntemente referenziato */
+    Topten toplist, /* Lista di tipo Topten adoperata per tener traccia di tutti i giocatori */
+            *nuovo_gioc; /* Nuovo elemento Topten da aggiungere eventualmente alla lista */
 
-    printFile("topten.txt");
+    stampaFile("topten.txt");
 
+    /*
+        Se la lista di giocatori è piena, ha senso valutare chi è il giocatore che
+        merita di entrare in topten.
+    */
     if ( listag != NULL )
     {
-        for ( max_gioc = leggiPrimoGioc(listag),curr_gioc = leggiPrimoGioc(listag);
-            isSetGiocatore(curr_gioc);
-            curr_gioc = getNextG(curr_gioc) )
+        /*
+            Scorro la lista di giocatori alla ricerca del giocatore
+            che ha totalizzato il punteggio più alto.
+
+        */
+        for ( max_gioc = leggiPrimoGioc(listag),gioc_corr = leggiPrimoGioc(listag);
+            isSetGiocatore(gioc_corr);
+            gioc_corr = leggiSuccG(gioc_corr) )
         {
-            if ( getCashGiocatore(curr_gioc ) > getCashGiocatore(max_gioc ) )
-                max_gioc = curr_gioc;
+            if ( leggiCashGiocatore(gioc_corr ) > leggiCashGiocatore(max_gioc ) )
+                max_gioc = gioc_corr;
         }
 
+        /* Leggo al topten attualmente salvata sul file */
+        leggiTopten(&toplist);
 
-        getTopten(&toplist);
-
-        if ( ( new_gioc = checkTopten(&toplist, max_gioc) ) != NULL )
+        /*
+            Con controllaTopten() verifico che il giocatore attualmente
+            con punteggio maggiore meriti di entrare in topten e se così
+            fosse la funzione ritornerebbe un valore diverso da NULL che
+            rappresenta il nuovo elemento di tipo Topten
+            correttamente inizializzato.
+        */
+        if ( ( nuovo_gioc = controllaTopten(&toplist, max_gioc) ) != NULL )
         {
-            insOrdTopten(&toplist, new_gioc);
+            insOrdTopten(&toplist, nuovo_gioc);
             clrscr();
-            printFile("topten.txt");
-            printTopTen(&toplist);
+            stampaFile("topten.txt");
+            stampaTopTen(&toplist);
+            stampaTopTenSuFile( &toplist );
+            gotoxy(30,80);
+            printf("\nPremi un tasto qualsiasi per uscire!");
             getch();
         }
     }
     else
     {
-        getTopten(&toplist);
-        printTopTen(&toplist);
+        /*
+            Se la lista di giocatori non è inizializzata allora è necessario
+            unicamente stampare a video la topten.
+        */
+        leggiTopten(&toplist);
+        stampaTopTen(&toplist);
+        gotoxy(30,80);
+        printf("\nPremi un tasto qualsiasi per uscire!");
         getch();
     }
 
-}
-int GiocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, Tombolone *tomb)
-{
-    int num_estr = 0;
-    int car;
-    int exit  = 0;
-    int x = 1;
-    int pag = 0;
-    int i = 0;
-
     /*
-        E' necessario controllare e differenziare il caso in cui si sta iniziando una nuova parita
-        nella quale è necessario inizializzare la struttura, e il caso in cui si sta riprendendo la partita
-        e in quel caso, non bisogna toccare nulla!
+        In ogni caso, dopo aver creato la lista di nodi di tipo Topten è necessario
+        deallocarli chiamando la funzione liberaTopten().
     */
+    liberaTopten(&toplist);
+
+}
+
+/*
+    Mediante i dati passati come parametri alla funzione è possibile
+    dare inizio ad una nuova partita della tombola.
+    Tutti i parametri risultano ovviamente essere inizializzati poichè
+    la chiamata a nuova partita viene effettuata o
+
+*/
+void giocaPartita ( ListaGiocatori *listag, Impostazioni *imp, Estrazione *estr, Tombolone *tomb, ListaPremi premi )
+{
+    int num_estr = 0; /* numero attualmente estratto */
+    int car; /* Variabile che registra il carattere letto da tastiera */
+    int exit  = 0; /* Flag che determinata se si deve o meno uscire dalla partita */
+    int x = 1; /* Coordinata necessaria per la visualizzazione corretta delle informazioni su schermo*/
+    int pag = 0; /* Necessaria per poter correttamente visualizzare il tombolone */
+    int n_premio = 0; /* Posizione che identifica il premio attualmente analizzato */
+
+
+    /* Controllo se vi sono premi vinti da una partita precedente (Nel caso in cui Gioca Partita viene richiamata
+       a causa di una partita caricata) */
+    for ( n_premio = 0; n_premio < TOT_PRIZE && leggiUscitoPremio(&premi[n_premio]) == T; n_premio++ )
+        /* NON FA NULLA! */ ;
+        /* ASSERZIONE : All'uscita dal ciclo n_premio individuerà la posizione del premio corrente*/
+
 
 
     clrscr();
-    printTombolone(tomb, pag);
+    stampaTombolone(tomb, pag);
     gotoxy(x,33);
-    printf("INIVIO/SPAZIO - Estrai Numero    %c/%c - Scorri Tombolone     s - Salva Partita     ESC - Esci",17,16);
+    printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
     gotoxy(1,13);
 
-    while( !finePartita() && num_estr != -1  && exit != 1 )
+    while( !finePartita(premi) && num_estr != -1  && exit != 1 )
     {
+
+
         if( leggiTotNumEstratti(estr) != 0 && leggiTotNumEstratti(estr) % 10 == 0 && num_estr != 0 )
         {
          clrscr();
-         printTombolone(tomb, pag);
+         stampaTombolone(tomb, pag);
          gotoxy(1,13);
          printf("NUMERO ESTRATTO : %3d ", num_estr);
          gotoxy(x,33);
-         printf("INVIO - Estrai Numero    %c/%c - Scorri Tombolone     s - Salva Partita     ESC - Esci",17,16);
+         printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
          gotoxy(1,13);
         }
-        switch( ( car = getch() ) )
+
+        /* Controlla il comando inserito dall'utente */
+        switch( car = getch() )
         {
             case ENTER_KEY :
                 num_estr = estraiNumero(estr);
-                if ( leggiAudioNumImpostazioni(imp) == T )
-                    play_sound(num_estr);
+
+
                 clrscr();
-                printTombolone(tomb, pag);
+                stampaTombolone(tomb, pag);
                 gotoxy(1,13);
                 printf("NUMERO ESTRATTO : %3d ", num_estr);
                 gotoxy(x,33);
-                printf("INVIO - Estrai Numero    %c/%c - Scorri Tombolone     s - Salva Partita     ESC - Esci",17,16);
+                printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
                 gotoxy(1,13);
                 controllaNumero(listag, tomb, num_estr);
                 clrscr();
-                printTombolone(tomb, pag);
+                stampaTombolone(tomb, pag);
                 gotoxy(1,13);
                 printf("NUMERO ESTRATTO : %3d ", num_estr);
                 gotoxy(x,33);
-                printf("INVIO - Estrai Numero    %c/%c - Scorri Tombolone     s - Salva Partita     ESC - Esci",17,16);
+                printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
                 gotoxy(1,13);
+
+                /* Se vi sono più due o più numeri estratti allora controlla i premi */
                 if( leggiTotNumEstratti(estr) >= 2)
-                    checkPrize(listag,tomb, estr);
+                 controllaPremio(listag,tomb, estr, premi);
+
+                    /* Se è uscito un premio e l'audio è attivo allora riproduci il suono vittoria */
+                    if ( leggiUscitoPremio( &premi[n_premio] ) == T && leggiAudiovImpostazioni(imp) == T )
+                    {
+
+                        riprodSuono(0);
+                        n_premio ++;
+
+                    }
+                    else
+                      if ( leggiAudioNumImpostazioni(imp) == T ) /* Se il suono è attiva ma non vi sono premi riproduci il suono dell'estrazione */
+                      {
+
+                        if(num_estr > 90)
+                         riprodSuono(91);
+                        else
+                         riprodSuono(num_estr);
+
+                      }
+
+
+
+
+
 
             break;
 
             case SAVE_KEY:
-                salvaPartita(listag, tomb, estr, imp);
+                salvaPartita(listag, tomb, estr, imp, premi);
+                wait(1);
+                clrscr();
+                stampaTombolone(tomb, pag);
+                /* se viene eseguito il salvataggio prima di estrarre i numeri questo è pari a 0
+                   di conseguenza si evita di stampare la scritta dell'estrazione */
+                if ( num_estr != 0)
+                {
+                  gotoxy(1,13);
+                  printf("NUMERO ESTRATTO : %3d ", num_estr);
+                }
+
+                gotoxy(x,33);
+                printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
+                gotoxy(1,13);
             break;
 
             case RIGHT_KEY:
-                if( pag == ( leggiRigheTombolone(tomb) / 3 ) *3 - 3 )
-                    pag = 0;
+                if( pag == ( leggiRigheTombolone(tomb)  - 3) ) /* verifica se la pagina corrente sia pari al numero di pagine totali */
+                    pag = 0; /* si riparta dalla prima pagina */
                 else
-                    pag += 3;
+                    pag += 3; /* passa alla pagina successiva */
 
                 clrscr();
-                printTombolone(tomb, pag);
+                stampaTombolone(tomb, pag);
                 gotoxy(x,33);
-                printf("INVIO - Estrai Numero    %c/%c - Scorri Tombolone     s - Salva Partita     ESC - Esci",17,16);
+                printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
                 gotoxy(1,13);
 
             break;
 
             case LEFT_KEY:
-                if( pag == 0 )
-                    pag =( leggiRigheTombolone(tomb) / 3 ) * 3 - 3;
+                if( pag == 0 ) /* se la pagina corrente è pari alla prima pagina */
+                    pag =( leggiRigheTombolone(tomb) - 3 ); /* passa all'ultima pagina */
                 else
-                    pag -= 3;
+                    pag -= 3; /* passa alla pagine precedente */
 
                 clrscr();
-                printTombolone(tomb, pag);
+                stampaTombolone(tomb, pag);
                 gotoxy(x,33);
-                printf("INVIO - Estrai Numero    %c/%c - Scorri Tombolone     s - Salva Partita     ESC - Esci",17,16);
+                printf("INVIO - Estrai Numero  %c/%c - Scorri Tombolone  s - Salva Partita  ESC - Esci",17,16);
                 gotoxy(1,13);
 
             break;
 
             case ESC_KEY:
+            {
+                printf("SI STA ABBANDONANDO LA PARTITA CORRENTE...\n");
+                wait(2);
                 exit = 1;
+            }
             break;
         }
     }
 
-    if ( finePartita() )
+    /*
+        Se effettivamente è finita la partita e non vi è stata
+        alcuna uscita preventiva dalla partita allora provveded a
+        verificare i premi dei giocatori della partita corrente.
+    */
+    if ( finePartita(premi) )
     {
         clrscr();
-        printFile("tombola.txt");
+        stampaFile("tombola.txt");
         printf("PUNTEGGI PARTITA CORRENTE \nGIOCATORE\t\tPUNTEGGIO\n");
-        printClassifica(listag);
-        getch();
+        stampaClassifica(listag);
         topten(listag);
-
-        /*
-            Finita la partita è necessario re inizializzare tutti i premi
-            garantendo quindi la possibilità di cominciare una nuova partita.
-        */
 
 
     }
 
 
-    for ( i = 0; i < TOT_PRIZE; i++ )
-        scriviUscitoPremio( &premi[i], F);
-
-    return 0;
 }
 
+/*
+    La funzione riproduce mediante la funzione della libreria Windows.h
+    PlaySound() un suono specifico per ogni numero estratto.
 
-void play_sound( int num_estratto )
+*/
+void riprodSuono( int num_estratto )
 {
-    char file_audio[MAX_PATH];
+    char file_audio[MAX_PATH]; /* Variabile che conterrà il percorso del file audio da riprodurre */
 
     /*
         Se c'è stato un errore nella conversione e nell'esecuzione della snprintf,
         viene ritornato un valore negativo.
     */
+
+
     if ( snprintf(file_audio, MAX_PATH,  "sound\\%d.wav", num_estratto) < 0 )
     {
         perror("ERRORE SNPRINTF ::> ");
         getch();
         exit(-1);
     }
-    else
+   else
     {
         /*
             Riproduce il file specificato dalla stringa file_audio
             in modo asincrono rispetto all'applicazione.
         */
-        if ( !PlaySound( TEXT(file_audio), NULL, SND_FILENAME | SND_ASYNC ) )
+        PlaySound (NULL, 0, 0);
+        if ( !PlaySound(file_audio, NULL, SND_ASYNC) )
+
+
         {
             perror("PLAY SOUND ERROR ::> ");
             getch();
             exit(-1);
         }
+
+
     }
 }
 
-void printClassifica( ListaGiocatori *listag )
-{
-    int *punt_gioc = malloc( getTotG(listag) * sizeof(int) ) ;
-    int *id_gioc = malloc( getTotG(listag) * sizeof(int));
-    int i;
-    int comodo_punt, comodo_id, scambio;
-    Giocatore *curr_gioc;
 
-    for ( curr_gioc = leggiPrimoGioc(listag), i = 0;
-         isSetGiocatore(curr_gioc);
-         curr_gioc = getNextG(curr_gioc), i++ )
+/*
+    Stampa a video la classifica dei giocatori che
+    hanno appena terminato una partita.
+
+*/
+void stampaClassifica( ListaGiocatori *listag )
+{
+    int *punt_gioc = malloc( leggiTotG(listag) * sizeof(int) ) ;
+    int *id_gioc = malloc( leggiTotG(listag) * sizeof(int));
+    int i;
+    int car;
+    int comodo_punt, comodo_id, scambio;
+    Giocatore *gioc_corr;
+
+    if ( leggiTotG(listag) > 10 )
     {
-         punt_gioc[i] = getCashGiocatore(curr_gioc);
-         id_gioc[i] = getIdGiocatore(curr_gioc);
+        car = getch();
+        if ( car == 224 )
+            car = getch();
     }
 
+    /* scorre la lista dei giocatori e preleva le informazioni relative al punteggio ed id */
+    for ( gioc_corr = leggiPrimoGioc(listag), i = 0;
+         isSetGiocatore(gioc_corr);
+         gioc_corr = leggiSuccG(gioc_corr), i++ )
+    {
+         punt_gioc[i] = leggiCashGiocatore(gioc_corr);
+         id_gioc[i] = leggiIdGiocatore(gioc_corr);
+    }
+    /* ordina la classifica */
     while( scambio )
      {
       scambio = 0;
-      for (i = 0; i < getTotG(listag)-1; i++)
+      for (i = 0; i < leggiTotG(listag)-1; i++)
        if( punt_gioc[i] < punt_gioc[i+1])
         {
           comodo_punt = punt_gioc[i];
@@ -326,9 +612,9 @@ void printClassifica( ListaGiocatori *listag )
           scambio = 1;
         }
      }
-    //printFile("tombola.txt");
 
-    for ( i = 0; i < getTotG(listag); i++ )
+    /* stampa la classifica */
+    for ( i = 0; i < leggiTotG(listag) && car != ESC_KEY; i++ )
     {
         switch ( i+1 )
         {
@@ -337,7 +623,32 @@ void printClassifica( ListaGiocatori *listag )
             case 3 : textcolor(26); break;
             default : textcolor(63); break;
         }
-        printf("Giocatore %d\t\t%4d\n", id_gioc[i], punt_gioc[i]);
+        if( i && (i % 10)==0 && leggiTotG(listag) > 10)
+        {
+            printf("\n\nPremere un tasto per la pagina successiva");
+            car = getch();
+            clrscr();
+
+            if(car != ESC_KEY)
+            {
+               stampaFile("tombola.txt");
+               printf("PUNTEGGI PARTITA CORRENTE \nGIOCATORE\t\tPUNTEGGIO\n");
+               printf("Giocatore %d\t\t%4d\n", id_gioc[i], punt_gioc[i]);
+            }
+
+
+        }
+        else
+        {
+            printf("Giocatore %d\t\t%4d\n", id_gioc[i], punt_gioc[i]);
+            if ( i == leggiTotG(listag)-1 )
+            {
+                printf("\n\nPremi un tasto per continuare...");
+                getch();
+            }
+
+        }
+
     }
     free(punt_gioc);
     free(id_gioc);
@@ -345,7 +656,14 @@ void printClassifica( ListaGiocatori *listag )
 
 
 }
-int finePartita( void )
+
+/*
+    Controlla se il premio in posizione 4
+    del vettore( TOMBOLA ) è uscita o meno
+    in modo tale da segnalare la fine della partita.
+
+*/
+int finePartita( ListaPremi premi )
 {
     int stato = 0;
 
@@ -355,106 +673,137 @@ int finePartita( void )
     return stato;
 }
 
-void nuova_partita( Impostazioni *imp )
+/* Inizializza le impostazio di gioco ai valore di default */
+void initImpostazioni (Impostazioni *imp)
+{
+    scriviNumCartelleImpostazioni(imp,6);
+    scriviTotGiocImpostazioni( imp,6);
+    scriviDimImpostazioni( imp, 90);
+    scriviAudioVImpostazioni( imp, F);
+    scriviAudioNumImpostazioni( imp, F);
+}
+
+/*
+    Funzione che provvede a dare inizio ad una nuova partita
+    inizializzando anche tutte le strutture dati coinvolte nel gioco
+    sulla base di quelle che sono le impostazioni scelte dall'utente.
+
+*/
+void nuovaPartita( Impostazioni *imp )
 {
      ListaGiocatori lista;
      lista.list_g = initListaG();
+
+    ListaPremi premi = { { "Ambo", 0, 0, F, 0 }, { "Terno", 0, 0, F, 0 }, { "Quaterna", 0, 0, F,0 },
+                    { "Cinquina", 0, 0, F, 0 }, { "Bingo", 0, 0, F, 0 } };
+
+
      Giocatore *temp = NULL;
      int choice = 0;
      int i = 0;
-     int res = 0;
-     int flag = 0;
+     int flag_uscita = 0;
+     int flag_menu = 0;
      int cont_id = 0;
+     int cart_id = 1;
      Estrazione estr;
      Tombolone tomb;
+     Cartella *cart_corr = NULL;
 
+    /*
+        Se nel caso in cui la partita venga avviata senza aver impostato le impostazioni( la struttura impostazioni potrebbe
+        risultare non inizializzata ) viene notificato all'utente questa situazione e garantisce che la struttura venga
+        inizializzata correttamente con quelle che sono le impostazioni di default.
 
-     if ( leggiDimImpostazioni(imp) < 0 || leggiNumCartelleImpostazioni(imp) > 1000 || leggiTotGiocImpostazioni(imp) > 1000 )
+    */
+
+     if ( leggiDimImpostazioni(imp) < 0 || leggiNumCartelleImpostazioni(imp) > 1000 || leggiTotGiocImpostazioni(imp) > 10000 )
      {
         clrscr();
-        printFile("nuova.txt");
+        stampaFile("nuova.txt");
         printf("\nIl gioco e' stato avviato senza aver selezionato le impostazioni!\nIl gioco verra' avviato con le impostazioni di default!\nPremere un tasto per continuare...\n");
         getch();
-        scriviNumCartelleImpostazioni(imp,6);
-        scriviTotGiocImpostazioni( imp,6);
-        scriviDimImpostazioni( imp, 90);
-        scriviAudioVImpostazioni( imp, T);
-        scriviAudioNumImpostazioni( imp, F);
-
+        initImpostazioni ( imp );
      }
 
      initEstrazione(&estr, imp);
-     initTombolone(&tomb, leggiDimImpostazioni(imp));
+
 
     /*
         Se non è stata allocata memoria per il tombolone,
         vuol dire che è stato rilevato un eccesso nelle dimensioni
         dello stesso
     */
-     if ( get_curr_error() == EITOMB )
+     if ( initTombolone(&tomb, leggiDimImpostazioni(imp)) == EITOMB )
      {
-         flag = 1;
-         printf("Per prevenire ulteriori danni, si sta uscendo dalla partita attuale!\nRidimensionare le dimensione del tombolone");
+         flag_uscita = 1;
+         clrscr();
+         tombolaErrore( EITOMB, "Per prevenire ulteriori danni si sta uscendo dalla partita in corso!" );
          getch();
      }
-
+    /* viene inizializzata la lista dei giocatori */
     lista.list_g = allocGiocatore();
-    setTotG(&lista, leggiTotGiocImpostazioni(imp));
+    scriviTotG(&lista, leggiTotGiocImpostazioni(imp));
 
-
-    for ( temp = lista.list_g; i < getTotG(&lista) && !flag; i++, temp = allocGiocatore() )
+    /* Riempie la lista dei giocatori associando ad ognuno le cartelle della tombola */
+    for ( temp = lista.list_g; i < leggiTotG(&lista) && !flag_uscita; i++, temp = allocGiocatore() )
     {
-        clrscr();
-        printFile("nuova.txt");
-        printf("\nNUMERO GIOCATORI : %d", getTotG(&lista));
-        printf("\nNUMERO CARTELLE : %d", leggiNumCartelleImpostazioni(imp));
-        printf("\nDIMENSIONI TOMBOLONE : %d\n", leggiDimImpostazioni(imp));
 
         initGiocatore(temp, imp, &cont_id);
-        createCartelle(temp, &estr);
+        creaCartelle(temp, &estr);
+
+        for ( cart_corr = leggiCartella(temp); isSetCartella(cart_corr); cart_id++, cart_corr = leggiSuccC(cart_corr ) )
+            scriviIdCartella( cart_corr, cart_id);
         if( i > 0)
-         addGiocatore(lista.list_g, temp);
+         aggGiocatore(lista.list_g, temp);
 
 
-        if( getIdGiocatore(temp) == 6)
+
+     if(!flag_menu)
+     {
+
+
+        /* Se l'id del giocatore indica l'ultima giocatore della lista
+           allora stampa un menu' adatto altrimenti stampa il menu'
+           del giocatore qualunque */
+        if( leggiIdGiocatore(temp) == leggiTotGiocImpostazioni(imp))
         {
              do
              {
 
                     clrscr();
-                    printFile("nuova.txt");
-                    printf("\nNUMERO GIOCATORI : %d", getTotG(&lista));
+                    stampaFile("nuova.txt");
+                    printf("\nNUMERO GIOCATORI : %d", leggiTotG(&lista));
                     printf("\nNUMERO CARTELLE : %d", leggiNumCartelleImpostazioni(imp));
                     printf("\nDIMENSIONI TOMBOLONE : %d\n", leggiDimImpostazioni(imp));
                     printf("\n\nOPZIONI UTENTE - Giocatore %d\n\n%s\n%s\n%s\n",
-                            getIdGiocatore(temp),
+                            leggiIdGiocatore(temp),
                             "1) Visualizza Cartelle",
                             "2) Inizia il Gioco",
                             "3) Vai ad Impostazioni");
-                    gotoxy(1,33);
+                    gotoxy(1,38);
                     printf("ESC - Esci");
                     gotoxy(1,18);
 
 
                 switch( choice = getch() )
                 {
-                    case '1' : printCartelle( temp, &estr ); break;
+                    case '1' : stampaCartelle( temp, &estr ); break;
                     case '2' : break;
                     case '3' :
                         printf("\nATTENZIONE SI STA PASSANDO ALLA SEZIONE IMPOSTAZIONI!\n");
                         wait(2);
-                        impostazioni_gioco(imp);
-                        flag = 1;
+                        impostazioniGioco(imp);
+                        flag_uscita = 1;
                         break;
                     case ESC_KEY:
                         printf("ATTENZIONE SI STA PER ABBANDONARE LA PARTITA !");
                         wait(2);
-                        flag = 1;
+                        flag_uscita = 1;
                         break;
-                    default : printf("\n\nATTENZIONE TASTO NON VALIDO!\n"); break;
+                    default : printf("\n\nATTENZIONE TASTO NON VALIDO!\n"); wait(2); break;
 
                 }
-              } while (choice != '2' && !flag);
+              } while (choice != '2' && !flag_uscita);
         }
         else
         {
@@ -462,50 +811,58 @@ void nuova_partita( Impostazioni *imp )
             {
 
                     clrscr();
-                    printFile("nuova.txt");
-                    printf("\nNUMERO GIOCATORI : %d", getTotG(&lista));
+                    stampaFile("nuova.txt");
+                    printf("\nNUMERO GIOCATORI : %d", leggiTotG(&lista));
                     printf("\nNUMERO CARTELLE : %d", leggiNumCartelleImpostazioni(imp));
                     printf("\nDIMENSIONI TOMBOLONE : %d\n", leggiDimImpostazioni(imp));
-                    printf("\n\nOPZIONI UTENTE - Giocatore %d\n\n%s\n%s\n%s\n",
-                            getIdGiocatore(temp),
+                    printf("\n\nOPZIONI UTENTE - Giocatore %d\n\n%s\n%s\n%s\n%s\n",
+                            leggiIdGiocatore(temp),
                             "1) Visualizza Cartelle",
-                            "2) Passa al giocatore successivo",
-                            "3) Vai ad Impostazioni");
-                    gotoxy(1,33);
+                            "2) Inizia il Gioco",
+                            "3) Vai ad Impostazioni",
+                            "4) Passa al giocatore successivo");
+                    gotoxy(1,38);
                     printf("ESC - Esci");
                     gotoxy(1,18);
 
 
                 switch( choice = getch() )
                 {
-                    case '1' : printCartelle( temp, &estr ); break;
-                    case '2' : break;
+                    case '1' : stampaCartelle( temp, &estr ); break;
+                    case '2' : flag_uscita = 1;
+                               flag_menu = 1;
+                               break;
                     case '3' :
                         printf("ATTENZIONE SI STA PASSANDO ALLA SEZIONE IMPOSTAZIONI!\n");
                         wait(2);
-                        impostazioni_gioco(imp);
-                        flag = 1;
+                        impostazioniGioco(imp);
+                        flag_uscita = 1;
                     break;
+                    case '4' : break;
                     case ESC_KEY:
                         printf("ATTENZIONE SI STA PER ABBANDONARE LA PARTITA !");
                         wait(1);
-                        flag = 1;
+                        flag_uscita = 1;
                         break;
                     default : printf("\n\nATTENZIONE, TASTO NON VALIDO!!\n"); getch();break;
 
                 }
-            }while (choice != '2' && !flag );
+            }while (choice != '4' && !flag_uscita );
         }
-
-
+     }
+      if(flag_menu)
+        flag_uscita = 0;
 
     }
 
-    if (!flag)
+
+
+    if (!flag_uscita)
     {
         initEstrazione(&estr, imp);
         scriviNumGen(&estr, leggiDimImpostazioni(imp));
-        GiocaPartita(&lista, imp, &estr, &tomb);
+        initPremio(premi, leggiTotGiocImpostazioni(imp), leggiNumCartelleImpostazioni(imp));
+        giocaPartita(&lista, imp, &estr, &tomb, premi);
          /*
             Terminata la partita è necessario provvedere alla deallocazione
             dell'ingente quantità di memoria che è stata messa a disposizione
@@ -521,6 +878,8 @@ void nuova_partita( Impostazioni *imp )
 
 
 }
+
+/* Inizializza la struttura estrazione */
 void initEstrazione ( Estrazione *estr , Impostazioni *imp)
 {
      scriviNumGen(estr, 0);
@@ -528,6 +887,7 @@ void initEstrazione ( Estrazione *estr , Impostazioni *imp)
      initVettoreNumeri(estr);
      scriviTotNumeri(estr, leggiDimImpostazioni(imp));
 }
+/* Inizializza il gocatore singolo */
 void initGiocatore(Giocatore *gcomodo, Impostazioni *imp, int *cont)
 {
      gcomodo->id = (*cont)+=1;
@@ -539,7 +899,8 @@ void initGiocatore(Giocatore *gcomodo, Impostazioni *imp, int *cont)
 
 
 }
-void bgcolor( int color )
+/* La funzione prevede la colorazione dello sfondo della finestra */
+void coloraSfondo( int color )
 {
 
     int num = 1;
@@ -551,28 +912,29 @@ void bgcolor( int color )
     gotoxy(1,1);
 
 }
-void impostazioni_gioco (Impostazioni *imp )
+
+/* Stampa le impostazioni di gioco e modifica i valori
+   della struttura in base ai comando premuti dal giocatore */
+void impostazioniGioco (Impostazioni *imp )
 {
     char comando;
     int posizione = 1;
+    static int flag_imp = 0;
     int random = rand()%2;
     textcolor(58+random);
 
     clrscr();
 
 
-    printFile("impostazioni.txt");
+    stampaFile("impostazioni.txt");
     textcolor(63);
     /* Inizializza la struttura Impostazioni */
-    if ( leggiDimImpostazioni(imp) < 0 || leggiTotGiocImpostazioni(imp) > 1000 )
+    if ( flag_imp == 0 )
     {
-        scriviNumCartelleImpostazioni(imp,2);
-        scriviTotGiocImpostazioni( imp,6);
-        scriviDimImpostazioni( imp, 90);
-        scriviAudioVImpostazioni( imp, T);
-        scriviAudioNumImpostazioni( imp, T);
+        initImpostazioni (imp);
+        flag_imp = 1;
     }
-    Stampaimpostazioni(imp, posizione );
+    stampaImpostazioni(imp, posizione );
 
     while ((comando=(int)getch()) != 27)
     {
@@ -581,12 +943,12 @@ void impostazioni_gioco (Impostazioni *imp )
                if ( posizione - 1 < 1 )
                {
                     posizione = 5;
-                    Stampaimpostazioni(imp, posizione);
+                    stampaImpostazioni(imp, posizione);
                }
                else
                {
                     posizione--;
-                    Stampaimpostazioni(imp,posizione);
+                    stampaImpostazioni(imp,posizione);
                }
           }
           if ( (int)comando == 80 || (int)comando == 2 )
@@ -594,12 +956,12 @@ void impostazioni_gioco (Impostazioni *imp )
                if ( posizione + 1 > 5 )
                {
                     posizione = 1;
-                    Stampaimpostazioni(imp, posizione);
+                    stampaImpostazioni(imp, posizione);
                }
                else
                {
                     posizione++;
-                    Stampaimpostazioni(imp,posizione);
+                    stampaImpostazioni(imp,posizione);
                }
           }
           if ( (int)comando == 75 || (int)comando == 77 )
@@ -609,28 +971,21 @@ void impostazioni_gioco (Impostazioni *imp )
                        case 1:
                               if( (int)comando == 77 )
                               {
-                                  if( leggiTotGiocImpostazioni(imp) + 1 > MAXG )
-                                  {
-                                      scriviTotGiocImpostazioni(imp, 2);
-                                      Stampaimpostazioni(imp, posizione);
-                                  }
-                                  else
-                                  {
-                                      scriviTotGiocImpostazioni(imp, leggiTotGiocImpostazioni(imp) + 1 );
-                                      Stampaimpostazioni(imp,posizione);
-                                  }
+                                  scriviTotGiocImpostazioni(imp, leggiTotGiocImpostazioni(imp) + 1 );
+                                  stampaImpostazioni(imp,posizione);
+
                               }
                               if( (int)comando == 75 )
                               {
                                   if( leggiTotGiocImpostazioni(imp) - 1 < 2 )
                                   {
                                       scriviTotGiocImpostazioni(imp, MAXG );
-                                      Stampaimpostazioni(imp, posizione);
+                                      stampaImpostazioni(imp, posizione);
                                   }
                                   else
                                   {
                                       scriviTotGiocImpostazioni(imp, leggiTotGiocImpostazioni(imp) - 1 );
-                                      Stampaimpostazioni(imp,posizione);
+                                      stampaImpostazioni(imp,posizione);
                                   }
                               }
                               break;
@@ -640,12 +995,12 @@ void impostazioni_gioco (Impostazioni *imp )
                                   if( leggiNumCartelleImpostazioni(imp) + 1 > MAXC )
                                   {
                                       scriviNumCartelleImpostazioni(imp,1);
-                                      Stampaimpostazioni(imp, posizione);
+                                      stampaImpostazioni(imp, posizione);
                                   }
                                   else
                                   {
                                       scriviNumCartelleImpostazioni(imp, leggiNumCartelleImpostazioni(imp) + 1);
-                                      Stampaimpostazioni(imp,posizione);
+                                      stampaImpostazioni(imp,posizione);
                                   }
                               }
                               if( (int)comando == 75 )
@@ -653,12 +1008,12 @@ void impostazioni_gioco (Impostazioni *imp )
                                   if( leggiNumCartelleImpostazioni(imp) - 1 < 1 )
                                   {
                                       scriviNumCartelleImpostazioni(imp,MAXC);
-                                      Stampaimpostazioni(imp, posizione);
+                                      stampaImpostazioni(imp, posizione);
                                   }
                                   else
                                   {
                                       scriviNumCartelleImpostazioni(imp, leggiNumCartelleImpostazioni(imp) - 1);
-                                      Stampaimpostazioni(imp,posizione);
+                                      stampaImpostazioni(imp,posizione);
                                   }
                               }
                               break;
@@ -666,14 +1021,14 @@ void impostazioni_gioco (Impostazioni *imp )
                               if( (int)comando == 77 )
                               {
                                   scriviDimImpostazioni( imp, leggiDimImpostazioni(imp) + 90);
-                                  Stampaimpostazioni(imp,posizione);
+                                  stampaImpostazioni(imp,posizione);
                               }
                               if( (int)comando == 75 )
                               {
                                   if( leggiDimImpostazioni(imp) - 90 >= 90)
                                   {
                                       scriviDimImpostazioni(imp, leggiDimImpostazioni(imp) - 90);
-                                      Stampaimpostazioni(imp,posizione);
+                                      stampaImpostazioni(imp,posizione);
                                   }
                               }
                               break;
@@ -683,12 +1038,12 @@ void impostazioni_gioco (Impostazioni *imp )
                                   if( leggiAudiovImpostazioni(imp) == T)
                                   {
                                      scriviAudioVImpostazioni(imp,F);
-                                     Stampaimpostazioni(imp,posizione);
+                                     stampaImpostazioni(imp,posizione);
                                   }
                                   else
                                   {
                                       scriviAudioVImpostazioni(imp, T);
-                                      Stampaimpostazioni(imp,posizione);
+                                      stampaImpostazioni(imp,posizione);
                                   }
                               }
                               break;
@@ -698,12 +1053,12 @@ void impostazioni_gioco (Impostazioni *imp )
                                   if(leggiAudioNumImpostazioni(imp) == T)
                                   {
                                      scriviAudioNumImpostazioni(imp, F);
-                                     Stampaimpostazioni(imp,posizione);
+                                     stampaImpostazioni(imp,posizione);
                                   }
                                   else
                                   {
                                       scriviAudioNumImpostazioni(imp, T);
-                                      Stampaimpostazioni(imp,posizione);
+                                      stampaImpostazioni(imp,posizione);
                                   }
                               }
                       break;
@@ -713,8 +1068,8 @@ void impostazioni_gioco (Impostazioni *imp )
 
 
 }
-
-void Stampaimpostazioni ( Impostazioni *imp, int posizione)
+/* Stampa a video le impostazioni di gioco */
+void stampaImpostazioni ( Impostazioni *imp, int posizione)
 {
     int pos = 8;
     int color = 62;
@@ -734,7 +1089,7 @@ void Stampaimpostazioni ( Impostazioni *imp, int posizione)
     gotoxy( 42, pos++ );
     printf(" %c %3d %3c  ", 17, leggiDimImpostazioni(imp), 16);
     gotoxy( 1, 12);
-    printf("------------------------SOUND---------------------");
+    printf("------------------------AUDIO---------------------");
     gotoxy( 5, pos+3 );
     if (imp->audiov == T )
     {
@@ -764,7 +1119,7 @@ void Stampaimpostazioni ( Impostazioni *imp, int posizione)
      }
     gotoxy( 1, 17);
     printf("--------------------------------------------------");
-    gotoxy( 1, 25);
+    gotoxy( 1, 38);
     printf("ESC - Esci");
     switch( posizione )
     {
@@ -829,8 +1184,8 @@ void Stampaimpostazioni ( Impostazioni *imp, int posizione)
     }
 
 }
-
-void addGiocatore(Giocatore *g,Giocatore *gcomodo)
+/* Aggiungo un nodo giocatore in coda alla lista dei giocatori */
+void aggGiocatore(Giocatore *g,Giocatore *gcomodo)
 {
      if(!isSetGiocatore(g->next_g))
      {
@@ -842,13 +1197,63 @@ void addGiocatore(Giocatore *g,Giocatore *gcomodo)
             getch();
             exit(-1);
        }
-       g = getNextG(g);
+       g = leggiSuccG(g);
        *g = *gcomodo;
      }
-      else addGiocatore(getNextG(g),gcomodo);
+      else aggGiocatore(leggiSuccG(g),gcomodo);
 
 }
-void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Impostazioni *imp )
+
+int controllaNomeFile( char *nome_file )
+{
+
+    /*
+        IL nome di un file in Windows accetta uno qualsiasi dei caratteri
+        del formato standard Unicode, tralasciando quelli che sono i seguenti
+        caratteri :
+
+        < (less than)
+        > (greater than)
+        : (colon)
+        " (double quote)
+        / (forward slash)
+        \ (backslash)
+        | (vertical bar or pipe)
+        ? (question mark)
+        * (asterisk)
+
+
+    */
+    static char char_no_validi[] =
+        {
+            '<', '>', ':', '\"', '/', '\\', '|', '?', '*'
+
+        };
+    int errore = ENOTF;
+    int tot_char = 9;
+    int i = 0,j;
+
+    /*
+        Effettuo il controllo che all'interno del nome del file scelto non vi siano
+        caratteri simili, altrimenti, segnalo un errore.
+
+    */
+
+    /* Se il nome del file è uguale alla parola vuota, c'è un errore! */
+    if ( strcmp(nome_file, "\0") == 0 )
+        errore = ENOMSAVE;
+    else
+    {
+        for ( i = 0; i < strlen(nome_file) && errore == ENOTF; i++ )
+            for ( j = 0; j < tot_char && errore == ENOTF; j++ )
+                if ( nome_file[i] == char_no_validi[j] )
+                    errore = ENOMSAVE;
+    }
+
+    return errore;
+}
+
+void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Impostazioni *imp, ListaPremi premi )
 {
     DIR *dir_fp;
     struct dirent *ent;
@@ -857,10 +1262,13 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Imposta
     char filename[MAX_PATH];
     char dir_name[MAX_PATH];
     char *dir_principale;
+    int errore = ENOTF;
 
     /* Prelevo la homepath del sistema corrente */
 
 
+
+    stampaFile("salva.txt");
 
     if ( ( dir_principale = getenv("USERPROFILE") ) != NULL )
     {
@@ -888,30 +1296,45 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Imposta
         allora viene appositamente creata
 
        */
-        printf("DIRECTORY NON TROVATA, LA STO CREANDO");
+
+        printf("\nDIRECTORY DI SALVATAGGIO NON TROVATA \n\n LA DIRECOTORY E' STATA CREATA NELLA CARTELLA PRINCIPALE DELL'UTENTE\n\n");
+        wait(1);
        if ( _mkdir(dir_name) )
        {
-            printf("\nDIR CREATA!\n");
-            if ( ( dir_fp = opendir(dir_name) ) == NULL ) printf("\n\n\nNON CREATA!");
+            printf("\nDIR CREATA!\n\n");
+            wait(1);
+            if ( ( dir_fp = opendir(dir_name) ) == NULL )
+            {
+                printf("\n\n\nNON CREATA!\n\n");
+                wait(1);
+            }
 
        }
 
 
     }
-  else
-    {
-        printFile("salva.txt");
-        while ( getchar() != '\n' );
-        printf("Il nome del file da salvare verrà salvato con estensione '.sav'\nInserisci nome file da salvare ( MAX 6 caratteri ) : ");
-        fgets( buffer, 10, stdin);
-        chomp(buffer);
 
-        if ( !snprintf( filename, MAX_PATH, "%s\\%s.sav", dir_name, buffer) )
+
+    printf("\nIl nome del file da salvare verra' salvato con estensione '.sav'\nInserisci nome file da salvare ( MAX 6 caratteri ) : ");
+    fgets( buffer, 8, stdin);
+    chomp(buffer);
+    while( getchar() != '\n');
+
+    if ( ( errore = controllaNomeFile(buffer) ) == ENOMSAVE )
+    {
+        tombolaErrore( errore, "\nImpossibile proseguire nel salvataggio del file! \n\nPremi un tasto qualsiasi per uscire!");
+        getch();
+    }
+    else
+        if ( !snprintf( filename, MAX_PATH, "%s\\%s.sav", dir_name, buffer) || errore == ENOMSAVE )
         {
-            perror("ERRORE CREAZIONE NOME FILE ::> ");
+            clrscr();
+            tombolaErrore( errore, "\nCrezione del pathname fallita!");
             getch();
             exit(-1);
         }
+    else
+    {
 
         if ( ( fp = fopen(filename,"wb")) == NULL )
         {
@@ -921,20 +1344,21 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Imposta
         }
         else
         {
-            Giocatore *curr_gioc;
-            Cartella *curr_cart;
+            Giocatore *gioc_corr;
+            Cartella *cart_corr;
             int row_tomb, col_tomb;
 
-            printf("Salvataggio %s in corso....", filename);
+            printf("\nSalvataggio %s in corso....", filename);
+
             /* Salvataggio struttura ListaGiocatore */
 
             fwrite( list, sizeof(ListaGiocatori), 1, fp );
-            for ( curr_gioc = leggiPrimoGioc(list); isSetGiocatore(curr_gioc); curr_gioc = getNextG(curr_gioc) )
+            for ( gioc_corr = leggiPrimoGioc(list); isSetGiocatore(gioc_corr); gioc_corr = leggiSuccG(gioc_corr) )
             {
-                fwrite(curr_gioc, sizeof(Giocatore), 1, fp);
+                fwrite(gioc_corr, sizeof(Giocatore), 1, fp);
 
-                for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
-                    fwrite( curr_cart, sizeof(Cartella), 1, fp);
+                for ( cart_corr = leggiCartella(gioc_corr); isSetCartella(cart_corr); cart_corr = leggiSuccC(cart_corr) )
+                    fwrite( cart_corr, sizeof(Cartella), 1, fp);
             }
 
 
@@ -942,7 +1366,6 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Imposta
             fwrite(imp, sizeof(Impostazioni), 1, fp);
 
             /* Salvataggio ListaPremi */
-            /*for ( i = 0; i < TOT_PRIZE; fwrite( &p[i], sizeof(Premio), 1, fp ),i++ );*/
             fwrite( premi, sizeof(ListaPremi), 1, fp);
 
             /* Salvataggio struttura Estrazione */
@@ -964,9 +1387,9 @@ void salvaPartita( ListaGiocatori *list, Tombolone *t, Estrazione *estr, Imposta
 
         closedir(dir_fp);
         fclose(fp);
-
-
     }
+
+
 }
 
 int leggiFileSalvataggio( char *nuovo_file )
@@ -981,6 +1404,10 @@ int leggiFileSalvataggio( char *nuovo_file )
     char *dir_principale;
     int status = 1;
     int choice;
+    int flag_uscita = 1;
+    int num_pagine, cont_pag;
+    int j;
+    int key;
 
     /*
         Controlla che la variabile d'ambiente USERPROFILE Sia settata
@@ -995,7 +1422,7 @@ int leggiFileSalvataggio( char *nuovo_file )
         {
             if ( !snprintf(dir_name, MAX_PATH, "%s\\TombolaSaveGame", dir_principale)  )
             {
-                perror("ERRORE CREAZIONE PATHNAME :: > ");
+                fprintf(stderr,"ERRORE CREAZIONE PATHNAME  ");
                 getch();
                 exit(-1);
             }
@@ -1010,9 +1437,11 @@ int leggiFileSalvataggio( char *nuovo_file )
 
     if ( ( dir_fp = opendir(dir_name) ) == NULL )
     {
-       perror("ERROR ::  ");
+       clrscr();
+       stampaFile("carica.txt");
+       fprintf( stderr, "\nCARTELLA DEI SALVATAGGI NON PRESENTE, PROVVEDERE A CREARLA SALVANDO UNA PARTITA ");
        getchar();
-       exit(-1);
+       status = 0;
 
     }
     else
@@ -1025,8 +1454,8 @@ int leggiFileSalvataggio( char *nuovo_file )
             getch();
             exit(-1);
         }
-        printFile("carica.txt");
-        printf("SALVATAGGI ATTUALMENTE CARICATI \n");
+
+        stampaFile("carica.txt");
 
         /*
             Usando la funzione readdir, scorro l'intera directory
@@ -1055,7 +1484,7 @@ int leggiFileSalvataggio( char *nuovo_file )
                 strncpy( *(file_names+i), ent->d_name, ent->d_namlen+1);
 
 
-                printf("%d) %s\n", num_files, *(file_names+i));
+                //printf("%d) %s\n", num_files, *(file_names+i));
 
                 file_names = (char**)realloc( file_names, ++num_files * sizeof(char*));
 
@@ -1075,6 +1504,7 @@ int leggiFileSalvataggio( char *nuovo_file )
 
         }
 
+
         /*
             SE I = 0 , NESSUN FILE SARA' STATO TROVATO!
             Setto lo status 0 per notificare l'errore.
@@ -1082,51 +1512,137 @@ int leggiFileSalvataggio( char *nuovo_file )
         if ( i == 0 )
         {
             printf(" NESSUN FILE DI SALVATAGGIO TROVATO!!\nSTO USCENDO!\n");
+            wait(2);
             status = 0;
 
         }
         else
+
         {
 
+            if ( ( num_files % 10 ) != 0 )
+                num_pagine = num_files / 10 + 1;
+            else
+                num_pagine = num_files / 10;
+
+            cont_pag = 1;
+            num_files--;
 
             do
             {
 
-                printf("Per caricare un file selezionare numero del salvataggio da caricare\nScelta del salvataggio : ");
-                if ( ( res = scanf("%d", &choice) ) <= 0 )
+
+                while( flag_uscita != 0 )
                 {
-                    fprintf(stderr,"ACCETTA UNICAMENTE DATI NUMERICI!!\n");
-                    while( getchar() != '\n' );
+                    clrscr();
+                    stampaFile("carica.txt");
+                    printf("---------------------------------\n%s\n%s\n",
+                            "--------- PARTITE SALVATE -------",
+                            "---------------------------------");
+                    for ( j = (cont_pag-1) * 10; j < cont_pag * 10 && j < num_files; j++ )
+                        printf("%d) %s\n", j+1, *(file_names+j) );
+
+
+                    if ( num_pagine > 1 )
+                    {
+                        gotoxy(1, 38);
+                        printf("Premi un qualunque tasto diverso dalle freccie per continuare!\n");
+                        gotoxy( 1, 50);
+                        printf("<- scrorri pagina a sinistra   -> scorri pagina a destra ");
+                        gotoxy( 1, 20);
+                        key = getch();
+                        if ( key == 224 )
+                            key = getch();
+                        switch ( key )
+                        {
+
+                            case RIGHT_KEY :
+                                if( cont_pag  < num_pagine )
+                                    cont_pag++;
+                            break;
+
+                            case LEFT_KEY :
+                                if ( cont_pag > 1 )
+                                    cont_pag--;
+                            break;
+
+                            default : flag_uscita = 0; break;
+
+
+                        }
+
+                   }
+                    else
+                        flag_uscita = 0;
+
+
                 }
-                else
-                    if ( choice <= 0 || choice > num_files )
-                        fprintf(stderr, "SCELTA SELEZIONATA NON CONSENTITA!!\n");
+
+            flag_uscita = 1;
+            /*do
+            {*/
+
+            printf("\n\nPer caricare un file selezionare numero del salvataggio da caricare\n( Inserisci '0' per uscire )\nScelta del salvataggio : ");
+            if ( ( res = scanf("%d", &choice) ) <= 0 )
+            {
+                fprintf(stderr,"ACCETTA UNICAMENTE DATI NUMERICI!!\n");
+                while( getchar() != '\n' );
+                getch();
 
             }
-            while( ( choice <= 0 || choice > num_files ) || ( res < 0 ) );
+            else
+               if ( choice < 0 || choice > num_files )
+               {
+                    fprintf(stderr, "SCELTA SELEZIONATA NON CONSENTITA!!\n");
+                    while( getchar() != '\n' );
+                    getch();
 
-            printf("Salvataggio selezionato %s\n", *(file_names+(choice-1)));
+                }
+            else
+              if ( choice == 0 )
+              {
+                status = 0;
+                flag_uscita = 0;
+              }
+              else
+                flag_uscita = 0;
+
+            //} while( ( choice < 0 || choice > num_files ) || ( res < 0 ) );
+
+        }while( flag_uscita == 1 || ( choice < 0 || choice > num_files ) || ( res < 0 ) );
+
+
             /*
                 Compongo il pathname del salvataggio selezionato
             */
 
+        if ( status != 0 )
+        {
+
+            printf("Salvataggio selezionato %s\n", *(file_names+(choice-1)));
             if ( !snprintf(nuovo_file, MAX_PATH, "%s\\%s", dir_name, *(file_names+(choice-1)) ) )
             {
                 perror("ERRORE CREAZIONE NOME FILE ::> ");
                 getch();
-                exit(-1);
+                status = 0;
             }
         }
     }
 
-    return status;
 
+    }
+
+
+    return status;
 }
+
+
+
 
 int leggiFileDatiGiocatori( FILE *fp, ListaGiocatori *list )
 {
-    Giocatore *curr_gioc = NULL;
-    Cartella *curr_cart = NULL;
+    Giocatore *gioc_corr = NULL;
+    Cartella *cart_corr = NULL;
     int error_flag = 1;
     int i, j;
 
@@ -1136,33 +1652,33 @@ int leggiFileDatiGiocatori( FILE *fp, ListaGiocatori *list )
         list->list_g = initListaG();
 
 
-        for ( curr_gioc = allocGiocatore(), i = 0; i < getTotG(list) && error_flag != 0; i++, curr_gioc = allocGiocatore() )
+        for ( gioc_corr = allocGiocatore(), i = 0; i < leggiTotG(list) && error_flag != 0; i++, gioc_corr = allocGiocatore() )
         {
-            if ( fread( curr_gioc, sizeof(Giocatore), 1, fp) != 0 )
+            if ( fread( gioc_corr, sizeof(Giocatore), 1, fp) != 0 )
             {
-                curr_gioc->next_g = initListaG();
-                curr_gioc->cart_g = initCartella();
+                gioc_corr->next_g = initListaG();
+                gioc_corr->cart_g = initCartella();
 
-                for ( curr_cart = allocCartella(), j = 0; j < getNumCartelleGioc(curr_gioc) && error_flag != 0; curr_cart = allocCartella(), j++ )
+                for ( cart_corr = allocCartella(), j = 0; j < leggiNumCartelleGioc(gioc_corr) && error_flag != 0; cart_corr = allocCartella(), j++ )
                 {
-                    if ( fread(curr_cart, sizeof(Cartella), 1, fp) != 0 )
+                    if ( fread(cart_corr, sizeof(Cartella), 1, fp) != 0 )
                     {
 
-                        curr_cart->next_cart = initCartella();
+                        cart_corr->next_cart = initCartella();
 
                         if ( j == 0 )
-                            curr_gioc->cart_g = curr_cart;
+                            gioc_corr->cart_g = cart_corr;
                         else
-                            addCartella(curr_gioc->cart_g, curr_cart);
+                            aggCartella(gioc_corr->cart_g, cart_corr);
                     }
                     else
                         error_flag = 0;
                 }
 
                 if ( i == 0 )
-                    list->list_g = curr_gioc;
+                    list->list_g = gioc_corr;
                 else
-                    addGiocatore(list->list_g, curr_gioc);
+                    aggGiocatore(list->list_g, gioc_corr);
             }
             else
                 error_flag = 0;
@@ -1174,10 +1690,10 @@ int leggiFileDatiGiocatori( FILE *fp, ListaGiocatori *list )
     return error_flag;
 
 }
-int prelevaDatiDaFile( FILE *fp, ListaGiocatori *list, Tombolone *t, Estrazione *estr, Impostazioni *imp )
+int prelevaDatiDaFile( FILE *fp, ListaGiocatori *list, Tombolone *t, Estrazione *estr, Impostazioni *imp, ListaPremi premi )
 {
 
-    int i, j, row_tomb, col_tomb;
+    int i, row_tomb, col_tomb;
     int error_flag = 1;
 
     /* Lettura struttura ListaGiocatore */
@@ -1243,6 +1759,7 @@ void caricaPartita( void )
     Tombolone t;
     Estrazione estr;
     Impostazioni imp;
+    ListaPremi premi;
     char nome_file_salvataggio[MAX_PATH];
     FILE *fp;
 
@@ -1276,7 +1793,7 @@ void caricaPartita( void )
                fseek( fp, 0, SEEK_SET);
                printf("Caricamento %s in corso....", nome_file_salvataggio);
 
-               if ( !prelevaDatiDaFile(fp, &list, &t, &estr, &imp ) )
+               if ( !prelevaDatiDaFile(fp, &list, &t, &estr, &imp, premi ) )
                {
                     clrscr();
                     printf("IL FILE POTREBBE ESSERE CORROTTO O POTREBBERO ESSERCI DATI NON LEGGIBILI!\nIMPOSSIBILE CARICARE FILE\nPremi Invio per continuare");
@@ -1287,14 +1804,17 @@ void caricaPartita( void )
                else
                {
                     printf("CARICAMENTO COMPLETATO! ");
-                    GiocaPartita(&list, &imp, &estr, &t);
+                    giocaPartita(&list, &imp, &estr, &t, premi);
                }
 
 
 
             }
+
+            fclose(fp);
         }
     }
+
 
 
 }
@@ -1334,66 +1854,102 @@ int controllaEstensione( char *filename )
 
 void uscita()
 {
-    printFile("uscita.txt");
-
+    stampaFile("uscita.txt");
+    wait(1);
 
 }
 
 void istruzioni()
 {
-    printFile("istruzioni.txt");
+    stampaFile("istruzioni.txt");
 
 
 }
 
 
 
-Cartella *getCartella(Giocatore *g)
+Cartella *leggiCartella(Giocatore *g)
 {
     return g->cart_g;
 }
 
-int getIdGiocatore(Giocatore *g)
+int leggiIdGiocatore(Giocatore *g)
 {
-    return g->id;
-}
+    int errore = ENOTF;
 
-int getCashGiocatore( Giocatore *g )
-{
-    return g->cash;
-}
-
-int getNumCartelleGioc( Giocatore *g )
-{
-    return g->num_cartelle;
-}
-int setNumCartelleGioc(Giocatore *g, int numc)
-{
-    int segnale = 0;
-
-    if(numc < 1 || numc > 6)
-     set_error(ENUMCART);
-     else
-      g->num_cartelle = numc;
-
-    if ( get_curr_error() == ENOTF )
-     segnale = 1;
-
-    return segnale;
-}
-
-int setCashGiocatore( Giocatore *g, int cash )
-{
     if ( !isSetGiocatore(g) )
-        set_error(ELPL);
+        errore = EIDG;
+
+    return ( errore == EIDG ) ? errore : g->id;
+}
+
+int scriviIdGiocatore( Giocatore *g, int id )
+{
+    int errore = ENOTF;
+
+    if ( !isSetGiocatore(g) )
+        errore = ELG;
+    else
+        if ( id < 0 )
+            errore = EIDG;
+    else
+        g->id = id;
+
+    return errore;
+}
+
+int leggiCashGiocatore( Giocatore *g )
+{
+    int errore = ENOTF;
+
+    if ( !isSetGiocatore(g ) )
+        errore = ERCASHG;
+
+    return (  errore == ERCASHG ) ? errore : g->cash;
+}
+
+
+int scriviCashGiocatore( Giocatore *g, int cash )
+{
+    int errore = ENOTF;
+
+    if ( !isSetGiocatore(g) )
+        errore = ELG;
     else
         if ( cash < 0 )
-            set_error(ECASH);
+            errore = ECASHG;
     else
         g->cash = cash;
 
-    return get_curr_error();
+    return errore;
 }
+
+int leggiNumCartelleGioc( Giocatore *g )
+{
+    int errore = ENOTF;
+
+    if ( !isSetGiocatore(g) )
+        errore = ERNUMCART;
+
+
+    return ( errore == ERNUMCART) ? errore : g->num_cartelle;
+}
+int scriviNumCartelleGioc(Giocatore *g, int numc)
+{
+    int errore = ENOTF;
+
+    if(numc < 1 || numc > 6)
+        errore = ENUMCART;
+     else
+        if ( !isSetGiocatore(g) )
+            errore = ELG;
+    else
+      g->num_cartelle = numc;
+
+
+    return errore;
+}
+
 
 Giocatore *leggiPrimoGioc( ListaGiocatori *list )
 {
@@ -1403,7 +1959,7 @@ Giocatore *leggiPrimoGioc( ListaGiocatori *list )
 
 Giocatore *initListaG()
 {
-          return NULL;
+    return NULL;
 }
 
 Giocatore *allocGiocatore()
@@ -1413,105 +1969,120 @@ Giocatore *allocGiocatore()
 
 }
 
-void createCartelle( Giocatore *p, Estrazione *estr )
+void creaCartelle( Giocatore *p, Estrazione *estr )
 {
     int i = 0;
-    //Puntatore alla testa della lista di cartelle
-    Cartella *curr_cart = NULL;
 
     //Inizializzio il puntatore di testa delle cartelle
-    p->cart_g = genCartella(estr);
-    curr_cart = p->cart_g;
 
-    while( i < getNumCartelleGioc(p)-1 )
+    p->cart_g = genCartella(estr);
+
+
+    while( i < leggiNumCartelleGioc(p)-1 )
     {
 
-        addCartella( p->cart_g, genCartella(estr) );
-        curr_cart = curr_cart->next_cart;
+        aggCartella( p->cart_g, genCartella(estr));
+
         i++;
     }
 
 }
 
-Giocatore *getNextG(Giocatore *g)
+Giocatore *leggiSuccG(Giocatore *g)
 {
     return g->next_g;
 }
 
-Giocatore *delGiocatore (Giocatore *g, int id)
+Giocatore *leggiNodoG(Giocatore *g, int pos)
 {
-     Giocatore *gcomodo;
 
-     if(isSetGiocatore(g))
-     {
-        if( getIdGiocatore(g) == id)
+    int posizione = 1;
+    Giocatore * comodo = NULL;
+    Giocatore * corrente = g;
+
+    if ( isSetGiocatore(g) )
+    {
+        while ( pos != posizione )
         {
-           gcomodo = g;
-           g = getNextG(g);
-           free(gcomodo);
+          posizione++;
+          corrente = leggiSuccG(corrente);
 
-           return g;
         }
-         else g->next_g = delGiocatore(getNextG(g), id);
-     }
-      else return g;
 
-    return g;
+          comodo = corrente;
+
+    }
+    return comodo;
 }
 
-
-Giocatore *getNodoG(Giocatore *g, int pos)
+int scriviTotG(ListaGiocatori *g,int numg)
 {
-    if(isSetGiocatore(g) && pos == 1)
-        return g;
-    else
-        getNodoG(getNextG(g), pos - 1);
-}
-
-int setTotG(ListaGiocatori *g,int numg)
-{
-    int segnale = 0;
+    int errore = ENOTF;
 
     if ( !isSetGiocatore(g->list_g) || numg < 1 )
-     set_error(ENUMP);
+        errore = ETOTG;
      else g->num_giocatori = numg;
 
-    if ( get_curr_error() == ENOTF ) segnale = 1;
-
-    return segnale;
+   return errore;
 }
 
-int getTotG(ListaGiocatori *g)
+int leggiTotG(ListaGiocatori *g)
 {
-    return g->num_giocatori;
+    int errore = ENOTF;
+
+    if ( !g )
+        errore = ELG;
+
+
+    return ( errore == ELG ) ? errore : g->num_giocatori;
 }
 
 int isSetGiocatore(Giocatore *g)
 {
-    int controllo = 0;
 
-    if(!g)
-        set_error(ELPL);
-    else
-        controllo = 1;
-
-    return controllo;
+    /*
+        Se il giocatore è diverso da NULL ritorna 1,
+        altrimenti zero.
+    */
+    return ( g ) ? 1 : 0;
 }
 
 int leggiTotGiocImpostazioni( Impostazioni *imp )
 {
-    return imp->num_tot_giocatori;
+    int errore = ENOTF;
+
+    if ( !imp )
+        errore = ERITOTG;
+
+    return ( errore == ERITOTG) ? errore : imp->num_tot_giocatori;
 }
 
 int leggiDimImpostazioni( Impostazioni *imp )
 {
-    return imp->dim_tombolone;
+    int errore = ENOTF;
+
+    if ( !imp )
+        errore = ERIDIMT;
+    else
+        if ( imp->dim_tombolone < 90 )
+            errore = ERIDIMT;
+
+
+    return ( errore == ERIDIMT ) ? errore : imp->dim_tombolone;
 
 }
 
 int leggiNumCartelleImpostazioni( Impostazioni *imp )
 {
-    return imp->max_cartelle;
+    int errore = ENOTF;
+
+    if ( !imp )
+        errore = ERINUMC;
+    else
+        if ( imp->max_cartelle < 1 || imp->max_cartelle > 6 )
+            errore = ERINUMC;
+
+    return ( errore == ERINUMC ) ? errore : imp->max_cartelle;
 
 }
 
@@ -1528,54 +2099,55 @@ Boolean leggiAudioNumImpostazioni( Impostazioni *imp )
 
 int scriviTotGiocImpostazioni( Impostazioni *imp, int numgioc )
 {
-    int state;
+    int errore = ENOTF;
 
-    if ( numgioc < 0 )
-    {
-        set_error(EIP);
-        state = EIP;
-    }
+    if ( imp == NULL )
+        errore = EI;
+    else
+        if ( numgioc < 2 )
+            errore = EINUMG;
     else
         imp->num_tot_giocatori = numgioc;
 
 
-    return state;
+    return errore;
 
 }
 
 
 int scriviDimImpostazioni( Impostazioni *imp, int dim )
 {
-    int state = ENOTF;
+    int errore = ENOTF;
     int mod = 0;
 
-    if ( dim < 0 )
-    {
-        set_error(EIMPD );
-        state = EIMPD;
-    }
+    if ( imp == NULL )
+        errore = EI;
+    else
+        if ( dim < 90)
+            errore = EIDIMT;
     else
         if ( ( mod = dim % 90 ) != 0 )
-            dim = 90 * ( mod + 1);
+            dim = dim - mod;
 
-    imp->dim_tombolone = dim;
+    if ( errore == ENOTF )
+        imp->dim_tombolone = dim;
 
-    return state;
+    return errore;
 }
 
 int scriviNumCartelleImpostazioni ( Impostazioni *imp, int numcart )
 {
-    int state = ENOTF;
+    int errore = ENOTF;
 
-    if ( numcart < 1 || numcart > 6 )
-    {
-        set_error(ENUMCART);
-        state = ENUMCART;
-    }
+    if ( imp == NULL )
+        errore = EI;
+    else
+        if ( numcart < 1 || numcart > 6 )
+            errore = EINUMCART;
     else
         imp->max_cartelle = numcart;
 
-    return state;
+    return errore;
 }
 
 void scriviAudioVImpostazioni( Impostazioni *imp, Boolean flag )
@@ -1592,13 +2164,13 @@ void scriviAudioNumImpostazioni( Impostazioni *imp, Boolean flag )
 
 /* Funzioni di gestione del Tombolone */
 
-void initTombolone( Tombolone *tomb, int dim )
+int initTombolone( Tombolone *tomb, int dim )
 {
-    int row_tomb;
-    int i, j;
-    int k = 0;
+    int row_tomb; /* Contatore che tiene conto delle righe del tombolone */
+    int i, j; /* Contatori che servono per scorrere le righe e le colonne delle singole cartelle del Tombolone. */
+    int k = 0; /* Tiene conto */
     int k1 = 0;
-    int error_flag = 1;
+    int error_flag = ENOTF;
 
     /*
         Dovendo avere necessariamente delle cartelle del tombolone che hanno un numero di elementi
@@ -1608,69 +2180,100 @@ void initTombolone( Tombolone *tomb, int dim )
     */
 
     scriviColTombolone(tomb, 2);
-    scriviRigheTombolone(tomb, dim / 30);
-    tomb->cart_tomb = (Cart_Tomb**)malloc( leggiRigheTombolone(tomb) * sizeof(Cart_Tomb* ) );
-    if ( !tomb->cart_tomb )
-    {
-        clrscr();
-        perror("MALLOC ERRROR ::> ");
-        error_flag = 0;
+    error_flag = scriviRigheTombolone(tomb, dim / 30);
 
-    }
-    if ( error_flag != 0)
+    if ( error_flag != ERTOMB )
     {
-        for ( i = 0; i < leggiRigheTombolone(tomb); i++ )
+        /* <<<  Allocazione delle singole cartelle del tombolone >>>>>> */
+        tomb->cart_tomb = malloc( leggiRigheTombolone(tomb) * sizeof(Cart_Tomb* ) );
+        if ( !tomb->cart_tomb )
         {
-            *(tomb->cart_tomb+i) = malloc( leggiColTombolone(tomb) * sizeof(Cart_Tomb));
-            if ( !(*(tomb->cart_tomb + i ) ) )
-            {
-                clrscr();
-                perror("MALLOC ERROR ::> ");
-                getch();
-                error_flag = 0;
-            }
+            clrscr();
+            perror("MALLOC ERRROR ::> ");
+            error_flag = EITOMB;
+
         }
-        if ( error_flag != 0 )
+        if ( error_flag != EITOMB )
         {
-            for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb); row_tomb++ )
+            for ( i = 0; i < leggiRigheTombolone(tomb); i++ )
             {
-
-                for ( i = 0; i < CTOMBR; i++ )
+                *(tomb->cart_tomb+i) = malloc( leggiColTombolone(tomb) * sizeof(Cart_Tomb));
+                if ( !(*(tomb->cart_tomb + i ) ) )
                 {
-                    for ( j = 0; j < CTOMBC; j++ )
-                    {
-                        scriviNumTombolone(tomb->cart_tomb[row_tomb][0],i,j,  j + 1 + ( k * 10) );
-                        scriviNumFlagTombolone(tomb->cart_tomb[row_tomb][0], i,j, EXIST);
-
-                    }
-                    k++;
+                    clrscr();
+                    perror("MALLOC ERROR ::> ");
+                    getch();
+                    error_flag = EITOMB;
                 }
-
             }
-
-            k = 0;
-
-            for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb); row_tomb++ )
+            if ( error_flag != EITOMB )
             {
-
-                for ( i = 0; i < 3; i++ )
+                /* Crea la prima parte del tombolone inizializzato tutti i valori in modo corretto*/
+                for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb); row_tomb++ )
                 {
-                    for ( j = 0, k1 = 5; j < 5; j++, k1++ )
-                    {
-                        scriviNumTombolone(tomb->cart_tomb[row_tomb][1], i,j, k1 + 1 + ( k * 10) );
-                        scriviNumFlagTombolone(tomb->cart_tomb[row_tomb][1],i,j,EXIST);
 
+                    for ( i = 0; i < CTOMBR; i++ )
+                    {
+                        for ( j = 0; j < CTOMBC; j++ )
+                        {
+                            /*
+                                Nella prima parte del tombolone saranno presenti tutte le quintuple
+                                che contengono numeri che vanno da 1 a 5, da 11 a 15, da 21 a 25,
+                                da 31 a 35, da 41, 45 e così via quindi adopero tale formula per poter
+                                inizializzare correttamente tali valori.
+
+                            */
+                            scriviNumTombolone(tomb->cart_tomb[row_tomb][0],i,j,  j + 1 + ( k * 10) );
+                            scriviNumFlagTombolone(tomb->cart_tomb[row_tomb][0], i,j, EXIST);
+
+                        }
+                        k++;
                     }
 
-                    k++;
                 }
 
+                k = 0;
+
+                /* Provvede a creare la seconda parte del tombolone*/
+                for ( row_tomb = 0; row_tomb < leggiRigheTombolone(tomb); row_tomb++ )
+                {
+
+                    for ( i = 0; i < CTOMBR; i++ )
+                    {
+                        for ( j = 0, k1 = 5; j < CTOMBC; j++, k1++ )
+                        {
+                            /*
+                                Nella seconda parte del tombolone invece saranno presenti tutti i
+                                valori che vanno da 6 a 10, da 16 a 20, da 26 a 30 e così via.
+                                La formula adoperata tiene conto di un contatore opportuno per poter
+                                far si che i valori vengano correttamente inizializzati.
+                                E.G.
+                                Il numero 16 viene generato grazie all'espressione
+                                5 + 1 + ( 1 * 10 )
+                                Il numero 17 viene generato grazie all'espressione
+                                6 + 1 + ( 1* 10 )
+
+
+                            */
+                            scriviNumTombolone(tomb->cart_tomb[row_tomb][1], i,j, k1 + 1 + ( k * 10) );
+                            scriviNumFlagTombolone(tomb->cart_tomb[row_tomb][1],i,j,EXIST);
+
+                        }
+
+                        k++;
+                    }
+
+                }
             }
+
         }
 
     }
-    else
-        set_error(EITOMB);
+    else /* C'è stato uno specifico errore nell'inizializzazione del tombolone. */
+        error_flag = EITOMB;
+
+
+    return error_flag;
 
 
 }
@@ -1678,74 +2281,60 @@ void initTombolone( Tombolone *tomb, int dim )
 
 int scriviNumTombolone( Cart_Tomb cart_tomb, int i, int j, int num )
 {
-    int state = ENOTF;
+    int errore = ENOTF;
 
-    if ( ( i < 0 || i > CTOMBR) && ( j < 0 || j > CTOMBC) )
-    {
-        set_error(ENUMT);
-        state = ENUMT;
-    }
+    if ( ( i < 0 || i > CTOMBR) || ( j < 0 || j > CTOMBC) )
+        errore = ENUMT;
     else
         cart_tomb[i][j].num = num;
 
-    if ( get_curr_error() != ENOTF )
-        state = get_curr_error();
-
-    return state;
+    return errore;
 }
 
 int leggiNumTombolone( Cart_Tomb cart_tomb,  int i, int j )
 {
-    int num;
+    int errore = ENOTF;
 
-    if ( ( i < 0 || i > CTOMBR) && ( j < 0 || j > CTOMBC) )
-    {
-        set_error(ENUMT);
-        num = -1;
-    }
-    else
-        num = cart_tomb[i][j].num;
+    if ( ( i < 0 || i > CTOMBR) || ( j < 0 || j > CTOMBC) )
+        errore = ERNUMT;
 
-    return num;
+
+    return ( errore == ERNUMT ) ? errore : cart_tomb[i][j].num;
 
 }
 
 int scriviNumFlagTombolone( Cart_Tomb cart_tomb,  int i, int j, flag f )
 {
-    int state = ENOTF;
+    int errore = ENOTF;
 
-    if ( ( i < 0 || i > CTOMBR) && ( j < 0 || j > CTOMBC) )
-    {
-        set_error(ENUMT);
-        state = ENUMT;
-    }
+    if ( ( i < 0 || i > CTOMBR) || ( j < 0 || j > CTOMBC) )
+        errore = ENUMT;
     else
         cart_tomb[i][j].checked = f;
 
-    return state;
+    return errore;
 }
 
 int leggiNumFlagTombolone( Cart_Tomb cart_tomb, int i, int j )
 {
-    if ( ( i < 0 || i > CTOMBR) && ( j < 0 || j > CTOMBC) )
-        set_error(ENUMT);
-    else
-        return cart_tomb[i][j].checked;
+    int errore = ENOTF;
+
+    if ( ( i < 0 || i > CTOMBR) || ( j < 0 || j > CTOMBC) )
+        errore = ERNUMT;
+
+    return ( errore == ERNUMT ) ? errore : cart_tomb[i][j].checked;
 }
 
 int scriviRigheTombolone(Tombolone *tomb, int righe )
 {
-    int state = ENOTF;
+    int errore = ENOTF;
 
-    if ( righe < 0 || righe > 20 )
-    {
-        set_error(ERTOMB);
-        state = ERTOMB;
-    }
+    if ( righe < 0 || righe >= 18 )
+        errore = ERTOMB;
     else
         tomb->righe = righe;
 
-    return state;
+    return errore;
 
 }
 
@@ -1756,17 +2345,14 @@ int leggiRigheTombolone( Tombolone *tomb )
 
 int scriviColTombolone( Tombolone *tomb, int col )
 {
-    int state = ENOTF;
+    int errore = ENOTF;
 
-    if ( col < 0 || col > 20 )
-    {
-        set_error(ECTOMB);
-        state = get_curr_error();
-    }
+    if ( col != 2 )
+        errore = ECTOMB;
     else
         tomb->col = col;
 
-    return state;
+    return errore;
 }
 
 int leggiColTombolone( Tombolone *tomb )
@@ -1777,7 +2363,8 @@ int leggiColTombolone( Tombolone *tomb )
 
 char *leggiNomeTopTen( Topten *t )
 {
-    return t->nome;
+
+    return ( !t ) ? NULL : t->nome;
 }
 
 int leggiPuntTopTen( Topten *t )
@@ -1785,23 +2372,32 @@ int leggiPuntTopTen( Topten *t )
     return t->punteggio;
 }
 
-void scriviNomeTopTen ( Topten *t, char *nome )
+int scriviNomeTopTen ( Topten *t, char *nome )
 {
+    int errore = ENOTF;
+
     t->nome = malloc( ( strlen(nome)+ 1 ) * sizeof(char));
     if ( !t->nome )
     {
-        clrscr();
-        perror("MALLOC ERROR ::> ");
-        getch();
-        exit(-1);
+        errore = ENOMTOP;
     }
     else
         strcpy( t->nome, nome);
+
+    return errore;
 }
 
-void scriviPunteggioTopTen( Topten *t, int punt )
+int scriviPunteggioTopTen( Topten *t, int punt )
 {
-    t->punteggio = punt;
+    int errore = ENOTF;
+
+    if ( punt < 0 )
+        errore = EPUNTOP;
+    else
+        t->punteggio = punt;
+
+    return errore;
+
 }
 
 char *leggiNomePremio ( Premio *p )
@@ -1815,19 +2411,26 @@ int leggiVincitaPremio( Premio *p )
 
 }
 
-void scriviNomePremio( Premio *p, char *nome )
+int scriviNomePremio( Premio *p, char *nome )
 {
+    int errore = ENOTF;
 
-    strcpy( p->nome_premio, nome);
+    if ( strlen(nome) > 9 )
+        errore = ENOMPR;
+    else
+        strcpy( p->nome_premio, nome);
+
+    return errore;
 }
+
 void scriviVincitorePremio( Premio *p, int id )
 {
-    p->winner_id = id;
+    p->id_vincitore = id;
 }
 
 int leggiVincitorePremio( Premio *p )
 {
-    return p->winner_id;
+    return p->id_vincitore;
 }
 
 void scriviVincitaPremio( Premio *p, int tot_premio )
@@ -1860,7 +2463,7 @@ int leggiIdSchedaPremio( Premio *p )
 
 
 
-void printCelle( Card cart, int x, int y, int dim )
+void stampaCelle( Card cart, int x, int y, int dim )
 {
     int i, j;
 
@@ -1960,31 +2563,31 @@ void printCelle( Card cart, int x, int y, int dim )
   textcolor(color+1);
 
 }
-void printCartelle( Giocatore *p, Estrazione *estr )
+void stampaCartelle( Giocatore *p, Estrazione *estr )
 {
-    Cartella *curr_cart = getCartella(p);
+    Cartella *cart_corr = leggiCartella(p);
     clrscr();
     int x = 1, y = 1;
     int cont = 1;
-    int ncart = getNumCartelleGioc(p);
+    int ncart = leggiNumCartelleGioc(p);
     int contpag = 1;
 
     gotoxy(x,y);
 
     if(ncart > 3)
-        printf("Cartelle Giocatore %d - Pagina %d",getIdGiocatore(p), contpag);
+        printf("Cartelle Giocatore %d - Pagina %d",leggiIdGiocatore(p), contpag);
     else
-        printf("Cartelle Giocatore %d",getIdGiocatore(p));
+        printf("Cartelle Giocatore %d",leggiIdGiocatore(p));
 
     gotoxy( x, y += 1);
-    while( isSetCartella( curr_cart ) )
+    while( isSetCartella( cart_corr ) )
     {
 
-        printf("ID CARTELLA %d ", getIdCartella(curr_cart));
+        printf("ID CARTELLA %d ", leggiIdCartella(cart_corr));
         gotoxy(x, y+=2);
-        printCelle( curr_cart->cart ,x,y, leggiTotNumeri(estr));
+        stampaCelle( cart_corr->cart ,x,y, leggiTotNumeri(estr));
         y += 10;
-        if((cont++) == 3)
+        if((cont++) == 3 && ncart > 3 )
         {
             x = 1;
             y = 1;
@@ -1992,10 +2595,10 @@ void printCartelle( Giocatore *p, Estrazione *estr )
             printf("Premere un tasto qualsiasi per cambiare pagina");
             getch();
             clrscr();
-            printf("Cartelle Giocatore %d - Pagina %d",getIdGiocatore(p), ++contpag);
+            printf("Cartelle Giocatore %d - Pagina %d",leggiIdGiocatore(p), ++contpag);
             gotoxy( x, y += 1);
         }
-        curr_cart = getNextC(curr_cart);
+        cart_corr = leggiSuccC(cart_corr);
     }
     x = 1;
     gotoxy(x,++y);
@@ -2004,7 +2607,7 @@ void printCartelle( Giocatore *p, Estrazione *estr )
 }
 
 
-void printPrize( int curr_prize, Giocatore *win_player, int cont_c )
+void stampaPremio( ListaPremi premi, int curr_prize, Giocatore *win_player, int cont_c )
 {
     int x = 1, y = 14;
     gotoxy(x,y++);
@@ -2016,7 +2619,7 @@ void printPrize( int curr_prize, Giocatore *win_player, int cont_c )
     /* In caso contrario, avrà vinto un giocatore preciso e quindi provvedo a stampare tutte le informazioni relative*/
     else
     {
-        scriviVincitorePremio( &premi[curr_prize], getIdGiocatore( win_player) );
+        scriviVincitorePremio( &premi[curr_prize], leggiIdGiocatore( win_player) );
         scriviIdSchedaPremio(&premi[curr_prize], cont_c);
         printf("\nGiocatore %d - ha fatto %s e ha vinto %d con la cartella %d\n",
                 leggiVincitorePremio( &premi[curr_prize]),
@@ -2026,14 +2629,14 @@ void printPrize( int curr_prize, Giocatore *win_player, int cont_c )
 
     }
 
-    scriviUscitoPremio( &premi[curr_prize], T);
+    /*scriviUscitoPremio( &premi[curr_prize], T);*/
 
 
 }
 
 
 
-void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
+void controllaPremio( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr, ListaPremi premi )
 {
     /*
         PRIZE LIST:
@@ -2054,13 +2657,14 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
     int i, j;
     int in_a_row = 0; /* variabile intera che rappresenta i numeri che devono essere presenti in una riga per vincere il premio */
     int curr_prize = 0; /* posizione nell'array dei premi che determina il premio da controllare attualmente. */
-    Giocatore *curr_gioc; /* Puntatore a giocare che garantisce l'accesso a tutti gli elementi della lista d giocatori*/
-    Cartella *curr_cart; /* Puntatore a cartella che consente di scorrere la lista di cartelle */
+    Giocatore *gioc_corr; /* Puntatore a giocare che garantisce l'accesso a tutti gli elementi della lista d giocatori*/
+    Cartella *cart_corr; /* Puntatore a cartella che consente di scorrere la lista di cartelle */
     int *id_vincenti = NULL; /* Array necessario per poter gestire appropriatamente i giocatori che vincono il medesimo premio*/
     int cont_id = 0; /* contatore utilizzato per scorrere il vettore di id */
     int vincita = 0; /* Vincita di ogni singolo giocatore */
     int num_vincenti = 0; /* Numero effettivo di elementi presenti all'interno del vettore */
     int gioc_vince = 0; /* Stabilisce se il giocatore corrente ha vinto o meno con almeno una cartella */
+    int vince_croupier = 0; /* Stabilisce se è stato il croupier ha vincere */
 
 
     for( i = 0; i < TOT_PRIZE && premi[i].checked == TRUE; i++ )
@@ -2091,24 +2695,38 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
         for( i = 0; i < leggiRigheTombolone(tomb); i++ )
             for ( j = 0; j < leggiColTombolone(tomb); j++ )
                 if ( controllaCartTomb( tomb->cart_tomb[i][j], in_a_row) == in_a_row )
-                    printPrize( curr_prize,NULL, 0 );
-
-        /* <<<<<<<<<<<<<<<<<<<<<<< Controllo delle cartelle dei giocatori >>>>>>>>>>>>>>>>> */
-        for( curr_gioc = leggiPrimoGioc(list); isSetGiocatore(curr_gioc);  curr_gioc = getNextG(curr_gioc) )
+                {
+                    stampaPremio( premi, curr_prize,NULL, 0 );
+                    vince_croupier = 1;
+                    wait(2);
+                    scriviUscitoPremio( &premi[curr_prize], T);
+                }
+        if ( vince_croupier != 1 )
         {
 
-            for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
-                if ( controllaCartella( curr_cart, in_a_row) == in_a_row )
+
+
+            /* <<<<<<<<<<<<<<<<<<<<<<< Controllo delle cartelle dei giocatori >>>>>>>>>>>>>>>>> */
+            for( gioc_corr = leggiPrimoGioc(list); isSetGiocatore(gioc_corr);  gioc_corr = leggiSuccG(gioc_corr) )
+            {
+
+                for ( cart_corr = leggiCartella(gioc_corr); isSetCartella(cart_corr); cart_corr = leggiSuccC(cart_corr) )
                 {
-                    printPrize( curr_prize, curr_gioc, getIdCartella(curr_cart) );
-                    printCelle( curr_cart->cart, 1, 20, leggiTotNumeri(estr));
-                    getch();
-                    gioc_vince = 1;
+                    if ( controllaCartella( cart_corr, in_a_row) == in_a_row )
+                    {
+                        stampaPremio( premi, curr_prize, gioc_corr, leggiIdCartella(cart_corr) );
+                        stampaCelle( cart_corr->cart, 1, 20, leggiTotNumeri(estr));
+                        wait(2);
+                        gioc_vince = 1;
+                        scriviUscitoPremio( &premi[curr_prize], T);
+                    }
                 }
 
-            if ( gioc_vince == 1 )
-            {
-                if ( num_vincenti == 0 )
+
+                if ( gioc_vince == 1 )
+                {
+
+                    if ( num_vincenti == 0 )
                     {
                         /*
                             Se num_vincenti è uguale a zero, questo è il primo
@@ -2128,7 +2746,7 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
                             exit(-1);
                         }
                         num_vincenti++;
-                        id_vincenti[cont_id++] = getIdGiocatore(curr_gioc);
+                        id_vincenti[cont_id++] = leggiIdGiocatore(gioc_corr);
                     }
                     else
                     {
@@ -2146,12 +2764,14 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
                             getch();
                             exit(-1);
                         }
-                        id_vincenti[cont_id++] = getIdGiocatore(curr_gioc);
+
+                        id_vincenti[cont_id++] = leggiIdGiocatore(gioc_corr);
                     }
 
-                gioc_vince = 0;
-            }
+                    gioc_vince = 0;
+                }
 
+            }
         }
 
 
@@ -2166,27 +2786,37 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
         for ( i = 0; i < leggiRigheTombolone(tomb); i++ )
             for ( j = 0; j < leggiColTombolone(tomb); j++ )
                 if ( controllaCartTomb( tomb->cart_tomb[i][j], in_a_row) == in_a_row )
-                    printPrize( curr_prize, NULL, 0 );
+                {
+                    stampaPremio( premi, curr_prize, NULL, 0 );
+                    wait(2);
+                    vince_croupier = 1;
+                    scriviUscitoPremio( &premi[curr_prize], T);
+                }
 
         /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 
 
         /* <<<<<<<<<<<<<<<<<<<<<<<<<< Controllo delle cartelle dei giocatori >>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
-        for( curr_gioc = leggiPrimoGioc(list); isSetGiocatore(curr_gioc);  curr_gioc = getNextG(curr_gioc) )
+        if ( vince_croupier != 1 )
         {
-            for ( curr_cart = getCartella(curr_gioc); isSetCartella(curr_cart); curr_cart = getNextC(curr_cart) )
+
+            for( gioc_corr = leggiPrimoGioc(list); isSetGiocatore(gioc_corr);  gioc_corr = leggiSuccG(gioc_corr) )
             {
-                if ( controllaCartella( curr_cart, in_a_row) == in_a_row )
+                for ( cart_corr = leggiCartella(gioc_corr); isSetCartella(cart_corr); cart_corr = leggiSuccC(cart_corr) )
                 {
-                    printPrize( curr_prize, curr_gioc, getIdCartella(curr_cart) );
-                    printCelle( curr_cart->cart, 1, 20, leggiTotNumeri(estr));
-                    getch();
-                    gioc_vince = 1;
+                    if ( controllaCartella( cart_corr, in_a_row) == in_a_row )
+                    {
+                        stampaPremio( premi, curr_prize, gioc_corr, leggiIdCartella(cart_corr) );
+                        stampaCelle( cart_corr->cart, 1, 20, leggiTotNumeri(estr));
+                        wait(2);
+                        gioc_vince = 1;
+                        scriviUscitoPremio( &premi[curr_prize], T);
+                    }
                 }
-            }
-            if ( gioc_vince == 1 )
-            {
-                if ( num_vincenti == 0 )
+                if ( gioc_vince == 1 )
+                {
+
+                    if ( num_vincenti == 0 )
                     {
                         /*
                             Se num_vincenti è uguale a zero, questo è il primo
@@ -2206,7 +2836,7 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
                             exit(-1);
                         }
                         num_vincenti++;
-                        id_vincenti[cont_id++] = getIdGiocatore(curr_gioc);
+                        id_vincenti[cont_id++] = leggiIdGiocatore(gioc_corr);
                     }
                     else
                     {
@@ -2224,13 +2854,13 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
                             getch();
                             exit(-1);
                         }
-                        id_vincenti[cont_id++] = getIdGiocatore(curr_gioc);
+                        id_vincenti[cont_id++] = leggiIdGiocatore(gioc_corr);
                     }
 
-                gioc_vince = 0;
+                    gioc_vince = 0;
+                }
+
             }
-
-
 
         }
 
@@ -2248,39 +2878,56 @@ void checkPrize( ListaGiocatori *list, Tombolone *tomb, Estrazione *estr )
         Calcolo la vincita del singolo giocatore divendo la posta in palio del premio corrente
         per il numero di giocatori che hanno vinto il premio( indicato dalla variabile cont_id ).
     */
-
-    if( num_vincenti > 1 )
+    if ( vince_croupier == 0 )
     {
-        vincita = leggiVincitaPremio(&premi[curr_prize]) / num_vincenti;
 
-        for ( cont_id = 0; i < num_vincenti; i++ )
+
+        if( num_vincenti > 1 )
         {
-            curr_gioc = getNodoG( leggiPrimoGioc(list), id_vincenti[cont_id] );
-            setCashGiocatore( curr_gioc, getCashGiocatore(curr_gioc) + vincita);
+            vincita = leggiVincitaPremio(&premi[curr_prize]) / num_vincenti;
+
+
+            for ( cont_id = 0; cont_id < num_vincenti; cont_id++ )
+            {
+                gioc_corr = leggiNodoG( leggiPrimoGioc(list), id_vincenti[cont_id] );
+                scriviCashGiocatore( gioc_corr, leggiCashGiocatore(gioc_corr) + vincita);
+
+            }
         }
-    }
-    else if ( num_vincenti == 1 )
-    {
-        /*
-            Se num_vincenti è uguale ad 1, ha vinto unicamente un giocatore quindi l'intera posta in palio
-            va assegnata a quest'ultimo.
-        */
-        vincita = leggiVincitaPremio(&premi[curr_prize]);
-        curr_gioc = getNodoG( leggiPrimoGioc(list), id_vincenti[0]);
-        setCashGiocatore(curr_gioc, getCashGiocatore(curr_gioc) + vincita);
-    }
+        else if ( num_vincenti == 1 )
+        {
+            /*
+                Se num_vincenti è uguale ad 1, ha vinto unicamente un giocatore quindi l'intera posta in palio
+                va assegnata a quest'ultimo.
+            */
+            vincita = leggiVincitaPremio(&premi[curr_prize]);
+            gioc_corr = leggiNodoG( leggiPrimoGioc(list), id_vincenti[0]);
+            scriviCashGiocatore(gioc_corr, leggiCashGiocatore(gioc_corr) + vincita);
+        }
 
-
+        free(id_vincenti);
+    }
 }
 
+void initPremio( ListaPremi premi, int num_gioc, int num_cartelle )
+{
+    int i = 0;
+    int vincita;
+
+    for ( i = 0; i < TOT_PRIZE; i++ )
+    {
+        vincita = num_gioc * num_cartelle * ( i + 1);
+        scriviVincitaPremio(&premi[i], vincita );
+    }
+}
 int estraiNumero( Estrazione *estr )
 {
     int rand_number;
 
-    if ( !getVettoreNumeri(estr) )
+    if ( !leggiVettoreNumeri(estr) )
     {
         estr->numbers = (int*)malloc( leggiTotNumeri(estr) * sizeof(int));
-        if ( !getVettoreNumeri(estr))
+        if ( !leggiVettoreNumeri(estr))
         {
             clrscr();
             perror("MALLOC ERROR ::>> ");
@@ -2292,8 +2939,8 @@ int estraiNumero( Estrazione *estr )
     if ( leggiTotNumEstratti(estr) == 0 )
     {
         scriviTotNumEstratti( estr, 0);
-        riempi_num(getVettoreNumeri(estr), 1, leggiTotNumeri(estr));
-        mischia( getVettoreNumeri(estr), leggiTotNumeri(estr) );
+        riempiNumeri(leggiVettoreNumeri(estr), 1, leggiTotNumeri(estr));
+        mischiaNumeri( leggiVettoreNumeri(estr), leggiTotNumeri(estr) );
         rand_number = estr->numbers[estr->tot_numeri_estr++];
 
     }
@@ -2313,17 +2960,14 @@ int leggiTotNumEstratti( Estrazione *estr )
 
 int scriviTotNumEstratti( Estrazione *estr, int tot )
 {
-    int stato = 1;
+    int errore = ENOTF;
 
     if ( tot < 0 )
-    {
-        set_error(ENUMESTR);
-        stato = 0;
-    }
+        errore = ENUMESTR;
     else
         estr->tot_numeri_estr = tot;
 
-    return stato;
+    return errore;
 }
 
 int leggiTotNumeri( Estrazione *estr )
@@ -2333,44 +2977,37 @@ int leggiTotNumeri( Estrazione *estr )
 
 int scriviTotNumeri( Estrazione *estr, int dim  )
 {
-    int stato = 1;
+    int errore = ENOTF;
 
     if ( dim < 0 )
-    {
-        set_error(EDIMT);
-        stato = 0;
-    }
+        errore = ETOTESTR;
     else
         estr->tot_numeri = dim;
 
-    return stato;
+    return errore;
 }
 
-int *getVettoreNumeri( Estrazione *estr )
+int *leggiVettoreNumeri( Estrazione *estr )
 {
     return estr->numbers;
 }
 
-void setVettoreNumeri( Estrazione *estr, int dim )
+int allocVettoreNumeri( Estrazione *estr, int dim )
 {
-    int stato = 1;
+    int errore = ENOTF;
     if ( dim < 0 )
-    {
-        set_error(EDIMVET);
-        stato = 0;
-    }
+        errore = EVET;
     else
     {
         estr->numbers = (int*)malloc( leggiTotNumeri(estr) * sizeof(int));
         if ( !estr->numbers )
         {
-            clrscr();
-            perror("MALLOC ERROR ::>> ");
-            getch();
-            exit(-1);
+            errore = EVET;
         }
     }
 
+
+    return errore;
 
 }
 
@@ -2387,20 +3024,17 @@ int leggiNumGen( Estrazione *estr )
 
 int scriviNumGen( Estrazione *estr, int num_gen )
 {
-    int stato = 1;
+    int errore = ENOTF;
 
     if ( num_gen < 0 )
-    {
-       stato = 0;
-       set_error(ENUMGEN);
-    }
+        errore = ENUMGEN;
     else
         estr->num_gen = num_gen;
 
-    return stato;
+    return errore;
 }
 
-void printTombolone( Tombolone *tomb, int cont )
+void stampaTombolone( Tombolone *tomb, int cont )
 {
     int row_tomb;
     int i, j;
@@ -2442,7 +3076,7 @@ void printTombolone( Tombolone *tomb, int cont )
             {
                 if ( leggiNumFlagTombolone(tomb->cart_tomb[row_tomb][1], i, j ) == TRUE )
                     textcolor(58);
-                printf("|%4d | ", leggiNumTombolone(tomb->cart_tomb[row_tomb][1],i,j) ) ;
+                printf(" |%4d |", leggiNumTombolone(tomb->cart_tomb[row_tomb][1],i,j) ) ;
                 textcolor(63);
 
             }
@@ -2458,7 +3092,7 @@ void printTombolone( Tombolone *tomb, int cont )
 
 }
 
-void printFile( char *file )
+void stampaFile( char *file )
 {
      FILE *fp;
      int tot_char = 0;
@@ -2495,10 +3129,10 @@ void printFile( char *file )
 
         while( ( c = fgetc(fp) ) != EOF  && key != 27 )
         {
-            if( tot_char > 1280 )
+            if( tot_char > 1575 )
             {
 
-                printf("\nPREMI SPAZIO PER ANDARE ALLA PAGINA SUCCESSIVA O ESC PER USCIRE ");
+                printf("\nPREMI INVIO PER ANDARE ALLA PAGINA SUCCESSIVA O ESC PER USCIRE ");
                 while( ( ( key = getch() ) != 13 ) && ( key != 27 ) )
                     /* non fa nulla */;
 
@@ -2536,7 +3170,7 @@ Topten *initTopten( void )
 {
     return NULL;
 }
-Topten* getNextTop( Topten *top )
+Topten* leggiSuccTop( Topten *top )
 {
 
     return top->next_top;
@@ -2552,77 +3186,91 @@ Topten *allocTopten( void )
     return malloc( sizeof(Topten));
 }
 
-void addTopten( Topten *top, Topten *new_gioc )
+void aggTopten( Topten *top, Topten *nuovo_gioc )
 {
 
-    if ( !isSetTopten(getNextTop(top) ) )
+    if ( !isSetTopten(leggiSuccTop(top) ) )
     {
 
         top->next_top = allocTopten();
-        top = getNextTop(top);
-        *top = *new_gioc;
+        top = leggiSuccTop(top);
+        *top = *nuovo_gioc;
     }
     else
-        addTopten( getNextTop(top), new_gioc);
+        aggTopten( leggiSuccTop(top), nuovo_gioc);
 
 }
 
-void insOrdTopten( Topten *top, Topten *new_gioc )
+void insOrdTopten( Topten *top, Topten *nuovo_gioc )
 {
-    Topten *prec_gioc = top, *curr_gioc;
+    Topten *prec_gioc = top, *gioc_corr;
 
 
 
-    if ( /*!isSetTopten( getNextTop(curr_gioc ) ) ||*/ leggiPuntTopTen(top) < leggiPuntTopTen(new_gioc) )
+    if ( leggiPuntTopTen(top) <= leggiPuntTopTen(nuovo_gioc) )
     {
-        curr_gioc = allocTopten();
-        *curr_gioc = *top;
-        new_gioc->next_top = curr_gioc;
-        *top = *new_gioc;
+        gioc_corr = allocTopten();
+        *gioc_corr = *top;
+        nuovo_gioc->next_top = gioc_corr;
+        *top = *nuovo_gioc;
 
     }
     else
     {
-        curr_gioc = top;
+        gioc_corr = top;
         prec_gioc = top;
-        while ( isSetTopten(curr_gioc ) && leggiPuntTopTen(new_gioc) < leggiPuntTopTen(curr_gioc ) )
+        while ( isSetTopten(gioc_corr ) && leggiPuntTopTen(nuovo_gioc) <= leggiPuntTopTen(gioc_corr ) )
         {
-            prec_gioc = curr_gioc;
-            curr_gioc = getNextTop(curr_gioc);
+            prec_gioc = gioc_corr;
+            gioc_corr = leggiSuccTop(gioc_corr);
 
         }
 
-        prec_gioc->next_top = new_gioc;
-        new_gioc->next_top = curr_gioc;
+        prec_gioc->next_top = nuovo_gioc;
+        nuovo_gioc->next_top = gioc_corr;
 
     }
 }
 
-Topten *checkTopten( Topten *top, Giocatore *new_gioc )
+Topten *controllaTopten( Topten *top, Giocatore *nuovo_gioc )
 {
-    Topten *curr_gioc, *new_top = allocTopten();
+    Topten *gioc_corr, *new_top = allocTopten();
     int flag = 0;
-    char buffer[50];
+    char buffer[8];
     char *suppl = NULL;
     int res = 1;
 
-    for ( curr_gioc = top; isSetTopten(curr_gioc) && flag == 0; curr_gioc = getNextTop(curr_gioc) )
-        if ( leggiPuntTopTen(curr_gioc) < getCashGiocatore(new_gioc) )
+
+    for ( gioc_corr = top; isSetTopten(gioc_corr) && flag == 0; gioc_corr = leggiSuccTop(gioc_corr) )
+        if ( leggiPuntTopTen(gioc_corr) < leggiCashGiocatore(nuovo_gioc) )
         {
-            while( getchar() != '\n');
+
             do
             {
                 printf("Nuovo record.\nInserisci Nickname per entrare nella topten ( MAX 6 caratteri ) : ");
-                if ( ( suppl = fgets(buffer,8, stdin)  ) != NULL )
+                suppl = fgets(buffer,sizeof(buffer), stdin);
+
+                if ( ( strcmp( buffer, "\n") == 0 ) || ( suppl == NULL ) ||  ( strcmp(buffer, "\r") == 0 ) )
                 {
-                    chomp(buffer);
-                }
-                else if ( ( strcmp( buffer, "\n")) || ( suppl == NULL ) )
                     res = 0;
+                    stampaFile("topten.txt");
+                    fprintf(stderr, "SCELTA IMMESSA NON VALIDA. Inserisci 6 caratteri alfanumerici!\nPremi un tasto per continuare");
+                    getch();
+                    clrscr();
+                    stampaFile("topten.txt");
+                    //while( getchar() != '\n' );
+                }
+                else
+                {
+                    while( getchar() != '\n');
+                    res = 1;
+                }
             }while( res == 0 );
+
+            chomp(buffer);
             /* crea nuova struttura di tipo topten per effettuare l'inserimento nella lista*/
             scriviNomeTopTen(new_top, buffer);
-            scriviPunteggioTopTen(new_top, getCashGiocatore(new_gioc) );
+            scriviPunteggioTopTen(new_top, leggiCashGiocatore(nuovo_gioc) );
             new_top->next_top = initTopten();
             flag = 1;
         }
@@ -2631,19 +3279,11 @@ Topten *checkTopten( Topten *top, Giocatore *new_gioc )
 
 }
 
-
-void printTopTen( Topten *toplist )
+void stampaTopTenSuFile( Topten *toplist )
 {
+    FILE *top_file;
     Topten *curr_top;
     int cont_gioc;
-    FILE *top_file;
-
-    /*while ( i++ < 90 )
-    {
-        textcolor(i);
-        printf("PROVA %d", i);
-        getch();
-    }*/
 
     if ( ( top_file = fopen("topten.txt", "w") ) == NULL )
     {
@@ -2653,29 +3293,75 @@ void printTopTen( Topten *toplist )
         exit(-1);
     }
 
-    printf("POS\t NOME GIOCATORE\t TOT. PUNTEGGIO \n");
-
-
     for ( curr_top = toplist, cont_gioc = 1;
         isSetTopten(curr_top) && cont_gioc <= 10;
-         curr_top = getNextTop(curr_top), cont_gioc++ )
+         curr_top = leggiSuccTop(curr_top), cont_gioc++ )
     {
-        switch ( cont_gioc )
-        {
-            case 1 : textcolor(28); break;
-            case 2: textcolor(30); break;
-            case 3 : textcolor(26); break;
-            default : textcolor(63); break;
-        }
 
-        printf("%d)\t\t%6s\t\t  %4d\n", cont_gioc, leggiNomeTopTen(curr_top), leggiPuntTopTen(curr_top));
         fprintf(top_file, "%s %d\n", leggiNomeTopTen(curr_top), leggiPuntTopTen(curr_top));
     }
 
     fclose(top_file);
+}
+
+void stampaTopTen( Topten *toplist )
+{
+    Topten *curr_top;
+    int cont_gioc;
+
+    if ( leggiPuntTopTen(toplist) == 0 )
+    {
+        printf("La topten risulta essere vuota!!\nE' stato manipolato il file!Ricreare il file topten.txt .\n");
+
+
+    }
+    else
+    {
+         printf("POS\t NOME GIOCATORE\t TOT. PUNTEGGIO \n");
+
+        for ( curr_top = toplist, cont_gioc = 1;
+            isSetTopten(curr_top) && cont_gioc <= 10;
+            curr_top = leggiSuccTop(curr_top), cont_gioc++ )
+        {
+            switch ( cont_gioc )
+            {
+                case 1 : textcolor(12); break;
+                case 2: textcolor(14); break;
+                case 3 : textcolor(10); break;
+                default : textcolor(15); break;
+            }
+
+            printf("%d)\t\t%6s\t\t  %4d\n\n", cont_gioc, leggiNomeTopTen(curr_top), leggiPuntTopTen(curr_top));
+
+        }
+   }
+
+    textcolor(63);
+    nascondiCursore();
+    /*cont_gioc = 0;
+    while( cont_gioc++ < 90 )
+    {
+        textcolor(cont_gioc);
+        printf("PROVA %d", cont_gioc);
+        getch();
+    } */
+
 
 
 
 }
 
+void liberaTopten( Topten *top )
+{
+    Topten *gioc_temp = NULL;
+    Topten *gioc_corr = NULL;
+
+    for ( gioc_corr = leggiSuccTop(top); isSetTopten(gioc_corr);free(gioc_temp) )
+    {
+        gioc_temp = gioc_corr;
+        gioc_corr = leggiSuccTop(gioc_corr);
+
+    }
+
+}
 

@@ -2,7 +2,7 @@
  * ErrorManager.h
  *
  *  Created on: 14/giu/2012
- *      Author: AlexZ
+ *
  */
 
 #ifndef ERRORMANAGER_H_
@@ -17,70 +17,49 @@
   		      VALORI DI RITORNO IN CASO DI ERRORE
   -----------------------------------------------------------
 	ENOTF – nessun errore rilevato nel corso dell’esecuzione ( 1 )
-	ERNUM – errore lettura campo intero della struttura Cella ( -1 )
-	EWNUM – errore scrittura campo intero della struttura Cella (-2)
-	ERCHEK – errore lettura campo boolean della struttura Cella (-3)
-	ENLPL – errore lista giocatori vuota ( -4 )
- 	ENLCART – errore lista cartelle vuota ( -5 )
-	ENUMCART – errore scrittura campo numero cartella della struttura Giocatore ( -6 )
-	ENUMP – errore scrittura numero di giocatori totali ( -8)
-	ERTOMB – errore scrittura righe del Tombolone ( -9)
-	ECTOMB - errore scrittura colonne del Tombolone ( -10 )
-	ENUMT - errore scrittura numeri del Tombolone ( -11 )
-	EIMPD -  errore scrittura numero di elementi del tombolone ( -12 )
-	EIP - errore modifica numero di giocatori delle Impostazioni ( -13 )
-	ECASH - errore modifica campo cash della struttura Giocatore ( -14 )
-	ENUMESTR - errore accesso al campo totale numeri estratti della struttura Estrazione ( -15 )
-	EDIMVET - errore accesso al campo dimensione del vettore della struttura Estrazione (-16)
-	ENUMGEN - errore accesso al campo numeri generati della struttura Estrazione ( -17)
-	EVET - errore nella modifica del vettore di numeri della struttura Estrazione ( -18 )
-	EITOMB - errore inizializzazione del tombolone ( -19 )
+	ERNUM – errore lettura campo intero della struttura Cella
+	EWNUM – errore scrittura campo intero della struttura Cella
+	ERCHEK – errore lettura campo boolean della struttura Cella
+	ENLPL – errore lista giocatori vuota
+ 	ENLCART – errore lista cartelle vuota
+	ENUMCART – errore scrittura campo numero cartella della struttura Giocatore
+	ENUMP – errore scrittura numero di giocatori totali
+	ERTOMB – errore scrittura righe del Tombolone
+	ECTOMB - errore scrittura colonne del Tombolone
+	ENUMT - errore scrittura numeri del Tombolone
+	EIMPD -  errore scrittura numero di elementi del tombolone
+	EIP - errore modifica numero di giocatori delle Impostazioni
+	ECASH - errore modifica campo cash della struttura Giocatore
+	ENUMESTR - errore accesso al campo totale numeri estratti della struttura Estrazione
+	EDIMVET - errore accesso al campo dimensione del vettore della struttura Estrazione
+	ENUMGEN - errore accesso al campo numeri generati della struttura Estrazione
+	EVET - errore nella modifica del vettore di numeri della struttura Estrazione
+	EITOMB - errore inizializzazione del tombolone
 
   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
  */
+#define EIDCART -1 /* Errore Letture dell'id della cartella */
+#define ENUMCARD -2 /* Errore nella lettura di un numero della cartella */
+#define ERCHEK -3 /* Errore nella lettura del campo checked di una elemento della cartella*/
+#define ERIDG -4 /* Errore nella lettura dell'id del giocatore */
+#define ERCASHG -5 /* Errore nella lettura del totale vinto dal giocatore */
+#define ERNUMCART -6 /* Errore nella lettura del numero di cartelle del giocatore */
+#define ERITOTG -7 /* Errore nella lettura del numero totale dei giocatori (Impostazioni )*/
+#define ERIDIMT -8 /* Errore nella lettura del numero totale di elementi del tombolone ( Impostazioni )*/
+#define ERINUMC -9 /* Errore nella lettura del numero di cartelle di ogni giocatore  */
+#define ERNUMT -10 /* Errore nella lettura dei valori del tombolone */
 
-#define ENOTF 1
-#define ERNUM -1
-#define EWNUM -2
-#define ERCHEK -3
-#define ELPL -4
-#define ELCART -5
-#define ENUMCART -6
-#define ENUMP -7
-#define ERTOMB -8
-#define ECTOMB -9
-#define ENUMT -10
-#define EDIMT -11
-#define EIMPD -12
-#define EIP -13
-#define ECASH -14
-#define ENUMESTR -15
-#define EDIMVET -16
-#define ENUMGEN -17
-#define EVET -18
-#define EITOMB -19
 
-/*
- * variabile globale che rappresenta l'errore attualmente riscontrato.
- *
- * */
-int tomb_err;
+enum{ ENOTF, EWNUM, ENCHEK, ELG, ELCART, EIDG, ETOTG, ECASHG, ENUMCART, ERTOMB,
+     ECTOMB, ENUMT, EI, EIDIMT, EINUMG, EINUMCART, ETOTESTR, ENUMESTR, EVET, ENUMGEN,
+     EITOMB, ENOMTOP, EPUNTOP, ENOMPR, EVINPR, ENOMSAVE };
 
 /*
     Controlla appositamente l'errore attualmente
     commesso e provvede a stampare a video un opportuno
     messaggio d'errore.
 */
-void tombola_error( char * );
-/*
-    Garantisce la modifica della variabile globale
-*/
-void set_error( int );
-/*
-    Ritorna il corrente valore d'errore riscontrato
-    contenuto nella variabile globale tomb_err.
-*/
-int get_curr_error( void );
+void tombolaErrore( int, char * );
 
 
 

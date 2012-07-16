@@ -1,49 +1,44 @@
-   	  _   _   _   _   _   _   _   _   _   _  
-  	 / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ 
- 	( i | s | t | r | u | z | i | o | n | i )
-  	 \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ 
+   _   _   _   _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \ / \ / \ / \ / \ / \ 
+ ( I | S | T | R | U | Z | I | O | N | I )
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ 
 
-------------------- Gioco della Tombola  -------------------------
+---------- Gioco della Tombola -----------
 
-Per poter iniziare a giocare e' necessario unicamente
-acquistare una serie di cartelle( da 1 a 6 ) con le quali
-si intede giocare al gioco della tombola, il cui scopo
-e' quello di vincere una serie di premi che sono conseguibili
-unicamente se si hanno due numeri su una stessa riga ( Ambo ),
-tre numeri su una stessa riga ( Terno ), quattro numeri su una
-stessa riga( Quaterna ), cinque numeri sulla stessa riga
-( Cinquina ) oppure e' possibile ottenere il premio finale
-chiamato Tombola nel caso in cui si hanno tutti i numeri presenti
-all'interno della cartella che si possiede.
-Il giocatore che prima vince tale premio e' il vincitore del gioco
-e tale condizione porra' fine allo stesso.
+La tombola e' un gioco a premi in cui si sfidano diversi giocatori.
+Ogni giocatore possiede un numero di cartelle variabile (da 1 a 6) e
+ciascuna cartella contiene 15 numeri diversi suddivisi in 3 righe.
+Durante il gioco vengono estratti dei numeri in modo casuale.
+I numeri vengono conservati dal Tombolone. Il Tombolone e' un giocatore
+al pari di tutti gli altri e possiede un numero di cartelle (di numeri 
+a 5 a 5 consecutivi) sufficiente a ricoprire tutti i numeri in gioco.
+Quando un numero viene estratto, se un giocatore lo possiede, se lo segna.
+I premi che si possono vincere sono Ambo (2 numeri sulla stessa riga),
+Terno (3 numeri sulla stessa riga), Quaterna (4 numeri sulla stessa riga),
+Cinquina (5 numeri sulla stessa riga), Tombola (15 numeri - tutti i
+numeri della cartella). Ogni premio puo' essere vinto una sola volta
+(se piu' giocatori lo vincono contemporaneamente si dividono il premio).
+Il gioco termina quando un giocatore (incluso il Tombolone) fa Tombola.
 
 Prima di poter inziare a giocare e' necessario modificare le 
 impostazioni di gioco dalla voce "Impostazioni".
-Nel caso non venisse impostato nulla si inizierebbe con le impostazioni
-di default.
+Nel caso in cui le impostazioni non siano state configurate, verranno
+utilizzare quelle in default:
+1) Numero di giocatori totali : 6
+2) Numero di cartelle per giocatore : 6
+3) Dimensione del tombolone : 90
+4) Suoni Audio Vittoria : No
+5) Suoni Audio Premio : No
 
-////// Comandi attivabili durante il gioco ///////
+//////////// Comandi di Gioco //////////
 
-ESC - Ritorna al menu' principale
-F2 - Salva partita corrente
-0 - Mostra Comandi di gioco
+ESC - ritorna al menu principale da qualsiasi posizione
+s - salva partita durante il gioco
+INVIO - estrae numero successivo
+-> - visualizza parte successiva del tombolone
+<- - visualizza parte precedente del tombolone
 
-************ MODALITA' CORREZIONE MANUALE ***********************
-Viene mostrato ad ogni estrazione un menu'
-relativo ad ogni utente con le seguenti possibilita'
-che verranno attivate premendo dei tasti della tastiera.
 
-OPZIONI UTENTE :
+	Powered by Alessandro Suglia and Nazar Chekalin
 
-1 - controlla numero estratto
-2 - visualizza cartella 
-3 - Prosegui gioco
-
-*********** MODALITA' CORREZIONE AUTOMATICA ****************
-OPZIONE UTENTE :
-1 - visualizza cartella
-2 - prosegui gioco
-
-                     Powered by Alessandro Suglia and Nazar Chekalin
-
+Premi un tasto per continuare..
