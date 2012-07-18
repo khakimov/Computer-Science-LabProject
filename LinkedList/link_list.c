@@ -88,18 +88,7 @@ void readFile( ListYear **year, ListName **name )
 }
 void printYear( ListYear *list_year )
 {
-	/*if ( !isSetYear(list_year) ) 
-	{
-		/* DO NOTHING */
-	
-	/*}
-	else
-	{
-		printf("YEAR : %d\n", list_year->year);
-		printYear(list_year->next_year);
-	
-	}
-	*/
+
 
 	ListYear *curr_year = NULL;
 
@@ -119,19 +108,7 @@ void printYear( ListYear *list_year )
 }
 void printName( ListName *list_names )
 {
-	/*if ( !isSetName( list_names ) )
-	{
-		/*
-			DO NOTHING 
-		*/
-	
-	/*}
-	else
-	{
-		printf("NAME %s LENGTH %d\n", list_names->name,list_names->length_name);
-		printName( list_names->next_name);
-	
-	}*/
+
 
 	ListName *curr = NULL;
 
@@ -175,7 +152,7 @@ int checkYear( ListYear *list_year, int year )
 
 	while( curr_year != NULL && res != 1 )
 	{
-		if ( list_year->year == year )
+		if ( curr_year->year == year )
 			res = 1;
 
 		curr_year = curr_year->next_year;
