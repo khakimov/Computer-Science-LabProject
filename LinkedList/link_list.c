@@ -61,7 +61,7 @@ void addYear( ListYear **list_year, int new_year )
 
 }
 
-void readFile( ListYear *year, ListName *name )
+void readFile( ListYear **year, ListName **name )
 {
 	FILE *fp;
 	char buffer[512];
@@ -78,8 +78,8 @@ void readFile( ListYear *year, ListName *name )
 	while( !feof(fp) )
 	{
 		fscanf(fp,"%s %d\n", buffer, &value);
-		addNames(&name, buffer);
-		addYear(&year, value);
+		addNames(name, buffer);
+		addYear(year, value);
 			
 	}
 
@@ -102,16 +102,16 @@ void printYear( ListYear *list_year )
 	*/
 
 	ListYear *curr_year = NULL;
-	int i = 0;
+
 
 	printf("YEARS INFORMATION \n");
 
 	for ( curr_year = list_year;
 			isSetYear(curr_year);
-			curr_year = curr_year->next_year, i++ )
+			curr_year = curr_year->next_year )
 
 	{
-		printf("YEAR : %d N %d\n", curr_year->year, i);
+		printf("YEAR : %d \n", curr_year->year);
 	
 	
 	}
@@ -165,4 +165,38 @@ ListName *initName( void )
 ListYear *initYear( void )
 {
 	return NULL;
+}
+
+int checkYear( ListYear *list_year, int year )
+{
+
+	int res = 0;
+	ListYear *curr_year = list_year;
+
+	while( curr_year != NULL && res != 1 )
+	{
+		if ( list_year->year == year )
+			res = 1;
+
+		curr_year = curr_year->next_year;
+	
+	}
+
+	return res;
+	
+
+}
+
+int checkName( ListName *list_name, char *name ) 
+{
+	int res = 0;
+	ListName *curr_name = list_name;
+
+	while( curr_name != NULL && res != 1 )
+	{
+		if ( strcmp( curr_name->name, name ) == 0 )
+			res = 1;
+		curr_name = curr_name->next_name;
+	}
+	return res;
 }

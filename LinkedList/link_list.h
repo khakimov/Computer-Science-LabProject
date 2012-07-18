@@ -29,10 +29,12 @@ typedef struct list_year
 /*  <-------------- Prototypes' declaration --------------------------------> */
 void addNames( ListName **, char * );
 void addYear( ListYear **, int );
-void readFile( ListYear *, ListName *);
+void readFile( ListYear **, ListName **);
 void printYear( ListYear * );
 void printName( ListName * );
 int isSetName( ListName * );
+int checkYear( ListYear *, int );
+int checkName( ListName *, char *);
 int isSetYear( ListYear *);
 ListName *initName( void );
 ListYear *initYear( void );
